@@ -1,8 +1,10 @@
-package me.kalpha.jdbctemplete.entity;
+package me.kalpha.jdbctemplete.domain;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import java.util.List;
 
@@ -10,5 +12,5 @@ import java.util.List;
 @NoArgsConstructor
 public class QueryDto {
     String query;
-    List<String> conditions;
+    Object[] params;
 }

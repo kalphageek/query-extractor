@@ -1,8 +1,10 @@
 package me.kalpha.jdbctemplete.service;
 
-import me.kalpha.jdbctemplete.entity.QueryDto;
-import me.kalpha.jdbctemplete.entity.Row;
+import me.kalpha.jdbctemplete.domain.QueryDto;
+import me.kalpha.jdbctemplete.domain.Row;
 import me.kalpha.jdbctemplete.repository.QueryRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 
@@ -13,7 +15,8 @@ public class QueryService {
         this.queryRepository = queryRepository;
     }
 
+    //추가
     public List<Row> query(QueryDto queryDto) {
-        return  queryRepository.findByQuery(queryDto.getQuery(), (String[]) queryDto.getConditions().toArray());
+        return  queryRepository.queryByParams(queryDto.getQuery(), queryDto.getParams());
     }
 }

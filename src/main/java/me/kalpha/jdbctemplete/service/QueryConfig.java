@@ -1,8 +1,7 @@
-package me.kalpha.jdbctemplete.config;
+package me.kalpha.jdbctemplete.service;
 
-import me.kalpha.jdbctemplete.repository.JdbcTemplteQueryRepository;
+import me.kalpha.jdbctemplete.repository.JdbcTemplateQueryRepository;
 import me.kalpha.jdbctemplete.repository.QueryRepository;
-import me.kalpha.jdbctemplete.service.QueryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -11,10 +10,11 @@ import javax.sql.DataSource;
 
 @Configuration
 public class QueryConfig {
+
     private final DataSource dataSource;
 
     @Autowired
-    public QueryConfig(DataSource dataSource){
+    public QueryConfig(DataSource dataSource) {
         this.dataSource = dataSource;
     }
 
@@ -24,8 +24,7 @@ public class QueryConfig {
     }
 
     @Bean
-    private QueryRepository queryRepository() {
-        return new JdbcTemplteQueryRepository(dataSource);
+    public QueryRepository queryRepository() {
+        return new JdbcTemplateQueryRepository(dataSource);
     }
-
 }
