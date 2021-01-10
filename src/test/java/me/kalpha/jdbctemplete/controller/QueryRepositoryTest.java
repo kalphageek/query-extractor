@@ -43,12 +43,13 @@ class QueryRepositoryTest {
                 "\tand create_time < ?\n" +
                 "\tand job_instance_id > ?\n" +
                 "\tand status in (?)\n" +
+                "\tand exit_code like ?\n" +
                 "\tand exit_message is not null and exit_message <> ''\n" +
                 "order by job_instance_id desc, version desc";
 
         LocalDate createTime1 = LocalDate.parse("2020-10-01");
         LocalDate createTime2 = LocalDate.parse("2020-10-04").plusDays(1);
-        Object[] params = {createTime1, createTime2, 20, "FAILED"};
+        Object[] params = {createTime1, createTime2, 20, "FAILED", "%"+"FAIL"+"%"};
 
 //        SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
 //        sdf.setTimeZone(TimeZone.getDefault());
@@ -76,14 +77,29 @@ class QueryRepositoryTest {
                 "where create_time >= ?\n" +
                 "\tand create_time < ?\n" +
                 "\tand job_instance_id > ?\n" +
-                "\tand status in (?)\n" +
+                "\tand exit_code like ?\n" +
                 "\tand exit_message is not null and exit_message <> ''\n" +
+                "\tand status in (%s)\n" +
                 "order by job_instance_id desc, version desc";
 
         LocalDate createTime1 = LocalDate.parse("2020-10-01");
         LocalDate createTime2 = LocalDate.parse("2020-10-04").plusDays(1);
 
-        Object[] params = {createTime1, createTime2, 20, "FAILED"};
+        //in절 -->
+        List<String> inClouse = new ArrayList<>();
+        inClouse.add("FAILED");
+        inClouse.add("WARNNING");
+        StringBuilder queryBuilder = new StringBuilder();
+        for( int i = 0; i< inClouse.size(); i++){
+            queryBuilder.append(" ?");
+            if (i !=  inClouse.size() -1) queryBuilder.append(",");
+        }
+        query = String.format(query, queryBuilder.toString());
+        //in절 <--
+
+        System.out.println(query);
+
+        Object[] params = {createTime1, createTime2, 20, "%"+"FAIL"+"%", inClouse.get(0), inClouse.get(1)};
 
         QueryDto queryDto = new QueryDto();
         queryDto.setQuery(query);
