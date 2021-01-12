@@ -61,7 +61,7 @@ class QueryRepositoryTest {
         queryDto.setQuery(query);
         queryDto.setParams(params);
 
-        mockMvc.perform(post("/api/query")
+        mockMvc.perform(get("/query")
                     .contentType(MediaType.APPLICATION_JSON)
                     .content(objectMapper.writeValueAsString(queryDto)))
                 .andDo(print())

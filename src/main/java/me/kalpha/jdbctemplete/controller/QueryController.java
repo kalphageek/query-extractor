@@ -4,13 +4,12 @@ import me.kalpha.jdbctemplete.domain.QueryDto;
 import me.kalpha.jdbctemplete.service.QueryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
+@RequestMapping("/query")
 public class QueryController {
 
     private final QueryService queryService;
@@ -20,7 +19,7 @@ public class QueryController {
         this.queryService = queryService;
     }
 
-    @PostMapping("/api/query")
+    @GetMapping
     public ResponseEntity query(@RequestBody QueryDto queryDto) {
         List list = queryService.query(queryDto);
         return ResponseEntity.ok(list);
