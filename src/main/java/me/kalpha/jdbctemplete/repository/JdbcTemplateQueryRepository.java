@@ -1,15 +1,11 @@
 package me.kalpha.jdbctemplete.repository;
 
-import me.kalpha.jdbctemplete.domain.Row;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
-import org.springframework.stereotype.Repository;
 
 import javax.sql.DataSource;
 import java.sql.ResultSetMetaData;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 public class JdbcTemplateQueryRepository implements QueryRepository {
@@ -33,12 +29,12 @@ public class JdbcTemplateQueryRepository implements QueryRepository {
      * @return
      */
     @Override
-    public List<Row> queryByParams(String query, Object[] params) {
-        List<Row> rowList = jdbcTemplate.query(query, params, rowMapper());
-        return rowList;
+    public List queryByParams(String query, Object[] params) {
+        List list = jdbcTemplate.query(query, params, rowMapper());
+        return list;
     }
 
-    private RowMapper<Row> rowMapper() {
+    private RowMapper<List> rowMapper() {
         return (rs, rowNum) -> {
             if (colCount == null) {
                 colCount = rs.getMetaData().getColumnCount();
@@ -48,11 +44,7 @@ public class JdbcTemplateQueryRepository implements QueryRepository {
             for (int j=1; j<=colCount; j++) {
                 cols.add(rs.getString(j));
             }
-            Row row = Row.builder()
-                    .rownum(rowNum)
-                    .cols(cols)
-                    .build();
-            return row;
+            return cols;
         };
     }
 }

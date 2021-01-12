@@ -1,23 +1,15 @@
 package me.kalpha.jdbctemplete.controller;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import me.kalpha.jdbctemplete.domain.QueryDto;
-import me.kalpha.jdbctemplete.domain.Row;
 import me.kalpha.jdbctemplete.service.QueryService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.data.rest.webmvc.RestMediaTypes;
-import org.springframework.format.datetime.DateFormatter;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
-import java.text.SimpleDateFormat;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -47,7 +39,8 @@ class QueryRepositoryTest {
                 "\tand exit_code like ?\n" +
                 "\tand exit_message is not null and exit_message <> ''\n" +
                 "\tand status in (%s)\n" +
-                "order by job_instance_id desc, version desc";
+                "order by job_instance_id desc, version desc\n" +
+                "limit 10";
 
         //in절 -->
         List<String> inClouse = new ArrayList<>();
@@ -87,7 +80,8 @@ class QueryRepositoryTest {
                 "\tand exit_code like ?\n" +
                 "\tand exit_message is not null and exit_message <> ''\n" +
                 "\tand status in (%s)\n" +
-                "order by job_instance_id desc, version desc";
+                "order by job_instance_id desc, version desc\n" +
+                "limit 10";
 
         //in절 -->
         List<String> inClouse = new ArrayList<>();
@@ -108,9 +102,9 @@ class QueryRepositoryTest {
         queryDto.setQuery(query);
         queryDto.setParams(params);
 
-        List<Row> rowList = queryService.query(queryDto);
-        rowList.stream().forEach(System.out::println);
+        List list = queryService.query(queryDto);
+        list.stream().forEach(System.out::println);
 
-        assertNotNull(rowList);
+        assertNotNull(list);
     }
 }
