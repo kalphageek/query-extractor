@@ -1,13 +1,16 @@
 package me.kalpha.jdbctemplete.repository;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
+import org.springframework.stereotype.Repository;
 
 import javax.sql.DataSource;
 import java.sql.ResultSetMetaData;
 import java.util.ArrayList;
 import java.util.List;
 
+@Repository
 public class JdbcTemplateQueryRepository implements QueryRepository {
     private final JdbcTemplate jdbcTemplate;
     private Integer colCount;
@@ -17,6 +20,7 @@ public class JdbcTemplateQueryRepository implements QueryRepository {
      * 생성자가 1개일때는 @Autowired 생략 가능
      * @param dataSource
      */
+    @Autowired
     public JdbcTemplateQueryRepository(DataSource dataSource) {
         this.jdbcTemplate = new JdbcTemplate(dataSource);
     }
