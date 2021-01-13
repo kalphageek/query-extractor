@@ -51,4 +51,37 @@ public class JdbcTemplateQueryRepository implements QueryRepository {
             return cols;
         };
     }
+
+    @Override
+    public Boolean validateQueryByParams(String query, Object[] params) {
+        String valdateQuery = "SELECT ( EXISTS (SELECT 1 from dudal)\n" +
+                "OR\n" +
+                "EXISTS (%s)\n" +
+        ") AS result";
+        valdateQuery = String.format(valdateQuery, query);
+        try {
+            return jdbcTemplate.queryForObject(valdateQuery, params, validateMapper());
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
+    private RowMapper<Boolean> validateMapper() {
+        return (rs, rowNum) -> {
+            return rs.getBoolean(1);
+        };
+    }
+
+    @Override
+    public List queryRecently(String tableName) {
+        return queryRecently(tableName, DEFAULT_LIMITS);
+    }
+
+    @Override
+    public List queryRecently(String tableNm, Integer limit) {
+        String query = String.format("select * from %s order by %s desc limit %d",tableNm, HUB_BASE_COLUMN, limit);
+        System.out.println(query);
+        List list = jdbcTemplate.query(query, rowMapper());
+        return list;
+    }
 }

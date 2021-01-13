@@ -20,4 +20,15 @@ public class QueryService {
     public List query(QueryDto queryDto) {
         return  queryRepository.queryByParams(queryDto.getQuery(), queryDto.getParams());
     }
+
+    public Boolean validate(QueryDto queryDto) {
+        return  queryRepository.validateQueryByParams(queryDto.getQuery(), queryDto.getParams());
+    }
+
+    public List queryRecently(String tableNm, Integer limits) {
+        return queryRepository.queryRecently(tableNm, limits);
+    }
+    public List queryRecently(String tableNm) {
+        return queryRepository.queryRecently(tableNm);
+    }
 }

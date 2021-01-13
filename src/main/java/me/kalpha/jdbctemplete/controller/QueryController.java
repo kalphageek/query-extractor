@@ -19,9 +19,26 @@ public class QueryController {
         this.queryService = queryService;
     }
 
-    @GetMapping
+    @PostMapping
     public ResponseEntity query(@RequestBody QueryDto queryDto) {
         List list = queryService.query(queryDto);
         return ResponseEntity.ok(list);
+    }
+
+    @GetMapping("/{tableNm}")
+    public ResponseEntity queryRecently(@PathVariable String tableNm) {
+        List list = queryService.queryRecently(tableNm);
+        return ResponseEntity.ok(list);
+    }
+
+    @GetMapping("/validate")
+    public ResponseEntity validation(@RequestBody QueryDto queryDto) {
+        Boolean isOk;
+        try {
+            isOk = queryService.validate(queryDto);
+        } catch (Exception e) {
+            isOk = false;
+        }
+        return ResponseEntity.ok(isOk);
     }
 }
