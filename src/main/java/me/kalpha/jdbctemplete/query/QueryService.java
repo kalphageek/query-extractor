@@ -1,7 +1,7 @@
-package me.kalpha.jdbctemplete.service;
+package me.kalpha.jdbctemplete.query;
 
-import me.kalpha.jdbctemplete.domain.QueryDto;
-import me.kalpha.jdbctemplete.repository.QueryRepository;
+import me.kalpha.jdbctemplete.query.QueryDto;
+import me.kalpha.jdbctemplete.query.QueryRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

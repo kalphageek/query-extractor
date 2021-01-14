@@ -1,4 +1,4 @@
-package me.kalpha.jdbctemplete.domain;
+package me.kalpha.jdbctemplete.query;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Getter;

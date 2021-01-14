@@ -1,4 +1,4 @@
-package me.kalpha.jdbctemplete.repository;
+package me.kalpha.jdbctemplete.query;
 
 import java.util.List;
 

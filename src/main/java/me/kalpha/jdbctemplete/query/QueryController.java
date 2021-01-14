@@ -1,9 +1,10 @@
-package me.kalpha.jdbctemplete.controller;
+package me.kalpha.jdbctemplete.query;
 
-import me.kalpha.jdbctemplete.domain.QueryDto;
-import me.kalpha.jdbctemplete.service.QueryService;
+import me.kalpha.jdbctemplete.common.ErrorsModel;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.hateoas.EntityModel;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -13,10 +14,12 @@ import java.util.List;
 public class QueryController {
 
     private final QueryService queryService;
+    private final QueryValidator queryValidator;
 
     @Autowired
-    public QueryController(QueryService queryService) {
+    public QueryController(QueryService queryService, QueryValidator queryValidator) {
         this.queryService = queryService;
+        this.queryValidator = queryValidator;
     }
 
     @PostMapping
@@ -32,13 +35,11 @@ public class QueryController {
     }
 
     @GetMapping("/validate")
-    public ResponseEntity validation(@RequestBody QueryDto queryDto) {
-        Boolean isOk;
-        try {
-            isOk = queryService.validate(queryDto);
-        } catch (Exception e) {
-            isOk = false;
+    public ResponseEntity validation(@RequestBody QueryDto queryDto, Errors errors) {
+        queryValidator.validate(queryDto, errors);
+        if (errors.hasErrors()) {
+            return ResponseEntity.badRequest().body(ErrorsModel.modelOf(errors));
         }
-        return ResponseEntity.ok(isOk);
+        return ResponseEntity.ok(true);
     }
 }

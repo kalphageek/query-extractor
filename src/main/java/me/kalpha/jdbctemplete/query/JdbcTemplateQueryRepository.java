@@ -1,4 +1,4 @@
-package me.kalpha.jdbctemplete.repository;
+package me.kalpha.jdbctemplete.query;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -39,12 +39,12 @@ public class JdbcTemplateQueryRepository implements QueryRepository {
     }
 
     private RowMapper<List> rowMapper() {
+        List cols = new ArrayList();
         return (rs, rowNum) -> {
             if (colCount == null) {
                 colCount = rs.getMetaData().getColumnCount();
             }
 
-            List cols = new ArrayList();
             for (int j=1; j<=colCount; j++) {
                 cols.add(rs.getString(j));
             }
@@ -54,16 +54,12 @@ public class JdbcTemplateQueryRepository implements QueryRepository {
 
     @Override
     public Boolean validateQueryByParams(String query, Object[] params) {
-        String valdateQuery = "SELECT ( EXISTS (SELECT 1 from dudal)\n" +
+        String valdateQuery = "SELECT ( EXISTS (SELECT 1)\n" +
                 "OR\n" +
                 "EXISTS (%s)\n" +
         ") AS result";
         valdateQuery = String.format(valdateQuery, query);
-        try {
-            return jdbcTemplate.queryForObject(valdateQuery, params, validateMapper());
-        } catch (Exception e) {
-            return false;
-        }
+        return jdbcTemplate.queryForObject(valdateQuery, params, validateMapper());
     }
 
     private RowMapper<Boolean> validateMapper() {
