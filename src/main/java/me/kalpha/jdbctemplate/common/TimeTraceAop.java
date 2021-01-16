@@ -8,6 +8,8 @@ import org.springframework.stereotype.Component;
 /**
  * AOP를 사용하면 모든 Class에 공통로직(cross cutting concern)을 넣을 수 있다.
  * TimeTraceAOP는 me.kalpha.jdbtemplate.query Package아래의 모든 Class의 Method들의 실행시간을 측정한다.
+ * ---
+ * AOP가 적용된 Package는 Proxy를 통해 호출하도록 변경된다.
  */
 @Aspect
 @Component
@@ -18,6 +20,9 @@ public class TimeTraceAop {
         long start = System.currentTimeMillis();
         System.out.println("START : " + joinPoint.toString());
         try {
+            /**
+             * 호출되는 비즈니스 Method
+             */
             return joinPoint.proceed();
         } finally {
             long finish = System.currentTimeMillis();

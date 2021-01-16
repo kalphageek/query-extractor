@@ -17,6 +17,7 @@ public class QueryController {
 
     private final QueryService queryService;
     private final QueryValidator queryValidator;
+    private final Integer LIMITS = 5;
 
     @Autowired
     public QueryController(QueryService queryService, QueryValidator queryValidator) {
@@ -32,7 +33,7 @@ public class QueryController {
 
     @PostMapping("/query/{page}")
     public ResponseEntity query(@RequestBody QueryDto queryDto, @PathVariable Integer page) {
-        PageRequest pageable = PageRequest.of(page, 5);
+        PageRequest pageable = PageRequest.of(page, LIMITS);
         Page<List> pagedList = queryService.query(pageable, queryDto);
         return ResponseEntity.ok(pagedList);
     }
@@ -45,7 +46,7 @@ public class QueryController {
 
     @GetMapping("/{tableName}/recently/{page}")
     public ResponseEntity findRecently(@PathVariable String tableName, @PathVariable Integer page) {
-        PageRequest pageable = PageRequest.of(page, 5, Sort.Direction.DESC, "create_time");
+        PageRequest pageable = PageRequest.of(page, LIMITS, Sort.Direction.DESC, "create_time");
         Page<List> list = queryService.findRecently(pageable, tableName);
         return ResponseEntity.ok(list);
     }
@@ -58,7 +59,7 @@ public class QueryController {
 
     @GetMapping("/{tableName}/sample/{page}")
     public ResponseEntity findSample(@PathVariable String tableName, @PathVariable Integer page) {
-        PageRequest pageable = PageRequest.of(page, 5);
+        PageRequest pageable = PageRequest.of(page, LIMITS);
         Page<List> pagedList =  queryService.findSample(pageable, tableName);
         return ResponseEntity.ok(pagedList);
     }

@@ -16,11 +16,12 @@ public interface QueryRepository {
 
     Boolean validateQueryByParams(String query, Object[] params);
 
-    List findRecently(String tableName);
 
     List findSample(String tableName);
 
     Page<List> findSample(Pageable pageable, String tableName);
+
+    List findRecently(String tableName);
 
     Page<List> findRecently(Pageable pageable, String tableName);
 }

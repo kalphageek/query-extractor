@@ -56,6 +56,11 @@ public class QueryRepositoryImpl implements QueryRepository {
         };
     }
 
+    private int count(String query, Object[] params) {
+        String countQuery = String.format("select count(*) from (%s) as t", query);
+        return jdbcTemplate.queryForObject(countQuery, params, Integer.class);
+    }
+
     @Override
     public Boolean validateQueryByParams(String query, Object[] params) {
         String valdateQuery = "SELECT ( EXISTS (SELECT 1)\n" +
@@ -104,10 +109,5 @@ public class QueryRepositoryImpl implements QueryRepository {
     private int count(String tableName) {
         String countQuery = String.format("select count(*) from %s", tableName);
         return jdbcTemplate.queryForObject(countQuery, Integer.class);
-    }
-
-    private int count(String query, Object[] params) {
-        String countQuery = String.format("select count(*) from (%s) as t", query);
-        return jdbcTemplate.queryForObject(countQuery, params, Integer.class);
     }
 }

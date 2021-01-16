@@ -28,16 +28,16 @@ public class QueryService {
         return  queryRepository.validateQueryByParams(queryDto.getQuery(), queryDto.getParams());
     }
 
-    public List findRecently(String tableName) {
-        return queryRepository.findRecently(tableName);
-    }
-
     public List findSample(String tableName) {
         return queryRepository.findSample(tableName);
     }
 
     public Page<List> findSample(Pageable pageable, String tableName) {
         return queryRepository.findSample(pageable, tableName);
+    }
+
+    public List findRecently(String tableName) {
+        return queryRepository.findRecently(tableName);
     }
 
     public Page<List> findRecently(Pageable pageable, String tableName) {
