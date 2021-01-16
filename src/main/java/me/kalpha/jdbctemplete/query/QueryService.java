@@ -1,8 +1,8 @@
 package me.kalpha.jdbctemplete.query;
 
-import me.kalpha.jdbctemplete.query.QueryDto;
-import me.kalpha.jdbctemplete.query.QueryRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -16,19 +16,31 @@ public class QueryService {
         this.queryRepository = queryRepository;
     }
 
-    //추가
     public List query(QueryDto queryDto) {
-        return  queryRepository.queryByParams(queryDto.getQuery(), queryDto.getParams());
+        return  queryRepository.findByParams(queryDto.getQuery(), queryDto.getParams());
     }
 
     public Boolean validate(QueryDto queryDto) {
         return  queryRepository.validateQueryByParams(queryDto.getQuery(), queryDto.getParams());
     }
 
-    public List queryRecently(String tableNm, Integer limits) {
-        return queryRepository.queryRecently(tableNm, limits);
+    public List findRecently(String tableName, Integer limits) {
+        return queryRepository.findRecently(tableName, limits);
     }
-    public List queryRecently(String tableNm) {
-        return queryRepository.queryRecently(tableNm);
+
+    public List findRecently(String tableName) {
+        return queryRepository.findRecently(tableName);
+    }
+
+    public List findSample(String tableName) {
+        return queryRepository.findSample(tableName);
+    }
+
+    public Page<List> findSample(Pageable pageable, String tableName) {
+        return queryRepository.findSample(pageable, tableName);
+    }
+
+    public Page<List> findRecently(Pageable pageable, String tableName) {
+        return queryRepository.findRecently(pageable, tableName);
     }
 }

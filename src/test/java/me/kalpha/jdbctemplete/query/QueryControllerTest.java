@@ -1,34 +1,35 @@
 package me.kalpha.jdbctemplete.query;
 
 import me.kalpha.jdbctemplete.common.BaseControllerTest;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 class QueryControllerTest extends BaseControllerTest {
 
-    String query = "select job_execution_id, version, job_instance_id, create_time, start_time, end_time\n" +
-            "from batch_job_execution\n" +
-            "where 1 = 1\n" +
-            "\tand create_time >= to_date(?,'yyyy-MM-dd')\n" +
-            "\tand create_time < to_date(?,'yyyy-MM-dd') + 1\n" +
-            "\tand job_instance_id > ?\n" +
-            "\tand exit_code like ?\n" +
-            "\tand exit_message is not null and exit_message <> ''\n" +
-            "\tand status in (%s)\n" +
-            "order by job_instance_id desc, version desc\n" +
-            "limit 10";
-
     @Test
-    public void findByQuery_Api() throws Exception {
+    public void query() throws Exception {
+        String query = "select job_execution_id, version, job_instance_id, create_time, start_time, end_time\n" +
+                "from batch_job_execution\n" +
+                "where 1 = 1\n" +
+                "\tand create_time >= to_date(?,'yyyy-MM-dd')\n" +
+                "\tand create_time < to_date(?,'yyyy-MM-dd') + 1\n" +
+                "\tand job_instance_id > ?\n" +
+                "\tand exit_code like ?\n" +
+                "\tand exit_message is not null and exit_message <> ''\n" +
+                "\tand status in (%s)\n" +
+                "order by job_instance_id desc, version desc";
+
         //in절 -->
         List<String> inClouse = new ArrayList<>();
         inClouse.add("FAILED");
@@ -57,17 +58,42 @@ class QueryControllerTest extends BaseControllerTest {
     }
 
     @Test
-    public void queryRecently_Api() throws Exception {
-        String tableNm = "batch_job_execution";
-        mockMvc.perform(get("/query/{tableNm}", tableNm))
+    public void table_Recently() throws Exception {
+        String tableName = "batch_job_execution";
+        mockMvc.perform(get("/{tableName}/recently", tableName))
                 .andDo(print())
                 .andExpect(status().isOk())
         ;
     }
 
     @Test
-    public void validateQuery_Api() throws Exception {
-        query = "select job_execution_id, version, job_instance_id, create_time, start_time, end_time1\n" +
+    public void table_Sample() throws Exception {
+        String tableName = "batch_job_execution";
+        mockMvc.perform(get("/{tableName}/sample", tableName))
+                .andDo(print())
+                .andExpect(status().isOk())
+        ;
+    }
+
+    @Test
+    public void table_Sample_Pageable() throws Exception {
+        String tableName = "batch_job_execution";
+        String  page = "0";
+        mockMvc.perform(get("/{tableName}/sample", tableName)
+                    .param("page", page))
+                .andDo(print())
+                .andExpect(status().isOk())
+        ;
+        mockMvc.perform(get("/{tableName}/sample?page={page}", tableName, page))
+                .andDo(print())
+                .andExpect(status().isOk())
+        ;
+    }
+
+    @DisplayName("Query Validation 체크")
+    @Test
+    public void query_Validate() throws Exception {
+        String query = "select job_execution_id, version, job_instance_id, create_time, start_time, end_timexxxxxxx\n" +
                 "from batch_job_execution\n" +
                 "where 1 = 1\n" +
                 "\tand create_time >= to_date(?,'yyyy-MM-dd')\n" +
@@ -76,8 +102,7 @@ class QueryControllerTest extends BaseControllerTest {
                 "\tand exit_code like ?\n" +
                 "\tand exit_message is not null and exit_message <> ''\n" +
                 "\tand status in (%s)\n" +
-                "order by job_instance_id desc, version desc\n" +
-                "limit 10";
+                "order by job_instance_id desc, version desc";
         //in절 -->
         List<String> inClouse = new ArrayList<>();
         inClouse.add("FAILED");

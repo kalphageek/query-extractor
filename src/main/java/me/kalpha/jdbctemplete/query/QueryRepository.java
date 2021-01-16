@@ -1,5 +1,8 @@
 package me.kalpha.jdbctemplete.query;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+
 import java.util.List;
 
 public interface QueryRepository {
@@ -7,11 +10,17 @@ public interface QueryRepository {
     public final String HUB_BASE_COLUMN = "create_time";
     public final String LAKE_BASE_COLUMN = "lake_load_tm";
 
-    List queryByParams(String query, Object[] params);
+    List findByParams(String query, Object[] params);
 
     Boolean validateQueryByParams(String query, Object[] params);
 
-    List queryRecently(String tableNm);
+    List findRecently(String tableName);
 
-    List queryRecently(String tableNm, Integer limits);
+    List findRecently(String tableName, Integer limits);
+
+    List findSample(String tableName);
+
+    Page<List> findSample(Pageable pageable, String tableName);
+
+    Page<List> findRecently(Pageable pageable, String tableName);
 }

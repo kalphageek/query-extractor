@@ -2,7 +2,8 @@ package me.kalpha.jdbctemplete.query;
 
 import me.kalpha.jdbctemplete.common.ErrorsModel;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.hateoas.EntityModel;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.*;
@@ -10,7 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/query")
+@RequestMapping
 public class QueryController {
 
     private final QueryService queryService;
@@ -22,20 +23,28 @@ public class QueryController {
         this.queryValidator = queryValidator;
     }
 
-    @PostMapping
+    @PostMapping("/query")
     public ResponseEntity query(@RequestBody QueryDto queryDto) {
         List list = queryService.query(queryDto);
         return ResponseEntity.ok(list);
     }
 
-    @GetMapping("/{tableNm}")
-    public ResponseEntity queryRecently(@PathVariable String tableNm) {
-        List list = queryService.queryRecently(tableNm);
+    @GetMapping("/{tableName}/recently")
+    public ResponseEntity findRecently(@PathVariable String tableName) {
+        List list = queryService.findRecently(tableName);
         return ResponseEntity.ok(list);
     }
 
-    @GetMapping("/validate")
-    public ResponseEntity validation(@RequestBody QueryDto queryDto, Errors errors) {
+    @GetMapping("/{tableName}/sample")
+    public ResponseEntity findSample(@PathVariable String tableName, @RequestParam(value = "page", required = false) Integer page) {
+        if (page == null) page = 0;
+        PageRequest pageable = PageRequest.of(page, 5);
+        Page<List> pagedList =  queryService.findSample(pageable, tableName);
+        return ResponseEntity.ok(pagedList);
+    }
+
+    @GetMapping("/query/validate")
+    public ResponseEntity validate(@RequestBody QueryDto queryDto, Errors errors) {
         queryValidator.validate(queryDto, errors);
         if (errors.hasErrors()) {
             return ResponseEntity.badRequest().body(ErrorsModel.modelOf(errors));

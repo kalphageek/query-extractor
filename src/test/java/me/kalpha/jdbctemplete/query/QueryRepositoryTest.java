@@ -1,10 +1,11 @@
 package me.kalpha.jdbctemplete.query;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -15,8 +16,8 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 @SpringBootTest
 class QueryRepositoryTest {
     @Autowired
-    QueryService queryService;
-    String query = "select job_execution_id, version, job_instance_id, create_time, start_time, end_time\n" +
+    private QueryService queryService;
+    private String query = "select job_execution_id, version, job_instance_id, create_time, start_time, end_time\n" +
             "from batch_job_execution\n" +
             "where 1 = 1\n" +
             "\tand create_time >= to_date(?,'yyyy-MM-dd')\n" +
@@ -29,7 +30,7 @@ class QueryRepositoryTest {
             "limit 10";
 
     @Test
-    public void findByQuery() throws Exception {
+    public void findByQuery() {
         //in절 -->
         List<String> inClouse = new ArrayList<>();
         inClouse.add("FAILED");
@@ -50,21 +51,42 @@ class QueryRepositoryTest {
         queryDto.setParams(params);
 
         List list = queryService.query(queryDto);
-        list.stream().forEach(System.out::println);
+//        list.stream().forEach(System.out::println);
 
         assertNotNull(list);
     }
 
     @Test
-    public void queryRecently() throws Exception {
-        List list = queryService.queryRecently("batch_job_execution");
-        list.stream().forEach(System.out::println);
+    public void querySample() {
+        List list = queryService.findSample("batch_job_execution");
+//        list.stream().forEach(System.out::println);
 
         assertNotNull(list);
     }
 
     @Test
-    public void validateQuery() throws Exception {
+    public void queryRecently() {
+        List list = queryService.findRecently("batch_job_execution");
+//        list.stream().forEach(System.out::println);
+
+        assertNotNull(list);
+    }
+
+    @Test
+    public void queryRecently_Pageable() {
+        String tableName = "batch_job_execution";
+        String baseColumn = "create_time";
+
+        PageRequest pageRequest = PageRequest.of(1,5, Sort.Direction.DESC, baseColumn);
+
+        Page<List> pagedList = queryService.findRecently(pageRequest, tableName);
+//        pagedList.stream().forEach(System.out::println);
+
+        assertNotNull(pagedList);
+    }
+
+    @Test
+    public void validateQuery() {
         //in절 -->
         List<String> inClouse = new ArrayList<>();
         inClouse.add("FAILED");
@@ -87,5 +109,17 @@ class QueryRepositoryTest {
         Boolean valid = queryService.validate(queryDto);
 
         assertTrue(valid);
+    }
+
+
+    @Test
+    public void querySample_Pageable() {
+        String tableName = "batch_job_execution";
+
+        PageRequest pageRequest = PageRequest.of(0, 5);
+        Page<List> pagedList = queryService.findSample(pageRequest, tableName);
+//        pagedList.stream().forEach(System.out::println);
+
+        assertNotNull(pagedList);
     }
 }
