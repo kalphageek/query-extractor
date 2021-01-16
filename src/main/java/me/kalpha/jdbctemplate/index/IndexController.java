@@ -1,7 +1,7 @@
-package me.kalpha.jdbctemplete.index;
+package me.kalpha.jdbctemplate.index;
 
 
-import me.kalpha.jdbctemplete.query.QueryController;
+import me.kalpha.jdbctemplate.query.QueryController;
 import org.springframework.hateoas.RepresentationModel;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;

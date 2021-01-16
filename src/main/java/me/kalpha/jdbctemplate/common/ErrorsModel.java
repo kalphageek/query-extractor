@@ -1,6 +1,6 @@
-package me.kalpha.jdbctemplete.common;
+package me.kalpha.jdbctemplate.common;
 
-import me.kalpha.jdbctemplete.index.IndexController;
+import me.kalpha.jdbctemplate.index.IndexController;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.validation.Errors;
 

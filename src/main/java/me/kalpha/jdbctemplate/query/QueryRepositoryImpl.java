@@ -1,4 +1,4 @@
-package me.kalpha.jdbctemplete.query;
+package me.kalpha.jdbctemplate.query;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,7 +8,6 @@ import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
 
 import javax.sql.DataSource;
-import java.sql.ResultSetMetaData;
 import java.util.ArrayList;
 import java.util.List;
 

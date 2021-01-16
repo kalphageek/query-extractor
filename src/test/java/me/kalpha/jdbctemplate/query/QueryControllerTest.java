@@ -1,12 +1,11 @@
-package me.kalpha.jdbctemplete.query;
+package me.kalpha.jdbctemplate.query;
 
-import me.kalpha.jdbctemplete.common.BaseControllerTest;
+import me.kalpha.jdbctemplate.common.BaseControllerTest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;

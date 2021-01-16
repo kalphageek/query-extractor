@@ -1,6 +1,6 @@
-package me.kalpha.jdbctemplete.query;
+package me.kalpha.jdbctemplate.query;
 
-import me.kalpha.jdbctemplete.common.ErrorsModel;
+import me.kalpha.jdbctemplate.common.ErrorsModel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;

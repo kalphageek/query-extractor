@@ -1,6 +1,6 @@
-package me.kalpha.jdbctemplete.index;
+package me.kalpha.jdbctemplate.index;
 
-import me.kalpha.jdbctemplete.common.BaseControllerTest;
+import me.kalpha.jdbctemplate.common.BaseControllerTest;
 import org.junit.jupiter.api.Test;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;

@@ -1,4 +1,4 @@
-package me.kalpha.jdbctemplete.common;
+package me.kalpha.jdbctemplate.common;
 
 import org.springframework.boot.test.autoconfigure.restdocs.RestDocsMockMvcConfigurationCustomizer;
 import org.springframework.boot.test.context.TestConfiguration;

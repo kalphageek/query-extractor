@@ -1,4 +1,4 @@
-package me.kalpha.jdbctemplete.query;
+package me.kalpha.jdbctemplate.query;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

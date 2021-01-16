@@ -1,10 +1,8 @@
-package me.kalpha.jdbctemplete.query;
+package me.kalpha.jdbctemplate.query;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.Errors;
-
-import java.time.LocalDateTime;
 
 /**
  * 입력값 오류를 검증하기 위한 Class

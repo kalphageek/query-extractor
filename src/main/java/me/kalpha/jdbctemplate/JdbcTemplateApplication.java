@@ -1,13 +1,13 @@
-package me.kalpha.jdbctemplete;
+package me.kalpha.jdbctemplate;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class JdbcTempleteApplication {
+public class JdbcTemplateApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(JdbcTempleteApplication.class, args);
+		SpringApplication.run(JdbcTemplateApplication.class, args);
 	}
 
 }

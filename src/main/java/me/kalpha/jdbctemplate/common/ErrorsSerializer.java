@@ -1,4 +1,4 @@
-package me.kalpha.jdbctemplete.common;
+package me.kalpha.jdbctemplate.common;
 
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.JsonSerializer;
