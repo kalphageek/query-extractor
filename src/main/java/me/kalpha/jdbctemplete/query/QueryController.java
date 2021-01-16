@@ -30,6 +30,13 @@ public class QueryController {
         return ResponseEntity.ok(list);
     }
 
+    @PostMapping("/query/{page}")
+    public ResponseEntity query(@RequestBody QueryDto queryDto, @PathVariable Integer page) {
+        PageRequest pageable = PageRequest.of(page, 5);
+        Page<List> pagedList = queryService.query(pageable, queryDto);
+        return ResponseEntity.ok(pagedList);
+    }
+
     @GetMapping("/{tableName}/recently")
     public ResponseEntity findRecently(@PathVariable String tableName) {
         List list = queryService.findRecently(tableName);

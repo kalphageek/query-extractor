@@ -20,6 +20,10 @@ public class QueryService {
         return  queryRepository.findByParams(queryDto.getQuery(), queryDto.getParams());
     }
 
+    public Page<List> query(Pageable pageable, QueryDto queryDto) {
+        return  queryRepository.findByParams(pageable, queryDto.getQuery(), queryDto.getParams());
+    }
+
     public Boolean validate(QueryDto queryDto) {
         return  queryRepository.validateQueryByParams(queryDto.getQuery(), queryDto.getParams());
     }

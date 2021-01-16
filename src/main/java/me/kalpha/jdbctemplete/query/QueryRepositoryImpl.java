@@ -2,10 +2,7 @@ package me.kalpha.jdbctemplete.query;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.*;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
@@ -40,6 +37,14 @@ public class QueryRepositoryImpl implements QueryRepository {
     public List findByParams(String query, Object[] params) {
         List list = jdbcTemplate.query(query, params, rowMapper());
         return list;
+    }
+
+    @Override
+    public Page<List> findByParams(Pageable pageable, String query, Object[] params) {
+        String pagingQuery = String.format("select * from (%s) as t limit %d offset %d"
+                , query, pageable.getPageSize(), pageable.getOffset());
+        List list = jdbcTemplate.query(pagingQuery, params, rowMapper());
+        return new PageImpl<List>(list, pageable, count(query, params));
     }
 
     private RowMapper<List> rowMapper() {
@@ -98,8 +103,12 @@ public class QueryRepositoryImpl implements QueryRepository {
     }
 
     private int count(String tableName) {
-        String query = String.format("select count(*) from %s", tableName);
-        return jdbcTemplate.queryForObject(query, Integer.class);
+        String countQuery = String.format("select count(*) from %s", tableName);
+        return jdbcTemplate.queryForObject(countQuery, Integer.class);
     }
 
+    private int count(String query, Object[] params) {
+        String countQuery = String.format("select count(*) from (%s) as t", query);
+        return jdbcTemplate.queryForObject(countQuery, params, Integer.class);
+    }
 }

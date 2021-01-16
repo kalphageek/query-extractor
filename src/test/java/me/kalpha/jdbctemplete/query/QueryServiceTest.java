@@ -14,7 +14,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @SpringBootTest
-class QueryRepositoryTest {
+class QueryServiceTest {
     @Autowired
     private QueryService queryService;
     private String query = "select job_execution_id, version, job_instance_id, create_time, start_time, end_time\n" +
@@ -26,8 +26,7 @@ class QueryRepositoryTest {
             "\tand exit_code like ?\n" +
             "\tand exit_message is not null and exit_message <> ''\n" +
             "\tand status in (%s)\n" +
-            "order by job_instance_id desc, version desc\n" +
-            "limit 10";
+            "order by job_instance_id desc, version desc";
 
     @Test
     public void findByQuery() {
@@ -57,6 +56,35 @@ class QueryRepositoryTest {
     }
 
     @Test
+    public void findByQuery_Pageable() {
+        //in절 -->
+        List<String> inClouse = new ArrayList<>();
+        inClouse.add("FAILED");
+        inClouse.add("WARNNING");
+        StringBuilder queryBuilder = new StringBuilder();
+        for( int i = 0; i< inClouse.size(); i++){
+            queryBuilder.append("?");
+            if (i !=  inClouse.size() -1) queryBuilder.append(", ");
+        }
+        query = String.format(query, queryBuilder.toString());
+        //in절 <--
+
+        System.out.println(query);
+        Object[] params = {"2020-10-01", "2020-10-04", 20, "%"+"FAIL"+"%", inClouse.get(0), inClouse.get(1)};
+
+        QueryDto queryDto = new QueryDto();
+        queryDto.setQuery(query);
+        queryDto.setParams(params);
+
+        PageRequest pageable = PageRequest.of(0, 5);
+        Page<List> pagedLList = queryService.query(pageable, queryDto);
+
+//        list.stream().forEach(System.out::println);
+
+        assertNotNull(pagedLList);
+    }
+
+    @Test
     public void querySample() {
         List list = queryService.findSample("batch_job_execution");
 //        list.stream().forEach(System.out::println);
@@ -68,8 +96,8 @@ class QueryRepositoryTest {
     public void querySample_Pageable() {
         String tableName = "batch_job_execution";
 
-        PageRequest pageRequest = PageRequest.of(0, 5);
-        Page<List> pagedList = queryService.findSample(pageRequest, tableName);
+        PageRequest pageable = PageRequest.of(0, 5);
+        Page<List> pagedList = queryService.findSample(pageable, tableName);
 //        pagedList.stream().forEach(System.out::println);
 
         assertNotNull(pagedList);
@@ -88,9 +116,9 @@ class QueryRepositoryTest {
         String tableName = "batch_job_execution";
         String baseColumn = "create_time";
 
-        PageRequest pageRequest = PageRequest.of(1,5, Sort.Direction.DESC, baseColumn);
+        PageRequest pageable = PageRequest.of(1,5, Sort.Direction.DESC, baseColumn);
 
-        Page<List> pagedList = queryService.findRecently(pageRequest, tableName);
+        Page<List> pagedList = queryService.findRecently(pageable, tableName);
 //        pagedList.stream().forEach(System.out::println);
 
         assertNotNull(pagedList);

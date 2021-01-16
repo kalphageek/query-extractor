@@ -12,6 +12,8 @@ public interface QueryRepository {
 
     List findByParams(String query, Object[] params);
 
+    Page<List> findByParams(Pageable pageable, String query, Object[] params);
+
     Boolean validateQueryByParams(String query, Object[] params);
 
     List findRecently(String tableName);
