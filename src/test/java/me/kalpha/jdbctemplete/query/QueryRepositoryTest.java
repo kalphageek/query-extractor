@@ -65,6 +65,17 @@ class QueryRepositoryTest {
     }
 
     @Test
+    public void querySample_Pageable() {
+        String tableName = "batch_job_execution";
+
+        PageRequest pageRequest = PageRequest.of(0, 5);
+        Page<List> pagedList = queryService.findSample(pageRequest, tableName);
+//        pagedList.stream().forEach(System.out::println);
+
+        assertNotNull(pagedList);
+    }
+
+    @Test
     public void queryRecently() {
         List list = queryService.findRecently("batch_job_execution");
 //        list.stream().forEach(System.out::println);
@@ -112,14 +123,4 @@ class QueryRepositoryTest {
     }
 
 
-    @Test
-    public void querySample_Pageable() {
-        String tableName = "batch_job_execution";
-
-        PageRequest pageRequest = PageRequest.of(0, 5);
-        Page<List> pagedList = queryService.findSample(pageRequest, tableName);
-//        pagedList.stream().forEach(System.out::println);
-
-        assertNotNull(pagedList);
-    }
 }

@@ -67,6 +67,16 @@ class QueryControllerTest extends BaseControllerTest {
     }
 
     @Test
+    public void table_Recently_Pageable() throws Exception {
+        String tableName = "batch_job_execution";
+        String page = "0";
+        mockMvc.perform(get("/{tableName}/recently/{page}", tableName, page))
+                .andDo(print())
+                .andExpect(status().isOk())
+        ;
+    }
+
+    @Test
     public void table_Sample() throws Exception {
         String tableName = "batch_job_execution";
         mockMvc.perform(get("/{tableName}/sample", tableName))
@@ -79,15 +89,16 @@ class QueryControllerTest extends BaseControllerTest {
     public void table_Sample_Pageable() throws Exception {
         String tableName = "batch_job_execution";
         String  page = "0";
-        mockMvc.perform(get("/{tableName}/sample", tableName)
-                    .param("page", page))
+        mockMvc.perform(get("/{tableName}/sample/{page}", tableName, page))
                 .andDo(print())
                 .andExpect(status().isOk())
         ;
-        mockMvc.perform(get("/{tableName}/sample?page={page}", tableName, page))
-                .andDo(print())
-                .andExpect(status().isOk())
-        ;
+        //@RequestParam으로 받는 경우
+//        mockMvc.perform(get("/{tableName}/sample", tableName)
+//                    .param("page", page))
+//                .andDo(print())
+//                .andExpect(status().isOk())
+//        ;
     }
 
     @DisplayName("Query Validation 체크")

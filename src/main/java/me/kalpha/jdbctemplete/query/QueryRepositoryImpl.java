@@ -70,6 +70,17 @@ public class QueryRepositoryImpl implements QueryRepository {
     }
 
     @Override
+    public Page<List> findRecently(Pageable pageable, String tableName) {
+//        Sort.Order order = !pageable.getSort().isEmpty() ? pageable.getSort().toList().get(0) : Sort.Order.by(HUB_LOAD_TM);
+        Sort.Order order = pageable.getSort().toList().get(0);
+        String query = String.format("select * from %s order by %s %s limit %d offset %d"
+                , tableName, order.getProperty(), order.getDirection(), pageable.getPageSize(), pageable.getOffset());
+        System.out.println(query);
+        List list = jdbcTemplate.query(query, rowMapper());
+        return new PageImpl<List>(list, pageable, count(tableName));
+    }
+
+    @Override
     public List findSample(String tableName) {
         String query = String.format("select * from %s limit %d",tableName, DEFAULT_LIMITS);
         List list = jdbcTemplate.query(query, rowMapper());
@@ -91,14 +102,4 @@ public class QueryRepositoryImpl implements QueryRepository {
         return jdbcTemplate.queryForObject(query, Integer.class);
     }
 
-    @Override
-    public Page<List> findRecently(Pageable pageable, String tableName) {
-//        Sort.Order order = !pageable.getSort().isEmpty() ? pageable.getSort().toList().get(0) : Sort.Order.by(HUB_LOAD_TM);
-        Sort.Order order = pageable.getSort().toList().get(0);
-        String query = String.format("select * from %s order by %s %s limit %d offset %d"
-                , tableName, order.getProperty(), order.getDirection(), pageable.getPageSize(), pageable.getOffset());
-        System.out.println(query);
-        List list = jdbcTemplate.query(query, rowMapper());
-        return new PageImpl<List>(list, pageable, count(tableName));
-    }
 }
