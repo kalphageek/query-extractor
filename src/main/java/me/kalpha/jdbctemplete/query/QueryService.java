@@ -24,10 +24,6 @@ public class QueryService {
         return  queryRepository.validateQueryByParams(queryDto.getQuery(), queryDto.getParams());
     }
 
-    public List findRecently(String tableName, Integer limits) {
-        return queryRepository.findRecently(tableName, limits);
-    }
-
     public List findRecently(String tableName) {
         return queryRepository.findRecently(tableName);
     }

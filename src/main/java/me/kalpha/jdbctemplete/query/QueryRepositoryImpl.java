@@ -64,12 +64,7 @@ public class QueryRepositoryImpl implements QueryRepository {
 
     @Override
     public List findRecently(String tableName) {
-        return findRecently(tableName, DEFAULT_LIMITS);
-    }
-
-    @Override
-    public List findRecently(String tableName, Integer limit) {
-        String query = String.format("select * from %s order by %s desc limit %d",tableName, HUB_BASE_COLUMN, limit);
+        String query = String.format("select * from %s order by %s desc limit %d",tableName, HUB_BASE_COLUMN, DEFAULT_LIMITS);
         List list = jdbcTemplate.query(query, rowMapper());
         return list;
     }

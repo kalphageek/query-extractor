@@ -16,8 +16,6 @@ public interface QueryRepository {
 
     List findRecently(String tableName);
 
-    List findRecently(String tableName, Integer limits);
-
     List findSample(String tableName);
 
     Page<List> findSample(Pageable pageable, String tableName);
