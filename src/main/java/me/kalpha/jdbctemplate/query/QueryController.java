@@ -4,7 +4,11 @@ import me.kalpha.jdbctemplate.common.ErrorsModel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PagedResourcesAssembler;
+import org.springframework.hateoas.EntityModel;
+import org.springframework.hateoas.PagedModel;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.*;
@@ -25,17 +29,18 @@ public class QueryController {
         this.queryValidator = queryValidator;
     }
 
-    @PostMapping("/query")
+    @GetMapping("/query")
     public ResponseEntity query(@RequestBody QueryDto queryDto) {
         List list = queryService.query(queryDto);
         return ResponseEntity.ok(list);
     }
 
-    @PostMapping("/query/{page}")
+    @GetMapping("/query/{page}")
     public ResponseEntity query(@RequestBody QueryDto queryDto, @PathVariable Integer page) {
         PageRequest pageable = PageRequest.of(page, LIMITS);
         Page<List> pagedList = queryService.query(pageable, queryDto);
-        return ResponseEntity.ok(pagedList);
+        EntityModel<Page> resultModel = ResultModel.of(pagedList);
+        return ResponseEntity.ok(resultModel);
     }
 
     @GetMapping("/{tableName}/recently")

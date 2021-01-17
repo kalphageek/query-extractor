@@ -6,10 +6,10 @@ import java.util.List;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 
-public class RowModel extends EntityModel<java.util.List> {
+public class ResultModel extends EntityModel<java.util.List> {
     public static EntityModel<List> modelOf(List list) {
-        EntityModel<List> rowModel = EntityModel.of(list);
-        rowModel.add(linkTo(QueryController.class).slash(list.stream().findFirst()).withSelfRel());
-        return rowModel;
+        EntityModel<List> resultModel = EntityModel.of(list);
+        resultModel.add(linkTo(QueryController.class).slash(list.stream().findFirst()).withSelfRel());
+        return resultModel;
     }
 }
