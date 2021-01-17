@@ -16,20 +16,21 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 class QueryControllerTest extends BaseControllerTest {
 
+    private String query = "select job_execution_id,version,job_instance_id,create_time,start_time,end_time,status,exit_code,last_updated\n" +
+            "from batch_job_execution\n" +
+            "where 1 = 1\n" +
+            "\tand create_time >= to_date(?,'yyyy-MM-dd')\n" +
+            "\tand create_time < to_date(?,'yyyy-MM-dd') + 1\n" +
+            "\tand job_instance_id > ?\n" +
+            "\tand exit_code like ?\n" +
+            "\tand exit_message is not null and exit_message <> ''\n" +
+            "\tand status in (%s)\n" +
+            "order by job_execution_id desc, version desc";
+
     @Test
     public void query() throws Exception {
-        String query = "select job_execution_id, version, job_instance_id, create_time, start_time, end_time\n" +
-                "from batch_job_execution\n" +
-                "where 1 = 1\n" +
-                "\tand create_time >= to_date(?,'yyyy-MM-dd')\n" +
-                "\tand create_time < to_date(?,'yyyy-MM-dd') + 1\n" +
-                "\tand job_instance_id > ?\n" +
-                "\tand exit_code like ?\n" +
-                "\tand exit_message is not null and exit_message <> ''\n" +
-                "\tand status in (%s)\n" +
-                "order by job_instance_id desc, version desc";
 
-        QueryDto queryDto = getQueryDto(query);
+        QueryDto queryDto = sampleQueryDto(query);
 
         mockMvc.perform(get("/query")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -41,18 +42,8 @@ class QueryControllerTest extends BaseControllerTest {
 
     @Test
     public void query_Pageable() throws Exception {
-        String query = "select job_execution_id, version, job_instance_id, create_time, start_time, end_time\n" +
-                "from batch_job_execution\n" +
-                "where 1 = 1\n" +
-                "\tand create_time >= to_date(?,'yyyy-MM-dd')\n" +
-                "\tand create_time < to_date(?,'yyyy-MM-dd') + 1\n" +
-                "\tand job_instance_id > ?\n" +
-                "\tand exit_code like ?\n" +
-                "\tand exit_message is not null and exit_message <> ''\n" +
-                "\tand status in (%s)\n" +
-                "order by job_instance_id desc, version desc";
 
-        QueryDto queryDto = getQueryDto(query);
+        QueryDto queryDto = sampleQueryDto(query);
 
         mockMvc.perform(get("/query/1")
                     .contentType(MediaType.APPLICATION_JSON)
@@ -62,7 +53,7 @@ class QueryControllerTest extends BaseControllerTest {
         ;
     }
 
-    private QueryDto getQueryDto(String query) {
+    private QueryDto sampleQueryDto(String query) {
         //in절 -->
         List<String> inClouse = new ArrayList<>();
         inClouse.add("FAILED");
@@ -86,7 +77,7 @@ class QueryControllerTest extends BaseControllerTest {
 
     @Test
     public void table_Recently() throws Exception {
-        String tableName = "batch_job_execution";
+        String tableName = "batch_job_instance";
         mockMvc.perform(get("/{tableName}/recently", tableName))
                 .andDo(print())
                 .andExpect(status().isOk())
@@ -95,7 +86,7 @@ class QueryControllerTest extends BaseControllerTest {
 
     @Test
     public void table_Recently_Pageable() throws Exception {
-        String tableName = "batch_job_execution";
+        String tableName = "batch_job_instance";
         String page = "0";
         mockMvc.perform(get("/{tableName}/recently/{page}", tableName, page))
                 .andDo(print())
@@ -105,7 +96,7 @@ class QueryControllerTest extends BaseControllerTest {
 
     @Test
     public void table_Sample() throws Exception {
-        String tableName = "batch_job_execution";
+        String tableName = "batch_job_instance";
         mockMvc.perform(get("/{tableName}/sample", tableName))
                 .andDo(print())
                 .andExpect(status().isOk())
@@ -114,7 +105,7 @@ class QueryControllerTest extends BaseControllerTest {
 
     @Test
     public void table_Sample_Pageable() throws Exception {
-        String tableName = "batch_job_execution";
+        String tableName = "batch_job_instance";
         String  page = "0";
         mockMvc.perform(get("/{tableName}/sample/{page}", tableName, page))
                 .andDo(print())
@@ -131,18 +122,9 @@ class QueryControllerTest extends BaseControllerTest {
     @DisplayName("Query Validation 체크")
     @Test
     public void query_Validate() throws Exception {
-        String query = "select job_execution_id, version, job_instance_id, create_time, start_time, end_timexxxxxxx\n" +
-                "from batch_job_execution\n" +
-                "where 1 = 1\n" +
-                "\tand create_time >= to_date(?,'yyyy-MM-dd')\n" +
-                "\tand create_time < to_date(?,'yyyy-MM-dd') + 1\n" +
-                "\tand job_instance_id > ?\n" +
-                "\tand exit_code like ?\n" +
-                "\tand exit_message is not null and exit_message <> ''\n" +
-                "\tand status in (%s)\n" +
-                "order by job_instance_id desc, version desc";
+        String invalidQuery = query + "aaa";
         //in절 -->
-        QueryDto queryDto = getQueryDto(query);
+        QueryDto queryDto = sampleQueryDto(invalidQuery);
 
         mockMvc.perform(get("/query/validate")
                 .contentType(MediaType.APPLICATION_JSON)

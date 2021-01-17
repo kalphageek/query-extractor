@@ -69,8 +69,8 @@ public class QueryRepositoryImpl implements QueryRepository {
     }
 
     private RowMapper<List> rowMapper() {
-        List cols = new ArrayList();
         return (rs, rowNum) -> {
+            List cols = new ArrayList();
             for (int j=1; j<=rs.getMetaData().getColumnCount(); j++) {
                 cols.add(rs.getString(j));
             }
