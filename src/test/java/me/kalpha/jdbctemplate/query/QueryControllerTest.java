@@ -70,6 +70,7 @@ class QueryControllerTest extends BaseControllerTest {
         Object[] params = {"2020-10-01", "2020-10-04", 20, "%" + "FAIL" + "%", inClouse.get(0), inClouse.get(1)};
 
         QueryDto queryDto = new QueryDto();
+        queryDto.setDbType("OTHERS");
         queryDto.setQuery(query);
         queryDto.setParams(params);
         return queryDto;

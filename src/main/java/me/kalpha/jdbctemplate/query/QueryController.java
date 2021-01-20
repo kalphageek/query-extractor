@@ -29,30 +29,25 @@ public class QueryController {
         this.queryValidator = queryValidator;
     }
 
+    //---------------------------------Non Paging-------------------------------------------
+    @GetMapping("/query/validate")
+    public ResponseEntity validate(@RequestBody QueryDto queryDto, Errors errors) {
+        queryValidator.validate(queryDto, errors);
+        if (errors.hasErrors()) {
+            return ResponseEntity.badRequest().body(ErrorsModel.modelOf(errors));
+        }
+        return ResponseEntity.ok(true);
+    }
+
     @GetMapping("/query")
     public ResponseEntity query(@RequestBody QueryDto queryDto) {
         List list = queryService.query(queryDto);
         return ResponseEntity.ok(list);
     }
 
-    @GetMapping("/query/{page}")
-    public ResponseEntity query(@RequestBody QueryDto queryDto, @PathVariable Integer page) {
-        PageRequest pageable = PageRequest.of(page, LIMITS);
-        Page<List> pagedList = queryService.query(pageable, queryDto);
-        EntityModel<Page> resultModel = ResultModel.of(pagedList);
-        return ResponseEntity.ok(resultModel);
-    }
-
     @GetMapping("/{tableName}/recently")
     public ResponseEntity findRecently(@PathVariable String tableName) {
         List list = queryService.findRecently(tableName);
-        return ResponseEntity.ok(list);
-    }
-
-    @GetMapping("/{tableName}/recently/{page}")
-    public ResponseEntity findRecently(@PathVariable String tableName, @PathVariable Integer page) {
-        PageRequest pageable = PageRequest.of(page, LIMITS, Sort.Direction.DESC, "create_time");
-        Page<List> list = queryService.findRecently(pageable, tableName);
         return ResponseEntity.ok(list);
     }
 
@@ -62,19 +57,26 @@ public class QueryController {
         return ResponseEntity.ok(list);
     }
 
+    //---------------------------------Paging-----------------------------------------------
+    @GetMapping("/query/{page}")
+    public ResponseEntity query(@RequestBody QueryDto queryDto, @PathVariable Integer page) {
+        PageRequest pageable = PageRequest.of(page, LIMITS);
+        Page<List> pagedList = queryService.query(pageable, queryDto);
+        EntityModel<Page> resultModel = ResultModel.of(pagedList);
+        return ResponseEntity.ok(resultModel);
+    }
+
+    @GetMapping("/{tableName}/recently/{page}")
+    public ResponseEntity findRecently(@PathVariable String tableName, @PathVariable Integer page) {
+        PageRequest pageable = PageRequest.of(page, LIMITS, Sort.Direction.DESC, "job_instance_id");
+        Page<List> list = queryService.findRecently(pageable, tableName);
+        return ResponseEntity.ok(list);
+    }
+
     @GetMapping("/{tableName}/sample/{page}")
     public ResponseEntity findSample(@PathVariable String tableName, @PathVariable Integer page) {
         PageRequest pageable = PageRequest.of(page, LIMITS);
         Page<List> pagedList =  queryService.findSample(pageable, tableName);
         return ResponseEntity.ok(pagedList);
-    }
-
-    @GetMapping("/query/validate")
-    public ResponseEntity validate(@RequestBody QueryDto queryDto, Errors errors) {
-        queryValidator.validate(queryDto, errors);
-        if (errors.hasErrors()) {
-            return ResponseEntity.badRequest().body(ErrorsModel.modelOf(errors));
-        }
-        return ResponseEntity.ok(true);
     }
 }

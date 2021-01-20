@@ -13,7 +13,7 @@ import java.util.List;
 
 @Slf4j
 @Repository
-public class QueryRepositoryImpl implements QueryRepository {
+public class QueryRepositoryOthersImpl implements QueryRepository {
     private final JdbcTemplate jdbcTemplate;
 
     /**
@@ -21,10 +21,11 @@ public class QueryRepositoryImpl implements QueryRepository {
      * @param dataSource
      */
     @Autowired
-    public QueryRepositoryImpl(DataSource dataSource) {
+    public QueryRepositoryOthersImpl(DataSource dataSource) {
         this.jdbcTemplate = new JdbcTemplate(dataSource);
     }
 
+    //---------------------------------Non Paging-------------------------------------------
     /**
      * query를 validate한다
      * @param query
@@ -55,6 +56,31 @@ public class QueryRepositoryImpl implements QueryRepository {
     }
 
     /**
+     * 기준컬럼이 있는 테이블의 경우 기준컬럼으로 order by [기준컬럼] desc 해서 샘플을 가져온다
+     * @param tableName
+     * @return
+     */
+    @Override
+    public List findRecently(String tableName) {
+        String query = String.format("select * from %s order by %s desc limit %d",tableName, HUB_BASE_COLUMN, DEFAULT_LIMITS);
+        List list = jdbcTemplate.query(query, rowMapper());
+        return list;
+    }
+
+    /**
+     * 기준컬럼이 없는 테이블의 경우 order by 없이 random 샘플을 가져온다
+     * @param tableName
+     * @return
+     */
+    @Override
+    public List findSample(String tableName) {
+        String query = String.format("select * from %s limit %d",tableName, DEFAULT_LIMITS);
+        List list = jdbcTemplate.query(query, rowMapper());
+        return list;
+    }
+
+    //---------------------------------Paging-----------------------------------------------
+    /**
      * @param query 사용자 Query
      * @param params Query 파라미터들
      * @return 컬럼을 ArrayList로 가지는 ArrayList ResultSet를 Page객체에 담아서 리턴한다
@@ -66,33 +92,6 @@ public class QueryRepositoryImpl implements QueryRepository {
                 , query, pageable.getPageSize(), pageable.getOffset());
         List list = jdbcTemplate.query(pagingQuery, params, rowMapper());
         return new PageImpl<List>(list, pageable, count(query, params));
-    }
-
-    private RowMapper<List> rowMapper() {
-        return (rs, rowNum) -> {
-            List cols = new ArrayList();
-            for (int j=1; j<=rs.getMetaData().getColumnCount(); j++) {
-                cols.add(rs.getString(j));
-            }
-            return cols;
-        };
-    }
-
-    private int count(String query, Object[] params) {
-        String countQuery = String.format("select count(*) from (%s) as t", query);
-        return jdbcTemplate.queryForObject(countQuery, params, Integer.class);
-    }
-
-    /**
-     * 기준컬럼이 있는 테이블의 경우 기준컬럼으로 order by [기준컬럼] desc 해서 샘플을 가져온다
-     * @param tableName
-     * @return
-     */
-    @Override
-    public List findRecently(String tableName) {
-        String query = String.format("select * from %s order by %s desc limit %d",tableName, HUB_BASE_COLUMN, DEFAULT_LIMITS);
-        List list = jdbcTemplate.query(query, rowMapper());
-        return list;
     }
 
     /**
@@ -117,18 +116,6 @@ public class QueryRepositoryImpl implements QueryRepository {
      * @return
      */
     @Override
-    public List findSample(String tableName) {
-        String query = String.format("select * from %s limit %d",tableName, DEFAULT_LIMITS);
-        List list = jdbcTemplate.query(query, rowMapper());
-        return list;
-    }
-
-    /**
-     * 기준컬럼이 없는 테이블의 경우 order by 없이 random 샘플을 가져온다
-     * @param tableName
-     * @return
-     */
-    @Override
     public Page<List> findSample(Pageable pageable, String tableName) {
         String query = String.format("select * from %s limit %d offset %d"
                 , tableName, pageable.getPageSize(), pageable.getOffset());
@@ -136,6 +123,21 @@ public class QueryRepositoryImpl implements QueryRepository {
         List list = jdbcTemplate.query(query, rowMapper());
         return new PageImpl<List>(list, pageable, count(tableName));
 
+    }
+
+    private RowMapper<List> rowMapper() {
+        return (rs, rowNum) -> {
+            List cols = new ArrayList();
+            for (int j=1; j<=rs.getMetaData().getColumnCount(); j++) {
+                cols.add(rs.getString(j));
+            }
+            return cols;
+        };
+    }
+
+    private int count(String query, Object[] params) {
+        String countQuery = String.format("select count(*) from (%s) as t", query);
+        return jdbcTemplate.queryForObject(countQuery, params, Integer.class);
     }
 
     private int count(String tableName) {
