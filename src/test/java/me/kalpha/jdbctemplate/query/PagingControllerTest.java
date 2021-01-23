@@ -12,7 +12,7 @@ public class PagingControllerTest extends BaseControllerTest {
     public void findRecently() throws Exception {
         String tableName = "batch_job_instance";
         mockMvc.perform(get("/{tableName}/recently/paging", tableName)
-                .param("page","1")
+                .param("page","0")
                 .param("size", "5")
                 .param("sort", "job_instance_id,DESC"))
                 .andDo(print())

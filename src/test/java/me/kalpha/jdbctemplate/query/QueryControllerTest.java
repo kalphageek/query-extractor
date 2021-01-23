@@ -27,6 +27,21 @@ class QueryControllerTest extends BaseControllerTest {
             "\tand status in (%s)\n" +
             "order by job_execution_id desc, version desc";
 
+    @DisplayName("Query Validation 체크")
+    @Test
+    public void query_Validate() throws Exception {
+        String invalidQuery = query + "aaa";
+        //in절 -->
+        QueryDto queryDto = sampleQueryDto(invalidQuery);
+
+        mockMvc.perform(get("/query/validate")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(queryDto)))
+                .andDo(print())
+                .andExpect(status().isBadRequest())
+        ;
+    }
+
     @Test
     public void query() throws Exception {
 
@@ -41,13 +56,59 @@ class QueryControllerTest extends BaseControllerTest {
     }
 
     @Test
+    public void table_Recently() throws Exception {
+        String tableName = "batch_job_instance";
+        mockMvc.perform(get("/{tableName}/recently", tableName))
+                .andDo(print())
+                .andExpect(status().isOk())
+        ;
+    }
+
+    @Test
+    public void table_Sample() throws Exception {
+        String tableName = "batch_job_instance";
+        mockMvc.perform(get("/{tableName}/sample", tableName))
+                .andDo(print())
+                .andExpect(status().isOk())
+        ;
+    }
+
+    //-------Pageable-----------------------------------------------------------------------
+
+    @Test
+    public void table_Recently_Pageable() throws Exception {
+        String tableName = "batch_job_instance";
+        String page = "0";
+        mockMvc.perform(get("/{tableName}/recently/{page}", tableName, page))
+                .andDo(print())
+                .andExpect(status().isOk())
+        ;
+    }
+
+    @Test
+    public void table_Sample_Pageable() throws Exception {
+        String tableName = "batch_job_instance";
+        String  page = "0";
+        mockMvc.perform(get("/{tableName}/sample/{page}", tableName, page))
+                .andDo(print())
+                .andExpect(status().isOk())
+        ;
+        //@RequestParam으로 받는 경우
+//        mockMvc.perform(get("/{tableName}/sample", tableName)
+//                    .param("page", page))
+//                .andDo(print())
+//                .andExpect(status().isOk())
+//        ;
+    }
+
+    @Test
     public void query_Pageable() throws Exception {
 
         QueryDto queryDto = sampleQueryDto(query);
 
         mockMvc.perform(get("/query/1")
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .content(objectMapper.writeValueAsString(queryDto)))
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(queryDto)))
                 .andDo(print())
                 .andExpect(status().isOk())
         ;
@@ -76,62 +137,4 @@ class QueryControllerTest extends BaseControllerTest {
         return queryDto;
     }
 
-    @Test
-    public void table_Recently() throws Exception {
-        String tableName = "batch_job_instance";
-        mockMvc.perform(get("/{tableName}/recently", tableName))
-                .andDo(print())
-                .andExpect(status().isOk())
-        ;
-    }
-
-    @Test
-    public void table_Recently_Pageable() throws Exception {
-        String tableName = "batch_job_instance";
-        String page = "0";
-        mockMvc.perform(get("/{tableName}/recently/{page}", tableName, page))
-                .andDo(print())
-                .andExpect(status().isOk())
-        ;
-    }
-
-    @Test
-    public void table_Sample() throws Exception {
-        String tableName = "batch_job_instance";
-        mockMvc.perform(get("/{tableName}/sample", tableName))
-                .andDo(print())
-                .andExpect(status().isOk())
-        ;
-    }
-
-    @Test
-    public void table_Sample_Pageable() throws Exception {
-        String tableName = "batch_job_instance";
-        String  page = "0";
-        mockMvc.perform(get("/{tableName}/sample/{page}", tableName, page))
-                .andDo(print())
-                .andExpect(status().isOk())
-        ;
-        //@RequestParam으로 받는 경우
-//        mockMvc.perform(get("/{tableName}/sample", tableName)
-//                    .param("page", page))
-//                .andDo(print())
-//                .andExpect(status().isOk())
-//        ;
-    }
-
-    @DisplayName("Query Validation 체크")
-    @Test
-    public void query_Validate() throws Exception {
-        String invalidQuery = query + "aaa";
-        //in절 -->
-        QueryDto queryDto = sampleQueryDto(invalidQuery);
-
-        mockMvc.perform(get("/query/validate")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(queryDto)))
-                .andDo(print())
-                .andExpect(status().isBadRequest())
-        ;
-    }
 }
