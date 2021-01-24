@@ -47,8 +47,8 @@ public class JpqlQueryController {
      */
     @PostMapping("/{tableName}/samples")
     public ResponseEntity extractSample(@PathVariable String tableName) {
-        List list = jpqlQueryService.extractSample(tableName);
-        String returnValue = String.format("{extractCount:%d}", list.size());
+        long extractCount = jpqlQueryService.extractSample(tableName);
+        String returnValue = String.format("{extractCount:%d}", extractCount);
         //TODO
         //Extract code to Isilon
 //        return ResponseEntity.ok().body(list); //for @Test

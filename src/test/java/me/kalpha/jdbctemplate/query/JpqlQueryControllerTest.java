@@ -11,7 +11,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 public class JpqlQueryControllerTest extends BaseControllerTest {
     @Test
-    public void table_sample() throws Exception {
+    public void find_sample() throws Exception {
         String tableName = "batch_job_instance";
         mockMvc.perform(get("/jpql/{tableName}/samples/all", tableName))
                 .andDo(print())
@@ -20,7 +20,7 @@ public class JpqlQueryControllerTest extends BaseControllerTest {
     }
 
     @Test
-    public void table_extract() throws Exception {
+    public void extract_sample() throws Exception {
         String tableName = "batch_job_instance";
         mockMvc.perform(post("/jpql/{tableName}/samples", tableName))
                 .andDo(print())
@@ -30,7 +30,7 @@ public class JpqlQueryControllerTest extends BaseControllerTest {
     }
 
     @Test
-    public void table_sample_pageable() throws Exception {
+    public void find_sample_pageable() throws Exception {
         String tableName = "batch_job_instance";
         mockMvc.perform(get("/jpql/{tableName}/samples", tableName)
                     .param("page","1")

@@ -45,7 +45,7 @@ public class JpqlQueryService {
         return jpqlQueryRepository.findSample(pageable, tableName);
     }
 
-    public List extractSample(String tableName) {
+    public long extractSample(String tableName) {
         String systemId = "100";
         setDbType(systemId, tableName);
         return jpqlQueryRepository.extractSample(tableName);

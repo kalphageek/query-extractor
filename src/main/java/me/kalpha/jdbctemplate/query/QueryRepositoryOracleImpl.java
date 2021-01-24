@@ -96,12 +96,10 @@ public class QueryRepositoryOracleImpl  implements QueryRepository {
         long start = (pageable.getPageSize() - 1) * pageable.getOffset() + 1;
         long end = pageable.getPageSize() * pageable.getOffset();
         String query = String.format("SELECT *\n" +
-                        "FROM\n" +
-                        "    (\n" +
-                        "        SELECT rownum AS rnum, t.*\n" +
-                        "        FROM ? as t\n" +
-                        "    )\n" +
-                        "WHERE rnum BETWEEN ? AND ?"
+                        "  FROM (SELECT rownum AS rnum, t.*\n" +
+                        "          FROM ? as t\n" +
+                        "       )\n" +
+                        " WHERE rnum BETWEEN ? AND ?"
                 , sql, start, end);
         List list = jdbcTemplate.query(query, params, rowMapper());
         return new PageImpl<List>(list, pageable, count(query, params));
@@ -120,14 +118,11 @@ public class QueryRepositoryOracleImpl  implements QueryRepository {
         Sort.Order order = pageable.getSort().toList().get(0);
 
         String query = String.format("SELECT *\n" +
-                        "FROM\n" +
-                        "    (\n" +
-                        "        SELECT /*+ INDEX(t DESC) */\n" +
-                        "            rownum AS rnum, t.*\n" +
-                        "        FROM ? as t\n" +
+                        "  FROM (SELECT rownum AS rnum, t.*\n" +
+                        "         FROM ? as t\n" +
                         "        ORDER BY ? ?\n" +
-                        "    )\n" +
-                        "WHERE rnum BETWEEN ? AND ?"
+                        "       )\n" +
+                        " WHERE rnum BETWEEN ? AND ?"
                 , tableName, order.getProperty(), order.getDirection(), start, end);
         System.out.println(query);
         List list = jdbcTemplate.query(query, rowMapper());
@@ -144,13 +139,11 @@ public class QueryRepositoryOracleImpl  implements QueryRepository {
         long start = (pageable.getPageSize() - 1) * pageable.getOffset() + 1;
         long end = pageable.getPageSize() * pageable.getOffset();
         String query = String.format("SELECT *\n" +
-                        "FROM\n" +
-                        "    (\n" +
-                        "        SELECT /*+ INDEX(t DESC) */\n" +
+                        "  FROM (SELECT /*+ INDEX(t DESC) */\n" +
                         "            rownum AS rnum, t.*\n" +
                         "        FROM ? as t\n" +
-                        "    )\n" +
-                        "WHERE rnum BETWEEN ? AND ?"
+                        "     )\n" +
+                        " WHERE rnum BETWEEN ? AND ?"
                 , tableName, start, end);
         log.info("select query : {}", query);
         List list = jdbcTemplate.query(query, rowMapper());
