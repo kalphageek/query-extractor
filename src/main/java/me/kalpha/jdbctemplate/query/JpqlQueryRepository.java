@@ -11,6 +11,6 @@ public interface JpqlQueryRepository {
     public final String HUB_BASE_COLUMN = "job_instance_id";
 
     List findSample(String tableName);
-    long extractSample(String tableName);
+    List extractSample(String tableName);
     Page<QueryResult> findSample(Pageable pageable, String tableName);
 }

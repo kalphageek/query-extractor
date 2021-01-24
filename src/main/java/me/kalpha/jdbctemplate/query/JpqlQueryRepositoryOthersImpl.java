@@ -27,11 +27,11 @@ public class JpqlQueryRepositoryOthersImpl implements JpqlQueryRepository {
     }
 
     @Override
-    public long extractSample(String tableName) {
+    public List extractSample(String tableName) {
         String sql = String.format("select t.* from %s as t limit %d"
                 , tableName, DEFAULT_LIMITS);
         Query query = em.createNativeQuery(sql);
-        return query.getResultList().size();
+        return query.getResultList();
     }
 
     @Override

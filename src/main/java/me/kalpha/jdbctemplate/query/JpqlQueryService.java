@@ -5,6 +5,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 @Service
 public class JpqlQueryService {
@@ -48,6 +50,22 @@ public class JpqlQueryService {
     public long extractSample(String tableName) {
         String systemId = "100";
         setDbType(systemId, tableName);
-        return jpqlQueryRepository.extractSample(tableName);
+        List resultList = jpqlQueryRepository.extractSample(tableName);
+
+        //TO-DO - Code for save resultList to Isilon
+        for (int i=0; i<resultList.size(); i++) {
+            Object[] ov = (Object[]) resultList.get(i);
+            StringBuffer sb = new StringBuffer();
+            for (int j=0; j< ov.length; j++) {
+                if (j != 0) {
+                    sb.append("\t" + ov[j]);
+                }
+                sb.append(ov[j]);
+            }
+            System.out.println(sb);
+        }
+        //
+
+        return resultList.size();
     }
 }
