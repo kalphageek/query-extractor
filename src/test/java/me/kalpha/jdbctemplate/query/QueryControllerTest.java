@@ -132,7 +132,7 @@ class QueryControllerTest extends BaseControllerTest {
 
         QueryDto queryDto = new QueryDto();
         queryDto.setDbType("OTHERS");
-        queryDto.setQuery(query);
+        queryDto.setSql(query);
         queryDto.setParams(params);
         return queryDto;
     }

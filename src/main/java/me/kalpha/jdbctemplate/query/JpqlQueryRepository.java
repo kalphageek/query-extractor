@@ -10,7 +10,11 @@ public interface JpqlQueryRepository {
     public final Integer DEFAULT_LIMITS = 5;
     public final String HUB_BASE_COLUMN = "job_instance_id";
 
-    List findSample(String tableName);
-    List extractSample(String tableName);
-    Page<QueryResult> findSample(Pageable pageable, String tableName);
+    public List findSample(String tableName);
+    public List extractSample(String tableName);
+    public Page<QueryResult> findSample(Pageable pageable, String tableName);
+
+    public Boolean validateQuery(QueryDto queryDto);
+    public Page<QueryResult> findQuery(Pageable pageable, QueryDto queryDto);
+    public long extractQuery(QueryDto queryDto);
 }

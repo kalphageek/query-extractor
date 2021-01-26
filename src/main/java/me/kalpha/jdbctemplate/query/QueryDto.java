@@ -8,6 +8,6 @@ import lombok.Setter;
 @NoArgsConstructor
 public class QueryDto {
     String dbType;
-    String query;
+    String sql;
     Object[] params;
 }

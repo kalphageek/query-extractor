@@ -5,9 +5,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.sql.DataSource;
 import java.util.List;
 
 @Service
@@ -29,17 +26,17 @@ public class QueryService {
          * Strategy Pattern
          */
         setDbType(queryDto.getDbType());
-        return  queryRepository.findByParams(queryDto.getQuery(), queryDto.getParams());
+        return  queryRepository.findByParams(queryDto.getSql(), queryDto.getParams());
     }
 
     public Page<List> query(Pageable pageable, QueryDto queryDto) {
         setDbType(queryDto.getDbType());
-        return  queryRepository.findByParams(pageable, queryDto.getQuery(), queryDto.getParams());
+        return  queryRepository.findByParams(pageable, queryDto.getSql(), queryDto.getParams());
     }
 
     public Boolean validate(QueryDto queryDto) {
         setDbType(queryDto.getDbType());
-        return  queryRepository.validateQueryByParams(queryDto.getQuery(), queryDto.getParams());
+        return  queryRepository.validateQueryByParams(queryDto.getSql(), queryDto.getParams());
     }
 
     public List findSample(String tableName) {
