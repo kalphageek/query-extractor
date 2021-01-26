@@ -86,8 +86,7 @@ public class JpqlQueryRepositoryOthersImpl implements JpqlQueryRepository {
         return (Boolean) query.getSingleResult();
     }
 
-    @Override
-    public Page<QueryResult> findQuery(Pageable pageable, QueryDto queryDto) {
+    public Page<QueryResult> findByQuery(Pageable pageable, QueryDto queryDto) {
         String pagingQuery = String.format("select * from (%s) as t limit %d offset %d"
                 , queryDto.getSql(), pageable.getPageSize(), pageable.getOffset());
         Query query = em.createNativeQuery(pagingQuery);
@@ -98,7 +97,7 @@ public class JpqlQueryRepositoryOthersImpl implements JpqlQueryRepository {
     }
 
     @Override
-    public long extractQuery(QueryDto queryDto) {
+    public long extractByQuery(QueryDto queryDto) {
         Query query = em.createNativeQuery(queryDto.getSql());
         for (int i=0; i<queryDto.getParams().length; i++) {
             query.setParameter(i+1, queryDto.getParams()[i]);

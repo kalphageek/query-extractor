@@ -15,6 +15,6 @@ public interface JpqlQueryRepository {
     public Page<QueryResult> findSample(Pageable pageable, String tableName);
 
     public Boolean validateQuery(QueryDto queryDto);
-    public Page<QueryResult> findQuery(Pageable pageable, QueryDto queryDto);
-    public long extractQuery(QueryDto queryDto);
+    public Page<QueryResult> findByQuery(Pageable pageable, QueryDto queryDto);
+    public long extractByQuery(QueryDto queryDto);
 }

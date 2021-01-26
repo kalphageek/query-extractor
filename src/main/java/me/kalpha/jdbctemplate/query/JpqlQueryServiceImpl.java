@@ -90,12 +90,12 @@ public class JpqlQueryServiceImpl implements JpqlQueryService {
     @Override
     public Page<QueryResult> findByQuery(Pageable pageable, QueryDto queryDto) {
         setDbType(queryDto.getDbType());
-        return jpqlQueryRepository.findQuery(pageable, queryDto);
+        return jpqlQueryRepository.findByQuery(pageable, queryDto);
     }
 
     @Override
     public long extractByQuery(QueryDto queryDto) {
         setDbType(queryDto.getDbType());
-        return jpqlQueryRepository.extractQuery(queryDto);
+        return jpqlQueryRepository.extractByQuery(queryDto);
     }
 }

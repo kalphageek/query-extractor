@@ -1,7 +1,9 @@
 package me.kalpha.jdbctemplate.query;
 
+import me.kalpha.jdbctemplate.common.ErrorsModel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PagedResourcesAssembler;
 import org.springframework.hateoas.CollectionModel;
@@ -9,6 +11,7 @@ import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.Link;
 import org.springframework.hateoas.PagedModel;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -16,13 +19,16 @@ import java.util.List;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 
 @RestController
-@RequestMapping(value = "/jpql")
+@RequestMapping(value = "/data")
 public class JpqlQueryController {
 
     private final JpqlQueryService jpqlQueryService;
+    private final JpqQueryValidator jpqQueryValidator;
+
     @Autowired
-    public JpqlQueryController(JpqlQueryService jpqlQueryService) {
+    public JpqlQueryController(JpqlQueryService jpqlQueryService, JpqQueryValidator jpqQueryValidator) {
         this.jpqlQueryService = jpqlQueryService;
+        this.jpqQueryValidator = jpqQueryValidator;
     }
 
     /**
@@ -65,7 +71,48 @@ public class JpqlQueryController {
 
         // Hateoas (Link 및 Profile)
         PagedModel pagedModel = assembler.toModel(page, r -> EntityModel.of((QueryResult) r));
-        pagedModel.add(Link.of("/docs/index.html#resources-record-list").withRel("profile"));
+        pagedModel.add(Link.of("/docs/index.html#resources-find-samples").withRel("profile"));
         return ResponseEntity.ok().body(pagedModel);
+    }
+
+    @GetMapping("/query/validate")
+    public ResponseEntity validateQuery(@RequestBody QueryDto queryDto, Errors errors) {
+        jpqQueryValidator.validateQuery(queryDto, errors);
+        if (errors.hasErrors()) {
+            return ResponseEntity.badRequest().body(ErrorsModel.modelOf(errors));
+        }
+        return ResponseEntity.ok(true);
+    }
+
+    @GetMapping("/query")
+    public ResponseEntity findByQuery(Pageable pageable, PagedResourcesAssembler assembler, @RequestBody QueryDto queryDto, Errors errors) {
+        jpqQueryValidator.validateQuery(queryDto, errors);
+        if (errors.hasErrors()) {
+            return ResponseEntity.badRequest().body(ErrorsModel.modelOf(errors));
+        }
+        Page<QueryResult> page = jpqlQueryService.findByQuery(pageable, queryDto);
+
+        // Hateoas (Link 및 Profile)
+        PagedModel pagedModel = assembler.toModel(page, r -> PagedModel.of((QueryResult) r));
+        pagedModel.add(Link.of("/docs/index.html#resources-query").withRel("profile"));
+
+        return ResponseEntity.ok().body(pagedModel);
+    }
+
+    @PostMapping("/query")
+    public ResponseEntity extractByQuery(@RequestBody QueryDto queryDto, Errors errors) {
+        jpqQueryValidator.validateQuery(queryDto, errors);
+        if (errors.hasErrors()) {
+            return ResponseEntity.badRequest().body(ErrorsModel.modelOf(errors));
+        }
+
+        long extractCount = jpqlQueryService.extractByQuery(queryDto);
+        String returnValue = String.format("{extractCount:%d}", extractCount);
+
+//        EntityModel<String> entityModel = EntityModel.of(returnValue);
+//        entityModel.add(Link.of("/docs/index.html#resources-query").withRel("profile"));
+
+        return ResponseEntity.ok().body(returnValue);
+//        return ResponseEntity.ok().body(entityModel);
     }
 }
