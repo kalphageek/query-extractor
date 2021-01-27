@@ -9,11 +9,13 @@ import java.util.List;
 
 @Service
 public class QueryServiceImpl implements QueryService {
-    private final QueryRepositoryOthersImpl jpqlQueryRepositoryOthers;
+    private final QueryRepositoryOthersImpl queryRepositoryOthers;
+    private final QueryRepositoryOracleImpl queryRepositoryOracle;
 
     @Autowired
-    public QueryServiceImpl(QueryRepositoryOthersImpl jpqlQueryRepositoryOthers) {
-        this.jpqlQueryRepositoryOthers = jpqlQueryRepositoryOthers;
+    public QueryServiceImpl(QueryRepositoryOthersImpl queryRepositoryOthers, QueryRepositoryOracleImpl queryRepositoryOracle) {
+        this.queryRepositoryOthers = queryRepositoryOthers;
+        this.queryRepositoryOracle = queryRepositoryOracle;
     }
 
     private QueryRepository queryRepository;
@@ -27,23 +29,16 @@ public class QueryServiceImpl implements QueryService {
 
     private void setDbType(String systemId, String tableName) {
         String dbType = getDBType(systemId, tableName);
-
-        switch (dbType) {
-            case "ORACLE":
-                queryRepository = jpqlQueryRepositoryOthers;
-                break;
-            default:
-                queryRepository = jpqlQueryRepositoryOthers;
-        }
+        setDbType(dbType);
     }
 
     private void setDbType(String dbType) {
         switch (dbType) {
             case "ORACLE":
-                queryRepository = jpqlQueryRepositoryOthers;
+                queryRepository = queryRepositoryOracle;
                 break;
             default:
-                queryRepository = jpqlQueryRepositoryOthers;
+                queryRepository = queryRepositoryOthers;
         }
     }
 
@@ -62,23 +57,8 @@ public class QueryServiceImpl implements QueryService {
     public long extractSample(String tableName) {
         String systemId = "100";
         setDbType(systemId, tableName);
-        List resultList = queryRepository.extractSample(tableName);
-
-        //TO-DO - Code for save resultList to Isilon
-        for (int i=0; i<resultList.size(); i++) {
-            Object[] ov = (Object[]) resultList.get(i);
-            StringBuffer sb = new StringBuffer();
-            for (int j=0; j< ov.length; j++) {
-                if (j != 0) {
-                    sb.append("\t" + ov[j]);
-                }
-                sb.append(ov[j]);
-            }
-            System.out.println(sb);
-        }
-        //
-
-        return resultList.size();
+        String filename = null;
+        return saveResult(queryRepository.findSample(tableName), filename);
     }
 
     @Override
@@ -96,6 +76,25 @@ public class QueryServiceImpl implements QueryService {
     @Override
     public long extractByQuery(QueryDto queryDto) {
         setDbType(queryDto.getDbType());
-        return queryRepository.extractByQuery(queryDto);
+        String filename = null;
+        return saveResult(queryRepository.findByQuery(queryDto), filename);
+    }
+
+    private long saveResult(List list, String filename) {
+        for (int i=0; i<list.size(); i++) {
+            Object[] ov = (Object[]) list.get(i);
+            StringBuffer sb = new StringBuffer();
+            for (int j=0; j< ov.length; j++) {
+                if (j == 0) {
+                    sb.append(ov[j]);
+                } else {
+                    sb.append("\t"+ov[j]);
+                }
+            }
+            //TO-DO the code for writing to Isilon
+            System.out.println(sb);
+            //<--
+        }
+        return list.size();
     }
 }

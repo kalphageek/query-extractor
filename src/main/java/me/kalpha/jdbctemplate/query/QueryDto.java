@@ -10,4 +10,5 @@ public class QueryDto {
     String dbType;
     String sql;
     Object[] params;
+    String userId;
 }

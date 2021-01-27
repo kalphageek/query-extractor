@@ -29,21 +29,12 @@ public class QueryServiceTest {
             "order by job_execution_id desc, version desc";
 
     @Test
-    public void find_sample() {
-        String tableName = "batch_job_instance";
-        List list = queryService.findSample(tableName);
-        list.stream().forEach(System.out::println);
-
-        assertNotNull(list);
-    }
-
-    @Test
     public void extract_sample() {
         String tableName = "batch_job_instance";
         long extractCount = queryService.extractSample(tableName);
         System.out.println("extractCount : " + extractCount);
 
-        assertTrue(extractCount == QueryRepository.DEFAULT_LIMITS);
+        assertTrue(extractCount > 0);
     }
 
     @Test

@@ -23,14 +23,6 @@ public class QueryRepositoryOthersImpl implements QueryRepository {
         String sql = String.format("select t.* from %s as t limit %d"
                 , tableName, DEFAULT_LIMITS);
         Query query = em.createNativeQuery(sql);
-        return getRecords(query);
-    }
-
-    @Override
-    public List<Object[]> extractSample(String tableName) {
-        String sql = String.format("select t.* from %s as t limit %d"
-                , tableName, DEFAULT_LIMITS);
-        Query query = em.createNativeQuery(sql);
         return query.getResultList();
     }
 
@@ -96,26 +88,11 @@ public class QueryRepositoryOthersImpl implements QueryRepository {
     }
 
     @Override
-    public long extractByQuery(QueryDto queryDto) {
+    public List findByQuery(QueryDto queryDto) {
         Query query = em.createNativeQuery(queryDto.getSql());
-        for (int i=0; i<queryDto.getParams().length; i++) {
-            query.setParameter(i+1, queryDto.getParams()[i]);
+        for (int i = 0; i < queryDto.getParams().length; i++) {
+            query.setParameter(i + 1, queryDto.getParams()[i]);
         }
-        List list = query.getResultList();
-        for (int i=0; i<list.size(); i++) {
-            Object[] ov = (Object[]) list.get(i);
-            StringBuffer sb = new StringBuffer();
-            for (int j=0; j< ov.length; j++) {
-                if (j == 0) {
-                    sb.append(ov[j]);
-                } else {
-                    sb.append("\t"+ov[j]);
-                }
-            }
-            //TO-DO the code for writing to Isilon
-            System.out.println(sb);
-            //<--
-        }
-        return list.size();
+        return query.getResultList();
     }
 }
