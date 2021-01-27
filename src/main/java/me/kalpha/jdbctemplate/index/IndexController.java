@@ -13,7 +13,7 @@ public class IndexController {
     @GetMapping
     public RepresentationModel index() {
         RepresentationModel index = new RepresentationModel();
-        index.add(linkTo(QueryController.class).withRel("query"));
+        index.add(linkTo(QueryController.class).withRel("data"));
         return index;
     }
 }

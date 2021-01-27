@@ -8,21 +8,21 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 @Service
-public class JpqlQueryServiceImpl implements JpqlQueryService {
-    private final JpqlQueryRepositoryOthersImpl jpqlQueryRepositoryOthers;
+public class QueryServiceImpl implements QueryService {
+    private final QueryRepositoryOthersImpl jpqlQueryRepositoryOthers;
 
     @Autowired
-    public JpqlQueryServiceImpl(JpqlQueryRepositoryOthersImpl jpqlQueryRepositoryOthers) {
+    public QueryServiceImpl(QueryRepositoryOthersImpl jpqlQueryRepositoryOthers) {
         this.jpqlQueryRepositoryOthers = jpqlQueryRepositoryOthers;
     }
 
-    private JpqlQueryRepository jpqlQueryRepository;
+    private QueryRepository queryRepository;
 
     @Override
     public List findSample(String tableName) {
         String systemId = "100";
         setDbType(systemId, tableName);
-        return jpqlQueryRepository.findSample(tableName);
+        return queryRepository.findSample(tableName);
     }
 
     private void setDbType(String systemId, String tableName) {
@@ -30,20 +30,20 @@ public class JpqlQueryServiceImpl implements JpqlQueryService {
 
         switch (dbType) {
             case "ORACLE":
-                jpqlQueryRepository = jpqlQueryRepositoryOthers;
+                queryRepository = jpqlQueryRepositoryOthers;
                 break;
             default:
-                jpqlQueryRepository = jpqlQueryRepositoryOthers;
+                queryRepository = jpqlQueryRepositoryOthers;
         }
     }
 
     private void setDbType(String dbType) {
         switch (dbType) {
             case "ORACLE":
-                jpqlQueryRepository = jpqlQueryRepositoryOthers;
+                queryRepository = jpqlQueryRepositoryOthers;
                 break;
             default:
-                jpqlQueryRepository = jpqlQueryRepositoryOthers;
+                queryRepository = jpqlQueryRepositoryOthers;
         }
     }
 
@@ -55,14 +55,14 @@ public class JpqlQueryServiceImpl implements JpqlQueryService {
     public Page<QueryResult> findSample(Pageable pageable, String tableName) {
         String systemId = "100";
         setDbType(systemId, tableName);
-        return jpqlQueryRepository.findSample(pageable, tableName);
+        return queryRepository.findSample(pageable, tableName);
     }
 
     @Override
     public long extractSample(String tableName) {
         String systemId = "100";
         setDbType(systemId, tableName);
-        List resultList = jpqlQueryRepository.extractSample(tableName);
+        List resultList = queryRepository.extractSample(tableName);
 
         //TO-DO - Code for save resultList to Isilon
         for (int i=0; i<resultList.size(); i++) {
@@ -84,18 +84,18 @@ public class JpqlQueryServiceImpl implements JpqlQueryService {
     @Override
     public Boolean validateQuery(QueryDto queryDto) {
         setDbType(queryDto.getDbType());
-        return jpqlQueryRepository.validateQuery(queryDto);
+        return queryRepository.validateQuery(queryDto);
     }
 
     @Override
     public Page<QueryResult> findByQuery(Pageable pageable, QueryDto queryDto) {
         setDbType(queryDto.getDbType());
-        return jpqlQueryRepository.findByQuery(pageable, queryDto);
+        return queryRepository.findByQuery(pageable, queryDto);
     }
 
     @Override
     public long extractByQuery(QueryDto queryDto) {
         setDbType(queryDto.getDbType());
-        return jpqlQueryRepository.extractByQuery(queryDto);
+        return queryRepository.extractByQuery(queryDto);
     }
 }
