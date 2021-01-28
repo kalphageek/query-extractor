@@ -8,6 +8,9 @@ import org.springframework.http.MediaType;
 import java.util.ArrayList;
 import java.util.List;
 
+import static org.springframework.restdocs.hypermedia.HypermediaDocumentation.linkWithRel;
+import static org.springframework.restdocs.hypermedia.HypermediaDocumentation.links;
+import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -55,6 +58,15 @@ public class QueryControllerTest extends BaseControllerTest {
         mockMvc.perform(get("/data/{tableName}/samples/all", tableName))
                 .andDo(print())
                 .andExpect(status().isOk())
+                .andDo(document("table-samples-all",
+                        //links.adoc 생성
+                        links(
+                                linkWithRel("profile").description("link to profile"),
+                                linkWithRel("self").description("link to self api"),
+                                linkWithRel("table-samples-extract").description("link to table sample extract api"),
+                                linkWithRel("table-samples-paging").description("link to table samples paging api")
+                        )
+                ))
         ;
     }
 
@@ -64,7 +76,16 @@ public class QueryControllerTest extends BaseControllerTest {
         mockMvc.perform(post("/data/{tableName}/samples", tableName))
                 .andDo(print())
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("extractCount").value(QueryRepository.DEFAULT_LIMITS))
+                .andExpect(jsonPath("count").exists())
+                .andDo(document("table-samples-extract",
+                        //links.adoc 생성
+                        links(
+                                linkWithRel("profile").description("link to profile"),
+                                linkWithRel("self").description("link to self api"),
+                                linkWithRel("table-samples-paging").description("link to table samples paging api"),
+                                linkWithRel("table-samples-all").description("link to table samples all api")
+                        )
+                ))
         ;
     }
 
@@ -75,7 +96,17 @@ public class QueryControllerTest extends BaseControllerTest {
                     .param("page","1")
                     .param("size","5"))
                 .andDo(print())
-                .andExpect(status().isOk());
+                .andExpect(status().isOk())
+                .andDo(document("table-samples-paging"/*,
+                        //links.adoc 생성
+                        links(
+                                linkWithRel("profile").description("link to profile"),
+                                linkWithRel("self").description("link to self api"),
+                                linkWithRel("table-samples-extract").description("link to table samples extract api"),
+                                linkWithRel("table-samples-all").description("link to table samples all api")
+                        )*/
+                ))
+        ;
     }
 
     @DisplayName("정상 : validate Query")
@@ -120,6 +151,14 @@ public class QueryControllerTest extends BaseControllerTest {
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("_embedded.queryResults[0].record").exists())
+                .andDo(document("query-paging",
+                        //links.adoc 생성
+                        links(
+                                linkWithRel("profile").description("link to profile"),
+                                linkWithRel("self").description("link to self api"),
+                                linkWithRel("query-extract").description("link to extract query api")
+                        )
+                ))
         ;
     }
 
@@ -128,11 +167,19 @@ public class QueryControllerTest extends BaseControllerTest {
         QueryDto queryDto = sampleQueryDto(query);
 
         mockMvc.perform(post("/data/query")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(queryDto)))
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(objectMapper.writeValueAsString(queryDto)))
                 .andDo(print())
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("extractCount").exists())
+                .andExpect(jsonPath("count").exists())
+                .andDo(document("query-extract",
+                        //links.adoc 생성
+                        links(
+                                linkWithRel("profile").description("link to profile"),
+                                linkWithRel("self").description("link to self api"),
+                                linkWithRel("query-paging").description("link to paging query api")
+                        )
+                ))
         ;
     }
 }

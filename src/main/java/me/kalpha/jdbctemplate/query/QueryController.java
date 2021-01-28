@@ -41,7 +41,10 @@ public class QueryController {
 
         // Hateoas (Link 및 Profile)
         CollectionModel<List> outputModel = CollectionModel.of(list);
-        outputModel.add(linkTo(this.getClass()).slash("/" + tableName + "/samples/all").withSelfRel());
+        outputModel.add(Link.of("/docs/index.html#resources-table-samples-all").withRel("profile"))
+                .add(linkTo(this.getClass()).slash(tableName).slash("samples/all").withSelfRel())
+                .add(linkTo(this.getClass()).slash(tableName).slash("samples").withRel("table-samples-paging"))
+                .add(linkTo(this.getClass()).slash(tableName).slash("samples").withRel("table-samples-extract"));
         return ResponseEntity.ok().body(outputModel);
     }
 
@@ -53,8 +56,14 @@ public class QueryController {
     @PostMapping("/{tableName}/samples")
     public ResponseEntity extractSample(@PathVariable String tableName) {
         long extractCount = queryService.extractSample(tableName);
-        String returnValue = String.format("{extractCount:%d}", extractCount);
-        return ResponseEntity.ok(returnValue);
+        ExtractResult extractResult = new ExtractResult(extractCount);
+        EntityModel<ExtractResult> entityModel = EntityModel.of(extractResult);
+        entityModel.add(Link.of("/docs/index.html#resources-table-samples-extract").withRel("profile"))
+                .add(linkTo(this.getClass()).slash(tableName).slash("samples").withSelfRel())
+                .add(linkTo(this.getClass()).slash(tableName).slash("samples/all").withRel("table-samples-all"))
+                .add(linkTo(this.getClass()).slash(tableName).slash("samples").withRel("table-samples-paging"))
+        ;
+        return ResponseEntity.ok().body(entityModel);
     }
 
     /**
@@ -70,7 +79,9 @@ public class QueryController {
 
         // Hateoas (Link 및 Profile)
         PagedModel pagedModel = assembler.toModel(page, r -> EntityModel.of((QueryResult) r));
-        pagedModel.add(Link.of("/docs/index.html#resources-find-samples").withRel("profile"));
+        pagedModel.add(Link.of("/docs/index.html#resources-table-samples").withRel("profile"))
+                .add(linkTo(this.getClass()).slash(tableName).slash("samples/all").withRel("table-samples-all"))
+                .add(linkTo(this.getClass()).slash(tableName).slash("samples").withRel("table-samples-extract"));
         return ResponseEntity.ok().body(pagedModel);
     }
 
@@ -93,7 +104,9 @@ public class QueryController {
 
         // Hateoas (Link 및 Profile)
         PagedModel pagedModel = assembler.toModel(page, r -> PagedModel.of((QueryResult) r));
-        pagedModel.add(Link.of("/docs/index.html#resources-query").withRel("profile"));
+        pagedModel.add(Link.of("/docs/index.html#resources-query-paging").withRel("profile"))
+                .add(linkTo(this.getClass()).slash("/query").withSelfRel())
+                .add(linkTo(this.getClass()).slash("/query").withRel("query-extract"));
 
         return ResponseEntity.ok().body(pagedModel);
     }
@@ -106,12 +119,14 @@ public class QueryController {
         }
 
         long extractCount = queryService.extractByQuery(queryDto);
-        String returnValue = String.format("{extractCount:%d}", extractCount);
+        ExtractResult extractResult = new ExtractResult(extractCount);
 
-//        EntityModel<String> entityModel = EntityModel.of(returnValue);
-//        entityModel.add(Link.of("/docs/index.html#resources-query").withRel("profile"));
+        //Hateoas
+        EntityModel<ExtractResult> entityModel = EntityModel.of(extractResult);
+        entityModel.add(Link.of("/docs/index.html#resources-query-extract").withRel("profile"))
+                .add(linkTo(this.getClass()).slash("/query").withSelfRel())
+                .add(linkTo(this.getClass()).slash("/query").withRel("query-paging"));
 
-        return ResponseEntity.ok().body(returnValue);
-//        return ResponseEntity.ok().body(entityModel);
+        return ResponseEntity.ok().body(entityModel);
     }
 }

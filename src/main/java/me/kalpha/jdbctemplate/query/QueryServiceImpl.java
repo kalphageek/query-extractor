@@ -80,6 +80,12 @@ public class QueryServiceImpl implements QueryService {
         return saveResult(queryRepository.findByQuery(queryDto), filename);
     }
 
+    @Override
+    public List findByQuery(QueryDto queryDto) {
+        setDbType(queryDto.getDbType());
+        return queryRepository.findByQuery(queryDto);
+    }
+
     private long saveResult(List list, String filename) {
         for (int i=0; i<list.size(); i++) {
             Object[] ov = (Object[]) list.get(i);

@@ -11,6 +11,8 @@ public interface QueryService {
     public long extractSample(String tableName);
 
     public Boolean validateQuery(QueryDto queryDto);
+
+    public List findByQuery(QueryDto queryDto);
     public Page<QueryResult> findByQuery(Pageable pageable, QueryDto queryDto);
     public long extractByQuery(QueryDto queryDto);
 }

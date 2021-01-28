@@ -3,7 +3,6 @@ package me.kalpha.jdbctemplate.query;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
-import javax.persistence.Query;
 import java.util.List;
 
 public interface QueryRepository {

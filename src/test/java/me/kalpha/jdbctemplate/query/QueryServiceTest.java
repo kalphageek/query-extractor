@@ -7,7 +7,9 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -98,5 +100,29 @@ public class QueryServiceTest {
         long extractCount = queryService.extractByQuery(queryDto);
 
         assertTrue(extractCount > 0);
+    }
+
+    @Test
+    public void find_query() {
+        QueryDto queryDto = sampleQueryDto();
+        List list = queryService.findByQuery(queryDto);
+        printResult(list);
+
+        assertNotNull(list);
+    }
+
+    private void printResult(List list) {
+        for (int i=0; i<list.size(); i++) {
+            Object[] ov = (Object[]) list.get(i);
+            StringBuffer sb = new StringBuffer();
+            for (int j=0; j< ov.length; j++) {
+                if (j == 0) {
+                    sb.append(ov[j]);
+                } else {
+                    sb.append("\t"+ov[j]);
+                }
+            }
+            System.out.println(sb);
+        }
     }
 }
