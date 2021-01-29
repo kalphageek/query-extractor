@@ -97,14 +97,7 @@ public class QueryControllerTest extends BaseControllerTest {
                     .param("size","5"))
                 .andDo(print())
                 .andExpect(status().isOk())
-                .andDo(document("table-samples-paging"/*,
-                        //links.adoc 생성
-                        links(
-                                linkWithRel("profile").description("link to profile"),
-                                linkWithRel("self").description("link to self api"),
-                                linkWithRel("table-samples-extract").description("link to table samples extract api"),
-                                linkWithRel("table-samples-all").description("link to table samples all api")
-                        )*/
+                .andDo(document("table-samples-paging"
                 ))
         ;
     }
@@ -151,13 +144,7 @@ public class QueryControllerTest extends BaseControllerTest {
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("_embedded.queryResults[0].record").exists())
-                .andDo(document("query-paging",
-                        //links.adoc 생성
-                        links(
-                                linkWithRel("profile").description("link to profile"),
-                                linkWithRel("self").description("link to self api"),
-                                linkWithRel("query-extract").description("link to extract query api")
-                        )
+                .andDo(document("query-paging"
                 ))
         ;
     }

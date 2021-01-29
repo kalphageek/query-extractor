@@ -12,6 +12,7 @@ import javax.persistence.Query;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Repository
@@ -21,24 +22,26 @@ public class QueryRepositoryOracleImpl implements QueryRepository {
     EntityManager em;
 
     @Override
-    public List findSample(String tableName) {
-        String sql = String.format("SELECT t.* FROM %s as t WHERE rownum <= %d"
+    public List<Object[]> findSample(String tableName) {
+        String sql = String.format("select t.* from %s t where rownum <= %d"
                 , tableName, DEFAULT_LIMITS);
         Query query = em.createNativeQuery(sql);
-        return getRecords(query);
+        return query.getResultList();
     }
 
     @Override
     public Page<QueryResult> findSample(Pageable pageable, String tableName) {
-        long start = (pageable.getPageSize() - 1) * pageable.getOffset() + 1;
-        long end = pageable.getPageSize() * pageable.getOffset();
+        Integer start = (pageable.getPageNumber() - 1) * pageable.getPageSize();
+        Integer end = pageable.getPageNumber() * pageable.getPageSize();
         String pagingQuery = String.format(
-                        "SELECT t2.*\n" +
-                        "  FROM (SELECT rownum AS rnum, t.*\n" +
-                        "          FROM %s as t\n" +
-                        "       ) as t2\n" +
-                        " WHERE rnum BETWEEN %d AND %d"
-                , tableName, start, end);
+                "select *\n" +
+                "  from (select t2.*, rownum rnum\n" +
+                "          from (select t.*, count(1) over()\n" +
+                "                  from %s t\n" +
+                "               ) t2\n" +
+                "         where rownum <= %d)\n" +
+                " where rnum > %d"
+                , tableName, end, start);
         Query query = em.createNativeQuery(pagingQuery);
         return getRecords(query, pageable, count(tableName));
     }
@@ -58,13 +61,13 @@ public class QueryRepositoryOracleImpl implements QueryRepository {
     }
 
     private long count(String tableName) {
-        String countQuery = String.format("SELECT count(*) FROM %s", tableName);
+        String countQuery = String.format("select count(*) from %s", tableName);
         Query query = em.createNativeQuery(countQuery);
         return query.getFirstResult();
     }
 
     private int count(QueryDto queryDto) {
-        String countQuery = String.format("SELECT count(*) FROM (%s) as t", queryDto.getSql());
+        String countQuery = String.format("select count(*) from (%s) t", queryDto.getSql());
         Query query = em.createNativeQuery(countQuery);
         for (int i=0; i<queryDto.getParams().length; i++) {
             query.setParameter(i+1, queryDto.getParams()[i]);
@@ -81,27 +84,34 @@ public class QueryRepositoryOracleImpl implements QueryRepository {
     @Override
     public Boolean validateQuery(QueryDto queryDto) {
         String valdateQuery = String.format(
-                "SELECT ( EXISTS (SELECT 1 FROM DUAL)\n" +
-                "         OR\n" +
-                "         EXISTS (%s)\n" +
-                "       ) AS result\n" +
-                "  FROM dual", queryDto.getSql());
+                "select 1 from dual\n" +
+                " where exists (select 1 from dual)\n" +
+                "       or\n" +
+                "       exists (select * from (%s))", queryDto.getSql());
         Query query = em.createNativeQuery(valdateQuery);
         for (int i=0; i<queryDto.getParams().length; i++) {
             query.setParameter(i+1, queryDto.getParams()[i]);
         }
-        return (Boolean) query.getSingleResult();
+        Optional<Integer> valid = query.getResultList().stream().findAny();
+        return valid.isPresent();
     }
 
     public Page<QueryResult> findByQuery(Pageable pageable, QueryDto queryDto) {
-        long start = (pageable.getPageSize() - 1) * pageable.getOffset() + 1;
-        long end = pageable.getPageSize() * pageable.getOffset();
-        String pagingQuery = String.format("SELECT *\n" +
-                        "  FROM (SELECT rownum AS rnum, t.*\n" +
-                        "          FROM ? as t\n" +
-                        "       )\n" +
-                        " WHERE rnum BETWEEN ? AND ?"
-                , queryDto.getSql(), start, end);
+        Integer start = (pageable.getPageNumber() - 1) * pageable.getPageSize();
+        Integer end = pageable.getPageNumber() * pageable.getPageSize();
+        String pagingQuery = String.format(
+                "select *\n" +
+                "  from (select t3.*, rownum as rnum\n" +
+                "          from (select t2.*, count(1) over()\n" +
+                "                  from (\n" +
+                "--SQL Begin--\n" +
+                "%s\n" +
+                "--SQL End--\n" +
+                "                       ) t2\n" +
+                "                ) t3\n" +
+                "          where rownum <= %d)\n" +
+                " where rnum > %d"
+                , queryDto.getSql(), end, start);
         Query query = em.createNativeQuery(pagingQuery);
         for (int i=0; i<queryDto.getParams().length; i++) {
             query.setParameter(i+1, queryDto.getParams()[i]);
@@ -110,7 +120,7 @@ public class QueryRepositoryOracleImpl implements QueryRepository {
     }
 
     @Override
-    public List findByQuery(QueryDto queryDto) {
+    public List<Object[]> findByQuery(QueryDto queryDto) {
         Query query = em.createNativeQuery(queryDto.getSql());
         for (int i = 0; i < queryDto.getParams().length; i++) {
             query.setParameter(i + 1, queryDto.getParams()[i]);

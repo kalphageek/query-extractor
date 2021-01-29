@@ -105,7 +105,6 @@ public class QueryController {
         // Hateoas (Link 및 Profile)
         PagedModel pagedModel = assembler.toModel(page, r -> PagedModel.of((QueryResult) r));
         pagedModel.add(Link.of("/docs/index.html#resources-query-paging").withRel("profile"))
-                .add(linkTo(this.getClass()).slash("/query").withSelfRel())
                 .add(linkTo(this.getClass()).slash("/query").withRel("query-extract"));
 
         return ResponseEntity.ok().body(pagedModel);
