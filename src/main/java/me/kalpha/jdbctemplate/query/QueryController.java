@@ -92,7 +92,10 @@ public class QueryController {
     public ResponseEntity validateQuery(@RequestBody QueryDto queryDto, Errors errors) {
         queryValidator.validateQuery(queryDto, errors);
         if (errors.hasErrors()) {
-            return ResponseEntity.badRequest().body(ErrorsModel.modelOf(errors));
+            EntityModel errorsModel = ErrorsModel.modelOf(errors);
+            errorsModel.add(Link.of("/doc/index.html#overview-errors").withRel("profile"));
+
+            return ResponseEntity.badRequest().body(errorsModel);
         }
         return ResponseEntity.ok(true);
     }
