@@ -1,5 +1,6 @@
 package me.kalpha.jdbctemplate.query;
 
+import me.kalpha.jdbctemplate.domain.QueryDto;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.Errors;
 

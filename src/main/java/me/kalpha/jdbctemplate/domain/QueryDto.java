@@ -1,4 +1,4 @@
-package me.kalpha.jdbctemplate.query;
+package me.kalpha.jdbctemplate.domain;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
