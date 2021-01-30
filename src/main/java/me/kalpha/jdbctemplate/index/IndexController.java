@@ -10,10 +10,11 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 
 @RestController
 public class IndexController {
-    @GetMapping
-    public RepresentationModel index() {
+    @GetMapping("/data")
+    public RepresentationModel root() {
         RepresentationModel index = new RepresentationModel();
-        index.add(linkTo(QueryController.class).withRel("data"));
+        index.add(linkTo(QueryController.class).slash("query").withRel("query"))
+                .add(linkTo(QueryController.class).slash("samples").withRel("samples"));
         return index;
     }
 }

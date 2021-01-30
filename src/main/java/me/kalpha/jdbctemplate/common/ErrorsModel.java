@@ -10,7 +10,7 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 public class ErrorsModel extends EntityModel<Errors> {
     public static EntityModel<Errors> modelOf(Errors errors) {
         EntityModel<Errors> errorsModel = EntityModel.of(errors);
-        errorsModel.add(linkTo(methodOn(IndexController.class).index()).withRel("index"));
+        errorsModel.add(linkTo(methodOn(IndexController.class).root()).withRel("index"));
         return errorsModel;
     }
 }

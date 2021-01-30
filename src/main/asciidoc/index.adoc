@@ -1,3 +1,5 @@
+:stylesheet: adoc-colony.css
+
 = Query Extract REST API Guide
 정진덕;
 :doctype: book
@@ -89,7 +91,7 @@ include::{snippets}/errors/http-response.adoc[]
 operation::index[snippets='http-request,http-response,links']
 
 [[resources-query]]
-== Query 결과 조회
+== Query
 
 Query 결과를 조회하거나 추출할 때 사용한다.
 
@@ -107,8 +109,8 @@ operation::query-extract[snippets='curl-request,http-response,response-fields,li
 
 operation::query-paging[snippets='curl-request,http-response,response-fields,links']
 
-[[resources-table]]
-== 테이블 Sample 조회
+[[resources-samples]]
+== 테이블 샘플
 
 테이블의 샘플데이터를 보거나, 추출할 수 있다.
 
