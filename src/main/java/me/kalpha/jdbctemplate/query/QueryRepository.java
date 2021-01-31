@@ -9,14 +9,14 @@ import java.util.List;
 
 public interface QueryRepository {
 
-    public final Integer DEFAULT_LIMITS = 5;
-    public final String HUB_BASE_COLUMN = "job_instance_id";
+    public final Integer DEFAULT_LIMITS = 100;
 
-    public List findSample(String tableName);
-    public Page<QueryResult> findSample(Pageable pageable, String tableName);
+    public List<QueryResult> findSamples(QueryDto queryDto);
+    public List<Object[]> findTable(QueryDto queryDto);
+    public Page<QueryResult> findTable(Pageable pageable, QueryDto queryDto);
 
-    public Boolean validateQuery(QueryDto queryDto);
+    public Boolean validateSql(QueryDto queryDto);
 
-    public List findByQuery(QueryDto queryDto);
+    public List<Object[]> findByQuery(QueryDto queryDto);
     public Page<QueryResult> findByQuery(Pageable pageable, QueryDto queryDto);
 }

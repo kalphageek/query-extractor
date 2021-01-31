@@ -14,20 +14,62 @@ public class QueryServiceImpl implements QueryService {
     private final QueryRepositoryOthersImpl queryRepositoryOthers;
     private final QueryRepositoryOracleImpl queryRepositoryOracle;
 
+    private QueryRepository queryRepository;
+
     @Autowired
     public QueryServiceImpl(QueryRepositoryOthersImpl queryRepositoryOthers, QueryRepositoryOracleImpl queryRepositoryOracle) {
         this.queryRepositoryOthers = queryRepositoryOthers;
         this.queryRepositoryOracle = queryRepositoryOracle;
     }
 
-    private QueryRepository queryRepository;
+    @Override
+    public List<QueryResult> findSamples(QueryDto queryDto) {
+        setDbType(queryDto.getDbType());
+        return queryRepository.findSamples(queryDto);
+    }
 
     @Override
-    public List findSample(String tableName) {
-        String systemId = "100";
-        setDbType(systemId, tableName);
-        return queryRepository.findSample(tableName);
+    public long extractTable(QueryDto queryDto) {
+        List list = findTable(queryDto);
+        return saveResult(list, queryDto.getFileName());
     }
+
+    @Override
+    public List<Object[]> findTable(QueryDto queryDto) {
+        setDbType(queryDto.getDbType(), queryDto.getTable().getFrom());
+        return queryRepository.findTable(queryDto);
+    }
+
+    @Override
+    public Page<QueryResult> findTable(Pageable pageable, QueryDto queryDto) {
+        setDbType(queryDto.getDbType(), queryDto.getTable().getFrom());
+        return queryRepository.findTable(pageable, queryDto);
+    }
+
+    @Override
+    public Boolean validateSql(QueryDto queryDto) {
+        setDbType(queryDto.getDbType());
+        return queryRepository.validateSql(queryDto);
+    }
+
+    @Override
+    public Page<QueryResult> findByQuery(Pageable pageable, QueryDto queryDto) {
+        setDbType(queryDto.getDbType());
+        return queryRepository.findByQuery(pageable, queryDto);
+    }
+
+    @Override
+    public long extractByQuery(QueryDto queryDto) {
+        return saveResult(queryRepository.findByQuery(queryDto), queryDto.getFileName());
+    }
+
+    @Override
+    public List<Object[]> findByQuery(QueryDto queryDto) {
+        setDbType(queryDto.getDbType());
+        return queryRepository.findByQuery(queryDto);
+    }
+
+    //-------------------------------------------------
 
     private void setDbType(String systemId, String tableName) {
         String dbType = getDBType(systemId, tableName);
@@ -48,46 +90,6 @@ public class QueryServiceImpl implements QueryService {
         return "OTHERS";
     }
 
-    @Override
-    public Page<QueryResult> findSample(Pageable pageable, String tableName) {
-        String systemId = "100";
-        setDbType(systemId, tableName);
-        return queryRepository.findSample(pageable, tableName);
-    }
-
-    @Override
-    public long extractSample(String tableName) {
-        String systemId = "100";
-        setDbType(systemId, tableName);
-        String filename = null;
-        return saveResult(queryRepository.findSample(tableName), filename);
-    }
-
-    @Override
-    public Boolean validateQuery(QueryDto queryDto) {
-        setDbType(queryDto.getDbType());
-        return queryRepository.validateQuery(queryDto);
-    }
-
-    @Override
-    public Page<QueryResult> findByQuery(Pageable pageable, QueryDto queryDto) {
-        setDbType(queryDto.getDbType());
-        return queryRepository.findByQuery(pageable, queryDto);
-    }
-
-    @Override
-    public long extractByQuery(QueryDto queryDto) {
-        setDbType(queryDto.getDbType());
-        String filename = null;
-        return saveResult(queryRepository.findByQuery(queryDto), filename);
-    }
-
-    @Override
-    public List findByQuery(QueryDto queryDto) {
-        setDbType(queryDto.getDbType());
-        return queryRepository.findByQuery(queryDto);
-    }
-
     private long saveResult(List list, String filename) {
         for (int i=0; i<list.size(); i++) {
             Object[] ov = (Object[]) list.get(i);
@@ -105,4 +107,5 @@ public class QueryServiceImpl implements QueryService {
         }
         return list.size();
     }
+
 }

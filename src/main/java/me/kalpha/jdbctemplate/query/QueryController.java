@@ -35,36 +35,36 @@ public class QueryController {
 
     /**
      * 샘플데이터를 가장 빠른 속도록 조회한다. 조건과 순서를 지정할 수 없다
-     * @param tableName Query할 테이블명
-     * @return limits한도의 전체 records
+     * @param queryDto Query할 테이블명, DBType (ORACLE / OTHERS)
+     * @return 샘플데이터
      */
-    @GetMapping("/{tableName}/samples/all")
-    public ResponseEntity findSample(@PathVariable String tableName) {
-        List list =  queryService.findSample(tableName);
+    @GetMapping("/table/samples")
+    public ResponseEntity findSamples(@RequestBody QueryDto queryDto) {
+        List<QueryResult> list =  queryService.findSamples(queryDto);
 
         // Hateoas (Link 및 Profile)
-        CollectionModel<List> outputModel = CollectionModel.of(list);
-        outputModel.add(Link.of("/docs/index.html#resources-table-samples-all").withRel("profile"))
-                .add(linkTo(this.getClass()).slash(tableName).slash("samples/all").withSelfRel())
-                .add(linkTo(this.getClass()).slash(tableName).slash("samples").withRel("table-samples-paging"))
-                .add(linkTo(this.getClass()).slash(tableName).slash("samples").withRel("table-samples-extract"));
+        CollectionModel<QueryResult> outputModel = CollectionModel.of(list);
+        outputModel.add(Link.of("/docs/index.html#resources-table-samples").withRel("profile"))
+                .add(linkTo(this.getClass()).slash("table/samples").withSelfRel())
+                .add(linkTo(this.getClass()).slash("table").withRel("table-paging"))
+                .add(linkTo(this.getClass()).slash("table").withRel("table-extract"));
         return ResponseEntity.ok().body(outputModel);
     }
 
     /**
      * 샘플데이터를 가장 빠른 속도록 조회한다. 조건과 순서를 지정할 수 없다
-     * @param tableName Query할 테이블명
+     * @param queryDto Query할 테이블명, DBType (ORACLE / OTHERS)
      * @return 추출 레코드 수
      */
-    @PostMapping("/{tableName}/samples")
-    public ResponseEntity extractSample(@PathVariable String tableName) {
-        long extractCount = queryService.extractSample(tableName);
+    @PostMapping("/table")
+    public ResponseEntity extractTable(@RequestBody QueryDto queryDto) {
+        long extractCount = queryService.extractTable(queryDto);
         ExtractResult extractResult = new ExtractResult(extractCount);
         EntityModel<ExtractResult> entityModel = EntityModel.of(extractResult);
-        entityModel.add(Link.of("/docs/index.html#resources-table-samples-extract").withRel("profile"))
-                .add(linkTo(this.getClass()).slash(tableName).slash("samples").withSelfRel())
-                .add(linkTo(this.getClass()).slash(tableName).slash("samples/all").withRel("table-samples-all"))
-                .add(linkTo(this.getClass()).slash(tableName).slash("samples").withRel("table-samples-paging"))
+        entityModel.add(Link.of("/docs/index.html#resources-table-extract").withRel("profile"))
+                .add(linkTo(this.getClass()).slash("table").withSelfRel())
+                .add(linkTo(this.getClass()).slash("table").withRel("table-paging"))
+                .add(linkTo(this.getClass()).slash("table/samples").withRel("table-samples"))
         ;
         return ResponseEntity.ok().body(entityModel);
     }
@@ -73,24 +73,26 @@ public class QueryController {
      * 샘플데이터를 가장 빠른 속도록 조회한다. 조건과 순서를 지정할 수 없다
      * @param pageable 페이지 정보 - size, offset 등
      * @param assembler 페이지 navigation 정보 - fist, prev, page, next, last
-     * @param tableName Query할 테이블명
-     * @return limits한도의 전체 records
+     * @param queryDto  Query할 테이블명, DBType (ORACLE / OTHERS)
+     * @return 샘플데이터
      */
-    @GetMapping("/{tableName}/samples")
-    public ResponseEntity findSample(Pageable pageable, PagedResourcesAssembler assembler, @PathVariable String tableName) {
-        Page<QueryResult> page =  queryService.findSample(pageable, tableName);
+    @GetMapping("/table")
+    public ResponseEntity findTable(Pageable pageable, PagedResourcesAssembler assembler, @RequestBody QueryDto queryDto) {
+        Page<QueryResult> page =  queryService.findTable(pageable, queryDto);
 
         // Hateoas (Link 및 Profile)
         PagedModel pagedModel = assembler.toModel(page, r -> EntityModel.of((QueryResult) r));
-        pagedModel.add(Link.of("/docs/index.html#resources-table-samples").withRel("profile"))
-                .add(linkTo(this.getClass()).slash(tableName).slash("samples/all").withRel("table-samples-all"))
-                .add(linkTo(this.getClass()).slash(tableName).slash("samples").withRel("table-samples-extract"));
+        pagedModel.add(Link.of("/docs/index.html#resources-table-paging").withRel("profile"))
+                .add(linkTo(this.getClass()).slash("table").withSelfRel())
+                .add(linkTo(this.getClass()).slash("table").withRel("table-extract"))
+                .add(linkTo(this.getClass()).slash("table/samples").withRel("table-samples"))
+        ;
         return ResponseEntity.ok().body(pagedModel);
     }
 
     @GetMapping("/query/validate")
     public ResponseEntity validateQuery(@RequestBody QueryDto queryDto, Errors errors) {
-        queryValidator.validateQuery(queryDto, errors);
+        queryValidator.validateSql(queryDto, errors);
         if (errors.hasErrors()) {
             EntityModel errorsModel = ErrorsModel.modelOf(errors);
             errorsModel.add(Link.of("/doc/index.html#overview-errors").withRel("profile"));
@@ -102,7 +104,7 @@ public class QueryController {
 
     @GetMapping("/query")
     public ResponseEntity findByQuery(Pageable pageable, PagedResourcesAssembler assembler, @RequestBody QueryDto queryDto, Errors errors) {
-        queryValidator.validateQuery(queryDto, errors);
+        queryValidator.validateSql(queryDto, errors);
         if (errors.hasErrors()) {
             return ResponseEntity.badRequest().body(ErrorsModel.modelOf(errors));
         }
@@ -111,6 +113,7 @@ public class QueryController {
         // Hateoas (Link 및 Profile)
         PagedModel pagedModel = assembler.toModel(page, r -> PagedModel.of((QueryResult) r));
         pagedModel.add(Link.of("/docs/index.html#resources-query-paging").withRel("profile"))
+                .add(linkTo(this.getClass()).slash("/query").withSelfRel())
                 .add(linkTo(this.getClass()).slash("/query").withRel("query-extract"));
 
         return ResponseEntity.ok().body(pagedModel);
@@ -118,7 +121,7 @@ public class QueryController {
 
     @PostMapping("/query")
     public ResponseEntity extractByQuery(@RequestBody QueryDto queryDto, Errors errors) {
-        queryValidator.validateQuery(queryDto, errors);
+        queryValidator.validateSql(queryDto, errors);
         if (errors.hasErrors()) {
             return ResponseEntity.badRequest().body(ErrorsModel.modelOf(errors));
         }

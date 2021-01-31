@@ -10,9 +10,9 @@ public class QueryValidator {
     public QueryValidator(QueryService queryService) {
         this.queryService = queryService;
     }
-    public void validateQuery(QueryDto queryDto, Errors errors) {
+    public void validateSql(QueryDto queryDto, Errors errors) {
         try {
-            queryService.validateQuery(queryDto);
+            queryService.validateSql(queryDto);
         } catch (Exception e) {
             errors.rejectValue("sql", "Wrong SQL", e.getMessage());
         }

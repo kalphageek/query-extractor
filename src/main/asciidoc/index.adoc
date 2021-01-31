@@ -111,27 +111,27 @@ operation::query-extract[snippets='curl-request,request-fields,http-response,res
 operation::query-paging[snippets='curl-request,request-fields,request-parameters,http-response,links']
 
 [[resources-samples]]
-== 테이블 샘플
+== 테이블
 
-테이블의 샘플데이터를 보거나, 추출할 수 있다.
+테이블의 데이터를 보거나, 추출할 수 있다.
 
-[[resources-table-samples-paging]]
-=== 테이블 샘플 Paging 조회
+[[resources-table-samples]]
+=== 테이블 Paging 조회
 
-`Get` 요청을 사용해서 테이블 Sample을 Page별로 Http Response로 조회할 수 있다.
+`Get` 요청을 사용해서 테이블을 Page별로 Http Response로 조회할 수 있다.
 
-operation::table-samples-paging[snippets='curl-request,path-parameters,request-parameters,http-response,links']
+operation::table-samples[snippets='curl-request,path-parameters,request-parameters,http-response,links']
 
-[[resources-table-samples-all]]
-=== 테이블 샘플 전체 조회
+[[resources-table-paging]]
+=== 테이블 샘플 조회
 
-`Get` 요청을 사용해서 테이블 Sample 전체를 Http Response로 조회할 수 있다.
+`Get` 요청을 사용해서 테이블 Sample Http Response로 조회할 수 있다.
 
-operation::table-samples-all[snippets='curl-request,path-parameters,http-response,links']
+operation::table-paging[snippets='curl-request,path-parameters,http-response,links']
 
-[[resources-table-samples-extract]]
-=== 테이블 샘플 전체 추출
+[[resources-table-extract]]
+=== 테이블 샘플 추출
 
-`Post` 요청을 사용해서 테이블 Sample 전체를 추출할 수 있다.
+`Post` 요청을 사용해서 테이블을 추출할 수 있다.
 
-operation::table-samples-extract[snippets='curl-request,path-parameters,http-response,links']
+operation::table-extract[snippets='curl-request,path-parameters,http-response,links']

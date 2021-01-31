@@ -8,13 +8,17 @@ import org.springframework.data.domain.Pageable;
 import java.util.List;
 
 public interface QueryService {
-    public List findSample(String tableName);
-    public Page<QueryResult> findSample(Pageable pageable, String tableName);
-    public long extractSample(String tableName);
+    public static final int SAMPLES_COUNT = 100;
 
-    public Boolean validateQuery(QueryDto queryDto);
+    public List<QueryResult> findSamples(QueryDto queryDto);
 
-    public List findByQuery(QueryDto queryDto);
+    public List<Object[]> findTable(QueryDto queryDto);
+    public Page<QueryResult> findTable(Pageable pageable, QueryDto queryDto);
+    public long extractTable(QueryDto queryDto);
+
+    public Boolean validateSql(QueryDto queryDto);
+
+    public List<Object[]> findByQuery(QueryDto queryDto);
     public Page<QueryResult> findByQuery(Pageable pageable, QueryDto queryDto);
     public long extractByQuery(QueryDto queryDto);
 }

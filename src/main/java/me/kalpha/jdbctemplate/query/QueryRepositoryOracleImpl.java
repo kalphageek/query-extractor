@@ -23,60 +23,6 @@ public class QueryRepositoryOracleImpl implements QueryRepository {
     @Autowired
     EntityManager em;
 
-    @Override
-    public List<Object[]> findSample(String tableName) {
-        String sql = String.format("select t.* from %s t where rownum <= %d"
-                , tableName, DEFAULT_LIMITS);
-        Query query = em.createNativeQuery(sql);
-        return query.getResultList();
-    }
-
-    @Override
-    public Page<QueryResult> findSample(Pageable pageable, String tableName) {
-        Integer start = (pageable.getPageNumber() - 1) * pageable.getPageSize();
-        Integer end = pageable.getPageNumber() * pageable.getPageSize();
-        String pagingQuery = String.format(
-                "select *\n" +
-                "  from (select t2.*, rownum rnum\n" +
-                "          from (select t.*, count(1) over()\n" +
-                "                  from %s t\n" +
-                "               ) t2\n" +
-                "         where rownum <= %d)\n" +
-                " where rnum > %d"
-                , tableName, end, start);
-        Query query = em.createNativeQuery(pagingQuery);
-        return getRecords(query, pageable, count(tableName));
-    }
-
-    private List getRecords(Query query) {
-        List<Object[]> queryResults = query.getResultList();
-
-        List records = new ArrayList();
-        for (Object[] o : queryResults) {
-            records.add(new QueryResult(Arrays.stream(o).collect(Collectors.toList())));
-        }
-        return records;
-    }
-
-    private Page<QueryResult> getRecords(Query query, Pageable pageable, long count) {
-        return new PageImpl<QueryResult>(getRecords(query), pageable, count);
-    }
-
-    private long count(String tableName) {
-        String countQuery = String.format("select count(*) from %s", tableName);
-        Query query = em.createNativeQuery(countQuery);
-        return query.getFirstResult();
-    }
-
-    private int count(QueryDto queryDto) {
-        String countQuery = String.format("select count(*) from (%s) t", queryDto.getSql());
-        Query query = em.createNativeQuery(countQuery);
-        for (int i=0; i<queryDto.getParams().length; i++) {
-            query.setParameter(i+1, queryDto.getParams()[i]);
-        }
-        return query.getFirstResult();
-    }
-
     /**
      * 1개 Row만 Return 받을때는 rowList.stream().findFirst()또는 findAny() 사용.
      * 두 메소드는 해당 스트림에서 첫 번째 요소를 참조하는 Optional 객체를 반환
@@ -84,13 +30,14 @@ public class QueryRepositoryOracleImpl implements QueryRepository {
      * @return
      */
     @Override
-    public Boolean validateQuery(QueryDto queryDto) {
-        String valdateQuery = String.format(
+    public Boolean validateSql(QueryDto queryDto) {
+        String valdateSql =
                 "select 1 from dual\n" +
-                " where exists (select 1 from dual)\n" +
-                "       or\n" +
-                "       exists (select * from (%s))", queryDto.getSql());
-        Query query = em.createNativeQuery(valdateQuery);
+                        " where exists (select 1 from dual)\n" +
+                        "       or\n" +
+                        "       exists (select * from (%s))";
+        valdateSql = String.format(valdateSql, queryDto.getSql());
+        Query query = em.createNativeQuery(valdateSql);
         for (int i=0; i<queryDto.getParams().length; i++) {
             query.setParameter(i+1, queryDto.getParams()[i]);
         }
@@ -98,21 +45,53 @@ public class QueryRepositoryOracleImpl implements QueryRepository {
         return valid.isPresent();
     }
 
-    public Page<QueryResult> findByQuery(Pageable pageable, QueryDto queryDto) {
-        Integer start = (pageable.getPageNumber() - 1) * pageable.getPageSize();
-        Integer end = pageable.getPageNumber() * pageable.getPageSize();
+    @Override
+    public List<QueryResult> findSamples(QueryDto queryDto) {
+        String samplesSql = String.format("select * from %s where rownum <= %d", queryDto.getTable().getFrom(), QueryService.SAMPLES_COUNT);
+        Query query = em.createNativeQuery(samplesSql);
+        return getRecords(query);
+    }
+
+
+    @Override
+    public List<Object[]> findTable(QueryDto queryDto) {
+        Query query = em.createNativeQuery(queryDto.getSql());
+        return query.getResultList();
+    }
+
+    @Override
+    public Page<QueryResult> findTable(Pageable pageable, QueryDto queryDto) {
+        Integer start = pageable.getPageNumber() * pageable.getPageSize();
+        Integer end = (pageable.getPageNumber() + 1) * pageable.getPageSize();
         String pagingQuery = String.format(
                 "select *\n" +
-                "  from (select t3.*, rownum as rnum\n" +
-                "          from (select t2.*, count(1) over()\n" +
-                "                  from (\n" +
-                "--SQL Begin--\n" +
-                "%s\n" +
-                "--SQL End--\n" +
-                "                       ) t2\n" +
-                "                ) t3\n" +
-                "          where rownum <= %d)\n" +
-                " where rnum > %d"
+                        "  from (select t2.*, rownum rnum\n" +
+                        "          from (select t.*, count(1) over()\n" +
+                        "                  from %s t\n" +
+                        "               ) t2\n" +
+                        "         where rownum <= %d)\n" +
+                        " where rnum > %d"
+                , queryDto.getTable().getFrom(), end, start);
+        Query query = em.createNativeQuery(pagingQuery);
+        return getRecords(query, pageable, count(queryDto));
+    }
+
+    @Override
+    public Page<QueryResult> findByQuery(Pageable pageable, QueryDto queryDto) {
+        Integer start = pageable.getPageNumber() * pageable.getPageSize();
+        Integer end = (pageable.getPageNumber() + 1) * pageable.getPageSize();
+        String pagingQuery = String.format(
+                "select *\n" +
+                        "  from (select t3.*, rownum as rnum\n" +
+                        "          from (select t2.*, count(1) over()\n" +
+                        "                  from (\n" +
+                        "--SQL Begin--\n" +
+                        "%s\n" +
+                        "--SQL End--\n" +
+                        "                       ) t2\n" +
+                        "                ) t3\n" +
+                        "          where rownum <= %d)\n" +
+                        " where rnum > %d"
                 , queryDto.getSql(), end, start);
         Query query = em.createNativeQuery(pagingQuery);
         for (int i=0; i<queryDto.getParams().length; i++) {
@@ -128,5 +107,36 @@ public class QueryRepositoryOracleImpl implements QueryRepository {
             query.setParameter(i + 1, queryDto.getParams()[i]);
         }
         return query.getResultList();
+    }
+
+    //---------------------------------------------------------------------
+    private List getRecords(Query query) {
+        List<Object[]> queryResults = query.getResultList();
+
+        List records = new ArrayList();
+        for (Object[] o : queryResults) {
+            records.add(new QueryResult(Arrays.stream(o).collect(Collectors.toList())));
+        }
+        return records;
+    }
+
+    private Page<QueryResult> getRecords(Query query, Pageable pageable, long count) {
+        return new PageImpl<QueryResult>(getRecords(query), pageable, count);
+    }
+
+    private int count(QueryDto queryDto) {
+        StringBuffer sb = new StringBuffer();
+        if (queryDto.getTable() == null) {
+            sb.append("select count(*) from " + queryDto.getTable().getFrom())
+                    .append(" where " + queryDto.getTable().getWhere());
+        } else {
+            sb.append(String.format("select count(*) from %s", queryDto.getSql()));
+        }
+
+        Query query = em.createNativeQuery(sb.toString());
+        for (int i=0; i<queryDto.getParams().length; i++) {
+            query.setParameter(i+1, queryDto.getParams()[i]);
+        }
+        return query.getFirstResult();
     }
 }
