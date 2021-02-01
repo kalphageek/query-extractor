@@ -86,6 +86,9 @@ public class QueryControllerTest extends BaseControllerTest {
                                 linkWithRel("table-paging").description("link to table paging api"),
                                 linkWithRel("table-extract").description("link to table extract api")
                         ),
+                        relaxedResponseFields(
+                                fieldWithPath("_embedded.queryResults[0].record").description("Query 결과 (select)")
+                        ),
                         getQueryDtoFieldsSnippet()
                 ))
         ;
@@ -130,6 +133,9 @@ public class QueryControllerTest extends BaseControllerTest {
                                 linkWithRel("self").description("link to self api"),
                                 linkWithRel("table-paging").description("link to table paging api"),
                                 linkWithRel("table-samples").description("link to table samples api")
+                        ),
+                        relaxedResponseFields(
+                                fieldWithPath("count").description("Extract count")
                         ),
                         getQueryDtoFieldsSnippet()
                 ))
@@ -189,6 +195,10 @@ public class QueryControllerTest extends BaseControllerTest {
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("errors").exists())
                 .andDo(document("overview-errors",
+                        links(halLinks(),
+                                linkWithRel("profile").description("link to profile"),
+                                linkWithRel("index").description("link to query api")
+                        ),
                         relaxedResponseFields(
                                 fieldWithPath("errors[0].objectName").type("QueryDto").description("A global description of the cause of the error"),
                                 fieldWithPath("errors[0].field").type("String").description("Object field name"),

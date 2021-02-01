@@ -56,6 +56,9 @@ public class QueryRepositoryOracleImpl implements QueryRepository {
     @Override
     public List<Object[]> findTable(QueryDto queryDto) {
         Query query = em.createNativeQuery(queryDto.getSql());
+        for (int i=0; i<queryDto.getParams().length; i++) {
+            query.setParameter(i+1, queryDto.getParams()[i]);
+        }
         return query.getResultList();
     }
 
@@ -73,6 +76,9 @@ public class QueryRepositoryOracleImpl implements QueryRepository {
                         " where rnum > %d"
                 , queryDto.getTable().getFrom(), end, start);
         Query query = em.createNativeQuery(pagingQuery);
+        for (int i=0; i<queryDto.getParams().length; i++) {
+            query.setParameter(i+1, queryDto.getParams()[i]);
+        }
         return getRecords(query, pageable, count(queryDto));
     }
 

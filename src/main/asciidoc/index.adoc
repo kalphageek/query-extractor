@@ -66,7 +66,7 @@ operation::overview-errors[snippets='response-fields,links']
 
 예를 들어, 잘못된 요청으로 이벤트를 만들려고 했을 때 다음과 같은 `400 Bad Request` 응답을 받는다.
 
-include::{snippets}/errors/http-response.adoc[]
+operation::overview-errors[snippets='http-response']
 
 [[overview-hypermedia]]
 == 하이퍼미디어
@@ -108,30 +108,30 @@ operation::query-extract[snippets='curl-request,request-fields,http-response,res
 
 `GET` 요청을 사용하여 Query 결과를 Page별로 Http Response로 조회할 수 있다.
 
-operation::query-paging[snippets='curl-request,request-fields,request-parameters,http-response,links']
+operation::query-paging[snippets='curl-request,request-parameters,request-fields,http-response,response-fields,links']
 
-[[resources-samples]]
+[[resources-table]]
 == 테이블
 
 테이블의 데이터를 보거나, 추출할 수 있다.
 
 [[resources-table-samples]]
-=== 테이블 Paging 조회
+=== 테이블 샘플 조회
 
 `Get` 요청을 사용해서 테이블을 Page별로 Http Response로 조회할 수 있다.
 
-operation::table-samples[snippets='curl-request,path-parameters,request-parameters,http-response,links']
+operation::table-samples[snippets='curl-request,request-fields,http-response,response-fields,links']
 
 [[resources-table-paging]]
-=== 테이블 샘플 조회
+=== 테이블 Paging 조회
 
 `Get` 요청을 사용해서 테이블 Sample Http Response로 조회할 수 있다.
 
-operation::table-paging[snippets='curl-request,path-parameters,http-response,links']
+operation::table-paging[snippets='curl-request,request-parameters,request-fields,http-response,response-fields,links']
 
 [[resources-table-extract]]
-=== 테이블 샘플 추출
+=== 테이블 추출
 
 `Post` 요청을 사용해서 테이블을 추출할 수 있다.
 
-operation::table-extract[snippets='curl-request,path-parameters,http-response,links']
+operation::table-extract[snippets='curl-request,request-fields,http-response,response-fields,links']

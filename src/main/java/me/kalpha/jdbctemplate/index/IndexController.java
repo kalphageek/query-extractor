@@ -14,7 +14,7 @@ public class IndexController {
     public RepresentationModel root() {
         RepresentationModel index = new RepresentationModel();
         index.add(linkTo(QueryController.class).slash("query").withRel("query"))
-                .add(linkTo(QueryController.class).slash("samples").withRel("samples"));
+             .add(linkTo(QueryController.class).slash("table").withRel("table"));
         return index;
     }
 }

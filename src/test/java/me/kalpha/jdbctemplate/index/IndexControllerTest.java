@@ -21,7 +21,7 @@ public class IndexControllerTest extends BaseControllerTest {
                 .andDo(document("index",
                         links(
                                 linkWithRel("query").description("The <<resources-query, Query resource>>"),
-                                linkWithRel("samples").description("The <<resources-samples,Table sample data resource>>")
+                                linkWithRel("table").description("The <<resources-table, Table data resource>>")
                         ))
                 );
     }
