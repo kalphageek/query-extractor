@@ -273,10 +273,10 @@ public class QueryControllerTest extends BaseControllerTest {
                 fieldWithPath("userId").description("사용자 사번"),
                 fieldWithPath("systemId").description("데이터를 조회하는 시스템ID"),
                 fieldWithPath("fileName").description("추출 파일명"),
-                fieldWithPath("table.select").description("select []"),
-                fieldWithPath("table.from").description("from []"),
-                fieldWithPath("table.where").description("where []"),
-                fieldWithPath("table.orderBy").description("order by []")
+                fieldWithPath("table.select").description("[select]제외한 select절"),
+                fieldWithPath("table.from").description("[from]제외한 from절"),
+                fieldWithPath("table.where").description("[where]제외한 where절"),
+                fieldWithPath("table.orderBy").description("[order by]제외한 order by절")
         );
     }
 }

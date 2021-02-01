@@ -97,7 +97,8 @@ public class QueryController {
         if (errors.hasErrors()) {
             EntityModel errorsModel = ErrorsModel.modelOf(errors);
             errorsModel.add(Link.of("/doc/index.html#overview-errors").withRel("profile"))
-                    .add(linkTo(IndexController.class).slash("/data").withRel("index"));
+                    .add(linkTo(IndexController.class).slash("/data/query").withRel("index"))
+                    .add(linkTo(IndexController.class).slash("/data/table").withRel("index"));
 
             return ResponseEntity.badRequest().body(errorsModel);
         }
