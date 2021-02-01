@@ -41,6 +41,7 @@ public class QueryController {
      */
     @GetMapping("/table/samples")
     public ResponseEntity findSamples(@RequestBody QueryDto queryDto) {
+
         List<QueryResult> list =  queryService.findSamples(queryDto);
 
         // Hateoas (Link 및 Profile)

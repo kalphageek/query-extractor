@@ -34,8 +34,7 @@ public class QueryServiceImpl implements QueryService {
         return saveResult(list, queryDto.getFileName());
     }
 
-    @Override
-    public List<Object[]> findTable(QueryDto queryDto) {
+    private List<Object[]> findTable(QueryDto queryDto) {
         setDbType(queryDto.getDbType(), queryDto.getTable().getFrom());
         return queryRepository.findTable(queryDto);
     }
@@ -63,8 +62,7 @@ public class QueryServiceImpl implements QueryService {
         return saveResult(queryRepository.findByQuery(queryDto), queryDto.getFileName());
     }
 
-    @Override
-    public List<Object[]> findByQuery(QueryDto queryDto) {
+    private List<Object[]> findByQuery(QueryDto queryDto) {
         setDbType(queryDto.getDbType());
         return queryRepository.findByQuery(queryDto);
     }

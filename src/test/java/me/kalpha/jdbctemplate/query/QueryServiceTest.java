@@ -21,7 +21,13 @@ public class QueryServiceTest {
 
     @Test
     public void find_samples() {
-        QueryDto queryDto = sampleQueryDto();
+        QueryDto.Table table = QueryDto.Table.builder()
+                .from("batch_job_execution")
+                .build();
+        QueryDto queryDto = QueryDto.builder()
+                .dbType("POSTGRES")
+                .table(table)
+                .build();
 
         List<QueryResult> list = queryService.findSamples(queryDto);
         list.stream().forEach(System.out::println);
@@ -75,15 +81,6 @@ public class QueryServiceTest {
         long extractCount = queryService.extractByQuery(queryDto);
 
         assertTrue(extractCount > 0);
-    }
-
-    @Test
-    public void find_query() {
-        QueryDto queryDto = sampleQueryDto();
-        List list = queryService.findByQuery(queryDto);
-        printResult(list);
-
-        assertNotNull(list);
     }
 
     //------------------------------------------------------------------------------------------------

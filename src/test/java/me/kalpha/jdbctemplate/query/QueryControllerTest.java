@@ -69,13 +69,20 @@ public class QueryControllerTest extends BaseControllerTest {
         return queryDto;
     }
 
-    @DisplayName("정상 : Table samples 조회")
+    @DisplayName("정상 : Table samples 조회. dbType과 from만 설정")
     @Test
     public void find_samples() throws Exception {
-        QueryDto queryDto = sampleQueryDto();
+        QueryDto.Table table = QueryDto.Table.builder()
+                .from("batch_job_instance")
+                .build();
+        QueryDto queryDto = QueryDto.builder()
+                .dbType("POSTGRES")
+                .table(table)
+                .build();
+
         mockMvc.perform(get("/data/table/samples")
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .content(objectMapper.writeValueAsString(queryDto)))
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(queryDto)))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andDo(document("table-samples",
@@ -89,34 +96,24 @@ public class QueryControllerTest extends BaseControllerTest {
                         relaxedResponseFields(
                                 fieldWithPath("_embedded.queryResults[0].record").description("Query 결과 (select)")
                         ),
-                        getQueryDtoFieldsSnippet()
+                        getSamplesFieldsSnippet()
                 ))
         ;
     }
 
-    @DisplayName("정상 : Table 조회")
+    @DisplayName("정상 : Table unpaged")
     @Test
     public void find_table() throws Exception {
         QueryDto queryDto = sampleQueryDto();
         mockMvc.perform(get("/data/table")
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .content(objectMapper.writeValueAsString(queryDto)))
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(queryDto)))
                 .andDo(print())
                 .andExpect(status().isOk())
-                .andDo(document("table-paging",
-                        //links.adoc 생성
-                        links(halLinks(),
-                                linkWithRel("profile").description("link to profile"),
-                                linkWithRel("self").description("link to self api"),
-                                linkWithRel("table-samples").description("link to table samples api"),
-                                linkWithRel("table-extract").description("link to table extract api")
-                        ),
-                        getQueryDtoFieldsSnippet()
-                ))
         ;
     }
 
-    @DisplayName("정상 : 테이블 추출")
+    @DisplayName("정상 : Table 추출")
     @Test
     public void extract_table() throws Exception {
         QueryDto queryDto = sampleQueryDto();
@@ -137,12 +134,12 @@ public class QueryControllerTest extends BaseControllerTest {
                         relaxedResponseFields(
                                 fieldWithPath("count").description("Extract count")
                         ),
-                        getQueryDtoFieldsSnippet()
+                        getTableFieldsSnippet()
                 ))
         ;
     }
 
-    @DisplayName("정상 : Table samples paging")
+    @DisplayName("정상 : Table paging")
     @Test
     public void find_table_pageable() throws Exception {
         QueryDto queryDto = sampleQueryDto();
@@ -164,7 +161,7 @@ public class QueryControllerTest extends BaseControllerTest {
                                 fieldWithPath("page.totalPages").type(JsonFieldType.NUMBER).description("The total number of pages."),
                                 fieldWithPath("page.totalElements").type(JsonFieldType.NUMBER).description("The total number of results.")
                         ),
-                        getQueryDtoFieldsSnippet()
+                        getTableFieldsSnippet()
                 ))
         ;
     }
@@ -227,7 +224,7 @@ public class QueryControllerTest extends BaseControllerTest {
                                 parameterWithName("page").description("page to retrieve, begin with and default is 1"),
                                 parameterWithName("size").description("Size of the page to retrieve, default 10")
                         ),
-                        getQueryDtoFieldsSnippet(),
+                        getQueryFieldsSnippet(),
                         relaxedResponseFields(
                                 fieldWithPath("page.number").type(JsonFieldType.NUMBER).description("The number of this page."),
                                 fieldWithPath("page.size").type(JsonFieldType.NUMBER).description("The size of this page."),
@@ -256,7 +253,7 @@ public class QueryControllerTest extends BaseControllerTest {
                                 linkWithRel("self").description("link to self api"),
                                 linkWithRel("query-paging").description("link to paging query api")
                         ),
-                        getQueryDtoFieldsSnippet(),
+                        getQueryFieldsSnippet(),
                         relaxedResponseFields(
                                 fieldWithPath("count").description("Extract count")
                         )
@@ -264,11 +261,17 @@ public class QueryControllerTest extends BaseControllerTest {
         ;
     }
 
-
-    private RequestFieldsSnippet getQueryDtoFieldsSnippet() {
-        return requestFields(
+    private RequestFieldsSnippet getSamplesFieldsSnippet() {
+        return relaxedRequestFields(
                 fieldWithPath("dbType").description("조회하려는 DB 타입. ex) ORACLE, GPDB, DB2, HIVE, IMPALA"),
-                fieldWithPath("sql").description("Bind Variable을 갖는 SQL"),
+                fieldWithPath("systemId").description("데이터를 조회하는 시스템ID"),
+                fieldWithPath("table.from").description("[from]제외한 from절")
+        );
+    }
+
+    private RequestFieldsSnippet getTableFieldsSnippet() {
+        return relaxedRequestFields(
+                fieldWithPath("dbType").description("조회하려는 DB 타입. ex) ORACLE, GPDB, DB2, HIVE, IMPALA"),
                 fieldWithPath("params").description("Bind Variable을 위한 파라미터 배열"),
                 fieldWithPath("userId").description("사용자 사번"),
                 fieldWithPath("systemId").description("데이터를 조회하는 시스템ID"),
@@ -277,6 +280,17 @@ public class QueryControllerTest extends BaseControllerTest {
                 fieldWithPath("table.from").description("[from]제외한 from절"),
                 fieldWithPath("table.where").description("[where]제외한 where절"),
                 fieldWithPath("table.orderBy").description("[order by]제외한 order by절")
+        );
+    }
+
+    private RequestFieldsSnippet getQueryFieldsSnippet() {
+        return relaxedRequestFields(
+                fieldWithPath("dbType").description("조회하려는 DB 타입. ex) ORACLE, GPDB, DB2, HIVE, IMPALA"),
+                fieldWithPath("sql").description("Bind Variable을 갖는 SQL"),
+                fieldWithPath("params").description("Bind Variable을 위한 파라미터 배열"),
+                fieldWithPath("userId").description("사용자 사번"),
+                fieldWithPath("systemId").description("데이터를 조회하는 시스템ID"),
+                fieldWithPath("fileName").description("추출 파일명")
         );
     }
 }

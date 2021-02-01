@@ -12,13 +12,11 @@ public interface QueryService {
 
     public List<QueryResult> findSamples(QueryDto queryDto);
 
-    public List<Object[]> findTable(QueryDto queryDto);
     public Page<QueryResult> findTable(Pageable pageable, QueryDto queryDto);
     public long extractTable(QueryDto queryDto);
 
     public Boolean validateSql(QueryDto queryDto);
 
-    public List<Object[]> findByQuery(QueryDto queryDto);
     public Page<QueryResult> findByQuery(Pageable pageable, QueryDto queryDto);
     public long extractByQuery(QueryDto queryDto);
 }
