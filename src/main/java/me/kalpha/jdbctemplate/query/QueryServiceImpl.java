@@ -87,7 +87,7 @@ public class QueryServiceImpl implements QueryService {
     }
 
     private String getDBType(String systemId, String tableName) {
-        return "OTHERS";
+        return "POSTGRES";
     }
 
     private long saveResult(List list, String filename) {

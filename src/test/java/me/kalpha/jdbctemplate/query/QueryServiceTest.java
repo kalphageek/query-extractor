@@ -119,7 +119,7 @@ public class QueryServiceTest {
                 .build();
         QueryDto queryDto = QueryDto.builder()
                 .fileName("file_name")
-                .dbType("OTHERS")
+                .dbType("POSTGRES")
                 .systemId("100")
                 .userId("2043738")
                 .params(params)
