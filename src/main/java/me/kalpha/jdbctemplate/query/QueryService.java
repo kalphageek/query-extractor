@@ -2,18 +2,20 @@ package me.kalpha.jdbctemplate.query;
 
 import me.kalpha.jdbctemplate.domain.QueryDto;
 import me.kalpha.jdbctemplate.domain.QueryResult;
+import me.kalpha.jdbctemplate.domain.SamplesDto;
+import me.kalpha.jdbctemplate.domain.TableDto;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 
 public interface QueryService {
-    public static final int SAMPLES_COUNT = 100;
+    public static final int SAMPLES_COUNT = 20;
 
-    public List<QueryResult> findSamples(QueryDto queryDto);
+    public List<QueryResult> findSamples(SamplesDto samplesDto);
 
-    public Page<QueryResult> findTable(Pageable pageable, QueryDto queryDto);
-    public long extractTable(QueryDto queryDto);
+    public Page<QueryResult> findTable(Pageable pageable, TableDto tableDto);
+    public long extractTable(TableDto tableDto);
 
     public Boolean validateSql(QueryDto queryDto);
 

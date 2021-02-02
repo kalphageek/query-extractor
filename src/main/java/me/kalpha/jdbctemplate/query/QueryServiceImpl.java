@@ -2,6 +2,8 @@ package me.kalpha.jdbctemplate.query;
 
 import me.kalpha.jdbctemplate.domain.QueryDto;
 import me.kalpha.jdbctemplate.domain.QueryResult;
+import me.kalpha.jdbctemplate.domain.SamplesDto;
+import me.kalpha.jdbctemplate.domain.TableDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -23,26 +25,27 @@ public class QueryServiceImpl implements QueryService {
     }
 
     @Override
-    public List<QueryResult> findSamples(QueryDto queryDto) {
-        setDbType(queryDto.getDbType());
-        return queryRepository.findSamples(queryDto);
+    public List<QueryResult> findSamples(SamplesDto samplesDto) {
+        setDbType(samplesDto.getDbType());
+        return queryRepository.findSamples(samplesDto);
     }
 
     @Override
-    public long extractTable(QueryDto queryDto) {
-        List list = findTable(queryDto);
-        return saveResult(list, queryDto.getFileName());
+    public long extractTable(TableDto tableDto) {
+        List list = findTable(tableDto);
+        String fileName= null;
+        return saveResult(list, fileName);
     }
 
-    private List<Object[]> findTable(QueryDto queryDto) {
-        setDbType(queryDto.getDbType(), queryDto.getTable().getFrom());
-        return queryRepository.findTable(queryDto);
+    private List<Object[]> findTable(TableDto tableDto) {
+        setDbType(tableDto.getDbType(), tableDto.getTable().getFrom());
+        return queryRepository.findTable(tableDto);
     }
 
     @Override
-    public Page<QueryResult> findTable(Pageable pageable, QueryDto queryDto) {
-        setDbType(queryDto.getDbType(), queryDto.getTable().getFrom());
-        return queryRepository.findTable(pageable, queryDto);
+    public Page<QueryResult> findTable(Pageable pageable, TableDto tableDto) {
+        setDbType(tableDto.getDbType(), tableDto.getTable().getFrom());
+        return queryRepository.findTable(pageable, tableDto);
     }
 
     @Override
@@ -59,7 +62,8 @@ public class QueryServiceImpl implements QueryService {
 
     @Override
     public long extractByQuery(QueryDto queryDto) {
-        return saveResult(queryRepository.findByQuery(queryDto), queryDto.getFileName());
+        String fileName= null;
+        return saveResult(queryRepository.findByQuery(queryDto), fileName);
     }
 
     private List<Object[]> findByQuery(QueryDto queryDto) {

@@ -2,6 +2,8 @@ package me.kalpha.jdbctemplate.query;
 
 import me.kalpha.jdbctemplate.domain.QueryDto;
 import me.kalpha.jdbctemplate.domain.QueryResult;
+import me.kalpha.jdbctemplate.domain.SamplesDto;
+import me.kalpha.jdbctemplate.domain.TableDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -36,30 +38,30 @@ public class QueryRepositoryOthersImpl implements QueryRepository {
     }
 
     @Override
-    public List<QueryResult> findSamples(QueryDto queryDto) {
-        String samplesSql = String.format("select * from %s limit %d", queryDto.getTable().getFrom(), QueryService.SAMPLES_COUNT);
+    public List<QueryResult> findSamples(SamplesDto samplesDto) {
+        String samplesSql = String.format("select * from %s limit %d", samplesDto.getTable(), QueryService.SAMPLES_COUNT);
         Query query = em.createNativeQuery(samplesSql);
         return getRecords(query);
     }
 
     @Override
-    public List<Object[]> findTable(QueryDto queryDto) {
-        Query query = em.createNativeQuery(queryDto.getSql());
-        for (int i = 0; i < queryDto.getParams().length; i++) {
-            query.setParameter(i + 1, queryDto.getParams()[i]);
+    public List<Object[]> findTable(TableDto tableDto) {
+        Query query = em.createNativeQuery(tableDto.getSql());
+        for (int i = 0; i < tableDto.getParams().length; i++) {
+            query.setParameter(i + 1, tableDto.getParams()[i]);
         }
         return query.getResultList();
     }
 
     @Override
-    public Page<QueryResult> findTable(Pageable pageable, QueryDto queryDto) {
+    public Page<QueryResult> findTable(Pageable pageable, TableDto tableDto) {
         String sql = String.format("%s limit %d offset %d"
-                , queryDto.getSql(), pageable.getPageSize(), pageable.getOffset());
+                , tableDto.getSql(), pageable.getPageSize(), pageable.getOffset());
         Query query = em.createNativeQuery(sql);
-        for (int i = 0; i < queryDto.getParams().length; i++) {
-            query.setParameter(i + 1, queryDto.getParams()[i]);
+        for (int i = 0; i < tableDto.getParams().length; i++) {
+            query.setParameter(i + 1, tableDto.getParams()[i]);
         }
-        return getRecords(query, pageable, count(queryDto));
+        return getRecords(query, pageable, count(tableDto));
     }
 
     @Override
@@ -96,16 +98,21 @@ public class QueryRepositoryOthersImpl implements QueryRepository {
         return new PageImpl<QueryResult>(getRecords(query), pageable, count);
     }
 
-    private long count(QueryDto queryDto) {
-        StringBuffer sb = new StringBuffer();
-        if (queryDto.getTable() == null) {
-            sb.append(String.format("select count(*) from (%s) t", queryDto.getSql()));
-        } else {
-            sb.append("select count(*) from " + queryDto.getTable().getFrom())
-                    .append(" where " + queryDto.getTable().getWhere());
-        }
+    private long count(TableDto tableDto) {
+        String sql = String.format("select count(*) from %s where %s"
+                ,tableDto.getTable().getFrom() ,tableDto.getTable().getWhere());
 
-        Query query = em.createNativeQuery(sb.toString());
+        Query query = em.createNativeQuery(sql);
+        for (int i=0; i<tableDto.getParams().length; i++) {
+            query.setParameter(i+1, tableDto.getParams()[i]);
+        }
+        return query.getFirstResult();
+    }
+
+    private long count(QueryDto queryDto) {
+        String sql = String.format("select count(*) from (%s) t", queryDto.getSql());
+
+        Query query = em.createNativeQuery(sql);
         for (int i=0; i<queryDto.getParams().length; i++) {
             query.setParameter(i+1, queryDto.getParams()[i]);
         }
