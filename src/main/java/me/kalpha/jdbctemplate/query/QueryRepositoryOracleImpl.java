@@ -1,6 +1,7 @@
 package me.kalpha.jdbctemplate.query;
 
 import lombok.extern.slf4j.Slf4j;
+import me.kalpha.jdbctemplate.common.QueryProperties;
 import me.kalpha.jdbctemplate.domain.QueryDto;
 import me.kalpha.jdbctemplate.domain.QueryResult;
 import me.kalpha.jdbctemplate.domain.SamplesDto;
@@ -24,6 +25,8 @@ import java.util.stream.Collectors;
 public class QueryRepositoryOracleImpl implements QueryRepository {
     @Autowired
     EntityManager em;
+    @Autowired
+    QueryProperties queryProperties;
 
     /**
      * 1개 Row만 Return 받을때는 rowList.stream().findFirst()또는 findAny() 사용.
@@ -49,7 +52,7 @@ public class QueryRepositoryOracleImpl implements QueryRepository {
 
     @Override
     public List<QueryResult> findSamples(SamplesDto samplesDto) {
-        String samplesSql = String.format("select * from %s where rownum <= %d", samplesDto.getTable(), QueryService.SAMPLES_COUNT);
+        String samplesSql = String.format("select * from %s where rownum <= %d", samplesDto.getTable(), queryProperties.getSamplesCount());
         Query query = em.createNativeQuery(samplesSql);
         return getRecords(query);
     }

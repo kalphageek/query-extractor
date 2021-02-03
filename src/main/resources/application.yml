@@ -18,3 +18,5 @@ logging:
       hibernate:
         SQL: DEBUG
         type.descriptor.sql.BasicBinder: TRACE
+query:
+  samples-count: 20

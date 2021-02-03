@@ -1,9 +1,6 @@
 package me.kalpha.jdbctemplate.domain;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 @Getter @Setter
 @AllArgsConstructor
@@ -32,7 +29,9 @@ public class TableDto {
     @Builder
     public static class Table {
         private String tableId;
+        @NonNull
         private String select;
+        @NonNull
         private String from;
         private String where;
         private String orderBy;

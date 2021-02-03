@@ -1,5 +1,6 @@
 package me.kalpha.jdbctemplate.query;
 
+import me.kalpha.jdbctemplate.common.QueryProperties;
 import me.kalpha.jdbctemplate.domain.QueryDto;
 import me.kalpha.jdbctemplate.domain.QueryResult;
 import me.kalpha.jdbctemplate.domain.SamplesDto;
@@ -21,6 +22,8 @@ import java.util.stream.Collectors;
 public class QueryRepositoryOthersImpl implements QueryRepository {
     @Autowired
     EntityManager em;
+    @Autowired
+    QueryProperties queryProperties;
 
     @Override
     public Boolean validateSql(QueryDto queryDto) {
@@ -39,7 +42,7 @@ public class QueryRepositoryOthersImpl implements QueryRepository {
 
     @Override
     public List<QueryResult> findSamples(SamplesDto samplesDto) {
-        String samplesSql = String.format("select * from %s limit %d", samplesDto.getTable(), QueryService.SAMPLES_COUNT);
+        String samplesSql = String.format("select * from %s limit %d", samplesDto.getTable(), queryProperties.getSamplesCount());
         Query query = em.createNativeQuery(samplesSql);
         return getRecords(query);
     }

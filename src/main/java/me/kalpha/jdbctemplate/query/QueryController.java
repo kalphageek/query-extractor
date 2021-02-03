@@ -36,7 +36,7 @@ public class QueryController {
 
     @GetMapping("/validate")
     public ResponseEntity validateQuery(@RequestBody QueryDto queryDto, Errors errors) {
-        queryValidator.validateSql(queryDto, errors);
+        queryValidator.validate(queryDto, errors);
         if (errors.hasErrors()) {
             EntityModel errorsModel = ErrorsModel.modelOf(errors);
             errorsModel.add(Link.of("/doc/index.html#overview-errors").withRel("profile"))
@@ -50,7 +50,7 @@ public class QueryController {
 
     @GetMapping
     public ResponseEntity findByQuery(Pageable pageable, PagedResourcesAssembler assembler, @RequestBody QueryDto queryDto, Errors errors) {
-        queryValidator.validateSql(queryDto, errors);
+        queryValidator.validate(queryDto, errors);
         if (errors.hasErrors()) {
             return ResponseEntity.badRequest().body(ErrorsModel.modelOf(errors));
         }
@@ -67,7 +67,7 @@ public class QueryController {
 
     @PostMapping
     public ResponseEntity extractByQuery(@RequestBody QueryDto queryDto, Errors errors) {
-        queryValidator.validateSql(queryDto, errors);
+        queryValidator.validate(queryDto, errors);
         if (errors.hasErrors()) {
             return ResponseEntity.badRequest().body(ErrorsModel.modelOf(errors));
         }
