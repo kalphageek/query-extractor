@@ -1,4 +1,4 @@
-package me.kalpha.jdbctemplate.domain;
+package me.kalpha.jdbctemplate.dto;
 
 import lombok.*;
 

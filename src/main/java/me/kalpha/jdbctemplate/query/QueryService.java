@@ -1,9 +1,9 @@
 package me.kalpha.jdbctemplate.query;
 
-import me.kalpha.jdbctemplate.domain.QueryDto;
-import me.kalpha.jdbctemplate.domain.QueryResult;
-import me.kalpha.jdbctemplate.domain.SamplesDto;
-import me.kalpha.jdbctemplate.domain.TableDto;
+import me.kalpha.jdbctemplate.dto.QueryDto;
+import me.kalpha.jdbctemplate.dto.QueryResult;
+import me.kalpha.jdbctemplate.dto.SamplesDto;
+import me.kalpha.jdbctemplate.dto.TableDto;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 

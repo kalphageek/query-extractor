@@ -1,23 +1,20 @@
 package me.kalpha.jdbctemplate.query;
 
 import me.kalpha.jdbctemplate.common.ErrorsModel;
-import me.kalpha.jdbctemplate.domain.ExtractResult;
-import me.kalpha.jdbctemplate.domain.QueryDto;
-import me.kalpha.jdbctemplate.domain.QueryResult;
+import me.kalpha.jdbctemplate.dto.ExtractResult;
+import me.kalpha.jdbctemplate.dto.QueryDto;
+import me.kalpha.jdbctemplate.dto.QueryResult;
 import me.kalpha.jdbctemplate.index.IndexController;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PagedResourcesAssembler;
-import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.Link;
 import org.springframework.hateoas.PagedModel;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 

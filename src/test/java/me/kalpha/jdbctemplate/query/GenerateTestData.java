@@ -1,8 +1,8 @@
 package me.kalpha.jdbctemplate.query;
 
-import me.kalpha.jdbctemplate.domain.QueryDto;
-import me.kalpha.jdbctemplate.domain.SamplesDto;
-import me.kalpha.jdbctemplate.domain.TableDto;
+import me.kalpha.jdbctemplate.dto.QueryDto;
+import me.kalpha.jdbctemplate.dto.SamplesDto;
+import me.kalpha.jdbctemplate.dto.TableDto;
 
 import java.util.ArrayList;
 import java.util.List;

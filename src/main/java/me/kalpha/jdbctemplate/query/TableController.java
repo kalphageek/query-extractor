@@ -1,6 +1,6 @@
 package me.kalpha.jdbctemplate.query;
 
-import me.kalpha.jdbctemplate.domain.*;
+import me.kalpha.jdbctemplate.dto.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

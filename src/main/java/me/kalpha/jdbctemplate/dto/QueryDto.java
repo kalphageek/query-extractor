@@ -1,8 +1,5 @@
-package me.kalpha.jdbctemplate.domain;
+package me.kalpha.jdbctemplate.dto;
 
-import com.fasterxml.jackson.annotation.JsonAutoDetect;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.*;
 
 @Getter @Setter

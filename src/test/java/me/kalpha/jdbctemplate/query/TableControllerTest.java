@@ -1,18 +1,14 @@
 package me.kalpha.jdbctemplate.query;
 
 import me.kalpha.jdbctemplate.common.BaseControllerTest;
-import me.kalpha.jdbctemplate.domain.QueryDto;
-import me.kalpha.jdbctemplate.domain.SamplesDto;
-import me.kalpha.jdbctemplate.domain.TableDto;
+import me.kalpha.jdbctemplate.dto.SamplesDto;
+import me.kalpha.jdbctemplate.dto.TableDto;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;
 import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders;
 import org.springframework.restdocs.payload.JsonFieldType;
 import org.springframework.restdocs.payload.RequestFieldsSnippet;
-
-import java.util.ArrayList;
-import java.util.List;
 
 import static org.springframework.restdocs.hypermedia.HypermediaDocumentation.*;
 import static org.springframework.restdocs.hypermedia.HypermediaDocumentation.linkWithRel;

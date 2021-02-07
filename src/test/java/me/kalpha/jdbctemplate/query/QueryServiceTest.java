@@ -1,16 +1,15 @@
 package me.kalpha.jdbctemplate.query;
 
-import me.kalpha.jdbctemplate.domain.QueryDto;
-import me.kalpha.jdbctemplate.domain.QueryResult;
-import me.kalpha.jdbctemplate.domain.SamplesDto;
-import me.kalpha.jdbctemplate.domain.TableDto;
+import me.kalpha.jdbctemplate.dto.QueryDto;
+import me.kalpha.jdbctemplate.dto.QueryResult;
+import me.kalpha.jdbctemplate.dto.SamplesDto;
+import me.kalpha.jdbctemplate.dto.TableDto;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
