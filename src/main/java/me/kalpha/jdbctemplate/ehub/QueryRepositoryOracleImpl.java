@@ -1,6 +1,7 @@
 package me.kalpha.jdbctemplate.ehub;
 
 import lombok.extern.slf4j.Slf4j;
+import me.kalpha.jdbctemplate.common.Constants;
 import me.kalpha.jdbctemplate.common.QueryProperties;
 import me.kalpha.jdbctemplate.dto.QueryDto;
 import me.kalpha.jdbctemplate.dto.QueryResult;
@@ -14,6 +15,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -24,7 +26,12 @@ import java.util.stream.Collectors;
 @Repository
 @Slf4j
 public class QueryRepositoryOracleImpl implements QueryRepository {
+
+    /**
+     * CATALOG DB 접속
+     */
     @Autowired
+    @PersistenceContext(unitName = Constants.CATALOG_UNIT_NAME)
     EntityManager em;
     @Autowired
     QueryProperties queryProperties;

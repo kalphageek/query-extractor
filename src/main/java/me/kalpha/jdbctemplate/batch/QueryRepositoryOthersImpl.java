@@ -1,5 +1,6 @@
 package me.kalpha.jdbctemplate.batch;
 
+import me.kalpha.jdbctemplate.common.Constants;
 import me.kalpha.jdbctemplate.common.QueryProperties;
 import me.kalpha.jdbctemplate.dto.QueryDto;
 import me.kalpha.jdbctemplate.dto.QueryResult;
@@ -7,13 +8,15 @@ import me.kalpha.jdbctemplate.dto.SamplesDto;
 import me.kalpha.jdbctemplate.dto.TableDto;
 import me.kalpha.jdbctemplate.query.QueryRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.boot.orm.jpa.EntityManagerFactoryBuilder;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
-import javax.persistence.EntityManager;
-import javax.persistence.Query;
+import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -21,10 +24,16 @@ import java.util.stream.Collectors;
 
 @Repository
 public class QueryRepositoryOthersImpl implements QueryRepository {
+
     @Autowired
-    EntityManager em;
+    private QueryProperties queryProperties;
+
+    /**
+     * BATCH DB 접속
+     */
     @Autowired
-    QueryProperties queryProperties;
+    @PersistenceContext(unitName = Constants.BATCH_UNIT_NAME)
+    private EntityManager em;
 
     @Override
     public Boolean validateSql(QueryDto queryDto) {
