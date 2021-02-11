@@ -26,12 +26,6 @@ import java.util.stream.Collectors;
 public class QueryRepositoryOthersImpl implements QueryRepository {
 
     @Autowired
-    private QueryProperties queryProperties;
-
-    /**
-     * BATCH DB 접속
-     */
-    @Autowired
     @PersistenceContext(unitName = Constants.BATCH_UNIT_NAME)
     private EntityManager em;
 
@@ -52,7 +46,7 @@ public class QueryRepositoryOthersImpl implements QueryRepository {
 
     @Override
     public List<QueryResult> findSamples(SamplesDto samplesDto) {
-        String samplesSql = String.format("select * from %s limit %d", samplesDto.getTable(), queryProperties.getSamplesCount());
+        String samplesSql = String.format("select * from %s limit %d", samplesDto.getTable(), Constants.SAMPLES_COUNT);
         Query query = em.createNativeQuery(samplesSql);
         return getRecords(query);
     }

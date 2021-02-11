@@ -27,14 +27,9 @@ import java.util.stream.Collectors;
 @Slf4j
 public class QueryRepositoryOracleImpl implements QueryRepository {
 
-    /**
-     * CATALOG DB 접속
-     */
     @Autowired
     @PersistenceContext(unitName = Constants.CATALOG_UNIT_NAME)
     EntityManager em;
-    @Autowired
-    QueryProperties queryProperties;
 
     /**
      * 1개 Row만 Return 받을때는 rowList.stream().findFirst()또는 findAny() 사용.
@@ -60,7 +55,7 @@ public class QueryRepositoryOracleImpl implements QueryRepository {
 
     @Override
     public List<QueryResult> findSamples(SamplesDto samplesDto) {
-        String samplesSql = String.format("select * from %s where rownum <= %d", samplesDto.getTable(), queryProperties.getSamplesCount());
+        String samplesSql = String.format("select * from %s where rownum <= %d", samplesDto.getTable(), Constants.SAMPLES_COUNT);
         Query query = em.createNativeQuery(samplesSql);
         return getRecords(query);
     }

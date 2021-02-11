@@ -26,10 +26,14 @@ asciidoctor index.adoc
 mvn package
 ```
 
-## JPA Multi DataSource, em.createNativeQuery
-1. CrudRepository/JpaRepository Interface를 사용하는 경우
+## Multi DataSource 설정 : Jpa Interface를 사용하는 경우
+1. CrudRepository/JpaRepository Interface 위치를 등록한다.
    - basePackages 를 통해 Repository 위치지정
    - builder.packages("me.kalpha.jdbctemplate.batch")를 통해 Entity 위치지정
-2. EntityManager를 직접 사용하는 경우
+## Multi DataSource 설정 : createNativeQuery를 사용하는 경우
+1. EntityManager에 이름을 등록후 직접 호출한다
    - DataSourceConfig에서 EntityManager Bean 등록시 builder.persistenceUnit(Constants.BATCH_UNIT_NAME)를 통해 Bean 이름 등록
    - Repository에서 EntityManager Injection 시에 @PersistenceContext(unitName = Constants.BATCH_UNIT_NAME)을 통해 해당 Bean 호출
+   - basePackages는 무시 됨.
+2. @PersistenceContext를 이용해서 주입받은 EntityManager는 JEE가 관리하는 트랜잭션에 참여한다.
+   - 애플리케이션 코드에서 트랜잭션을 직접 관리하지 않는다.   
