@@ -1,10 +1,10 @@
 package me.kalpha.jdbctemplate.query;
 
 import me.kalpha.jdbctemplate.common.ErrorsModel;
-import me.kalpha.jdbctemplate.dto.ExtractResult;
-import me.kalpha.jdbctemplate.dto.QueryDto;
-import me.kalpha.jdbctemplate.dto.QueryResult;
 import me.kalpha.jdbctemplate.index.IndexController;
+import me.kalpha.jdbctemplate.query.dto.ExtractResult;
+import me.kalpha.jdbctemplate.query.dto.QueryDto;
+import me.kalpha.jdbctemplate.query.dto.QueryResult;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

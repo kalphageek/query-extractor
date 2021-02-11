@@ -1,4 +1,4 @@
-package me.kalpha.jdbctemplate.dto;
+package me.kalpha.jdbctemplate.query.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

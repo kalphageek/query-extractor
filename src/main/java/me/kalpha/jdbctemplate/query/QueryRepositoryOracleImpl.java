@@ -1,12 +1,11 @@
-package me.kalpha.jdbctemplate.ehub;
+package me.kalpha.jdbctemplate.query;
 
 import lombok.extern.slf4j.Slf4j;
 import me.kalpha.jdbctemplate.common.Constants;
-import me.kalpha.jdbctemplate.common.QueryProperties;
-import me.kalpha.jdbctemplate.dto.QueryDto;
-import me.kalpha.jdbctemplate.dto.QueryResult;
-import me.kalpha.jdbctemplate.dto.SamplesDto;
-import me.kalpha.jdbctemplate.dto.TableDto;
+import me.kalpha.jdbctemplate.query.dto.QueryDto;
+import me.kalpha.jdbctemplate.query.dto.QueryResult;
+import me.kalpha.jdbctemplate.query.dto.SamplesDto;
+import me.kalpha.jdbctemplate.query.dto.TableDto;
 import me.kalpha.jdbctemplate.query.QueryRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;

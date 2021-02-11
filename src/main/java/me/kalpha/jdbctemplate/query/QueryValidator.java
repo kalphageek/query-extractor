@@ -1,6 +1,6 @@
 package me.kalpha.jdbctemplate.query;
 
-import me.kalpha.jdbctemplate.dto.QueryDto;
+import me.kalpha.jdbctemplate.query.dto.QueryDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.Errors;

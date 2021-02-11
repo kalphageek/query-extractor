@@ -1,16 +1,13 @@
 package me.kalpha.jdbctemplate.query;
 
-import me.kalpha.jdbctemplate.batch.QueryRepositoryOthersImpl;
-import me.kalpha.jdbctemplate.dto.QueryDto;
-import me.kalpha.jdbctemplate.dto.QueryResult;
-import me.kalpha.jdbctemplate.dto.SamplesDto;
-import me.kalpha.jdbctemplate.dto.TableDto;
-import me.kalpha.jdbctemplate.ehub.QueryRepositoryOracleImpl;
+import me.kalpha.jdbctemplate.query.dto.QueryDto;
+import me.kalpha.jdbctemplate.query.dto.QueryResult;
+import me.kalpha.jdbctemplate.query.dto.SamplesDto;
+import me.kalpha.jdbctemplate.query.dto.TableDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 

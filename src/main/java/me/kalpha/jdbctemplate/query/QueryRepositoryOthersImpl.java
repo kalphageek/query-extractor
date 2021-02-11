@@ -1,20 +1,16 @@
-package me.kalpha.jdbctemplate.batch;
+package me.kalpha.jdbctemplate.query;
 
 import me.kalpha.jdbctemplate.common.Constants;
-import me.kalpha.jdbctemplate.common.QueryProperties;
-import me.kalpha.jdbctemplate.dto.QueryDto;
-import me.kalpha.jdbctemplate.dto.QueryResult;
-import me.kalpha.jdbctemplate.dto.SamplesDto;
-import me.kalpha.jdbctemplate.dto.TableDto;
+import me.kalpha.jdbctemplate.query.dto.QueryDto;
+import me.kalpha.jdbctemplate.query.dto.QueryResult;
+import me.kalpha.jdbctemplate.query.dto.SamplesDto;
+import me.kalpha.jdbctemplate.query.dto.TableDto;
 import me.kalpha.jdbctemplate.query.QueryRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.boot.orm.jpa.EntityManagerFactoryBuilder;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
-import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.*;
 import java.util.ArrayList;

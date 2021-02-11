@@ -1,7 +1,7 @@
 package me.kalpha.jdbctemplate.query;
 
 import me.kalpha.jdbctemplate.common.BaseControllerTest;
-import me.kalpha.jdbctemplate.dto.QueryDto;
+import me.kalpha.jdbctemplate.query.dto.QueryDto;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;
