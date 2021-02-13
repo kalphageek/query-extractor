@@ -7,6 +7,7 @@ import me.kalpha.jdbctemplate.query.dto.SamplesDto;
 import me.kalpha.jdbctemplate.query.dto.TableDto;
 import me.kalpha.jdbctemplate.query.QueryRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
@@ -18,13 +19,22 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
-@Repository
+/**
+ * 생성자로 전달받은 Named EntityManager를 이용해 원하는 DB에 접속한다
+ */
 public class QueryRepositoryOthersImpl implements QueryRepository {
 
-    @Autowired
-    @PersistenceContext(unitName = Constants.BATCH_UNIT_NAME)
     private EntityManager em;
+    public QueryRepositoryOthersImpl(EntityManager em) {
+        this.em = em;
+    }
 
+    /**
+     * 1개 Row만 Return 받을때는 rowList.stream().findFirst()또는 findAny() 사용.
+     * 두 메소드는 해당 스트림에서 첫 번째 요소를 참조하는 Optional 객체를 반환
+     * @param queryDto
+     * @return
+     */
     @Override
     public Boolean validateSql(QueryDto queryDto) {
         String valdateSql =

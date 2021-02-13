@@ -1,32 +1,37 @@
 package me.kalpha.jdbctemplate.query;
 
+import me.kalpha.jdbctemplate.common.Constants;
 import me.kalpha.jdbctemplate.query.dto.QueryDto;
 import me.kalpha.jdbctemplate.query.dto.QueryResult;
 import me.kalpha.jdbctemplate.query.dto.SamplesDto;
 import me.kalpha.jdbctemplate.query.dto.TableDto;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import javax.persistence.EntityManager;
 import java.util.List;
 
+/**
+ * {@link EntityManagerConfig}의 Name EntityManager를 Injection해서 Repository 생성자로 전달한다.
+ */
 @Service
 public class QueryServiceImpl implements QueryService {
-    private final QueryRepositoryOthersImpl queryRepositoryOthers;
-    private final QueryRepositoryOracleImpl queryRepositoryOracle;
+    @Qualifier(Constants.BATCH_UNIT_NAME)
+    @Autowired
+    EntityManager batchEntityManager;
+
+    @Qualifier(Constants.EHUB_UNIT_NAME)
+    @Autowired
+    EntityManager ehubEntityManater;
 
     private QueryRepository queryRepository;
 
-    @Autowired
-    public QueryServiceImpl(QueryRepositoryOthersImpl queryRepositoryOthers, QueryRepositoryOracleImpl queryRepositoryOracle) {
-        this.queryRepositoryOthers = queryRepositoryOthers;
-        this.queryRepositoryOracle = queryRepositoryOracle;
-    }
-
     @Override
     public List<QueryResult> findSamples(SamplesDto samplesDto) {
-        setDbType(samplesDto.getDbType());
+        setRepository(samplesDto.getSystemId());
         return queryRepository.findSamples(samplesDto);
     }
 
@@ -37,26 +42,21 @@ public class QueryServiceImpl implements QueryService {
         return saveResult(list, fileName);
     }
 
-    private List<Object[]> findTable(TableDto tableDto) {
-        setDbType(tableDto.getDbType(), tableDto.getTable().getFrom());
-        return queryRepository.findTable(tableDto);
-    }
-
     @Override
     public Page<QueryResult> findTable(Pageable pageable, TableDto tableDto) {
-        setDbType(tableDto.getDbType(), tableDto.getTable().getFrom());
+        setRepository(tableDto.getSystemId());
         return queryRepository.findTable(pageable, tableDto);
     }
 
     @Override
     public Boolean validateSql(QueryDto queryDto) {
-        setDbType(queryDto.getDbType());
+        setRepository(queryDto.getSystemId());
         return queryRepository.validateSql(queryDto);
     }
 
     @Override
     public Page<QueryResult> findByQuery(Pageable pageable, QueryDto queryDto) {
-        setDbType(queryDto.getDbType());
+        setRepository(queryDto.getSystemId());
         return queryRepository.findByQuery(pageable, queryDto);
     }
 
@@ -66,30 +66,26 @@ public class QueryServiceImpl implements QueryService {
         return saveResult(queryRepository.findByQuery(queryDto), fileName);
     }
 
+    //-------------------------------------------------
+
+    private List<Object[]> findTable(TableDto tableDto) {
+        setRepository(tableDto.getSystemId());
+        return queryRepository.findTable(tableDto);
+    }
+
     private List<Object[]> findByQuery(QueryDto queryDto) {
-        setDbType(queryDto.getDbType());
+        setRepository(queryDto.getSystemId());
         return queryRepository.findByQuery(queryDto);
     }
 
-    //-------------------------------------------------
-
-    private void setDbType(String systemId, String tableName) {
-        String dbType = getDBType(systemId, tableName);
-        setDbType(dbType);
-    }
-
-    private void setDbType(String dbType) {
-        switch (dbType) {
-            case "ORACLE":
-                queryRepository = queryRepositoryOracle;
+    private void setRepository(String systemId) {
+        switch (systemId) {
+            case Constants.SYS_BATCH:
+                queryRepository = new QueryRepositoryOthersImpl(batchEntityManager);
                 break;
-            default:
-                queryRepository = queryRepositoryOthers;
+            case Constants.SYS_EHUB:
+                queryRepository = new QueryRepositoryOthersImpl(ehubEntityManater);
         }
-    }
-
-    private String getDBType(String systemId, String tableName) {
-        return "POSTGRES";
     }
 
     private long saveResult(List list, String filename) {

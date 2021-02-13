@@ -1,5 +1,6 @@
 package me.kalpha.jdbctemplate.query;
 
+import me.kalpha.jdbctemplate.common.Constants;
 import me.kalpha.jdbctemplate.query.dto.QueryDto;
 import me.kalpha.jdbctemplate.query.dto.SamplesDto;
 import me.kalpha.jdbctemplate.query.dto.TableDto;
@@ -33,8 +34,7 @@ public class GenerateTestData {
         Object[] params = {"2020-10-01", "2020-10-04", 20, "%" + "FAIL" + "%", inClouse.get(0), inClouse.get(1)};
 
         QueryDto queryDto = QueryDto.builder()
-                .dbType("POSTGRES")
-                .systemId("100")
+                .systemId(Constants.SYS_BATCH)
                 .userId("2043738")
                 .params(params)
                 .sql(sql)
@@ -73,8 +73,7 @@ public class GenerateTestData {
                 .orderBy(orderBy)
                 .build();
         TableDto tableDto = TableDto.builder()
-                .dbType("POSTGRES")
-                .systemId("100")
+                .systemId(Constants.SYS_BATCH)
                 .userId("2043738")
                 .params(params)
                 .table(table)
@@ -87,7 +86,7 @@ public class GenerateTestData {
     public static SamplesDto generateSamplesDto() {
         SamplesDto samplesDto = SamplesDto.builder()
                 .table("batch_job_instance")
-                .dbType("POSTGRES")
+                .systemId(Constants.SYS_BATCH)
                 .build();
         return samplesDto;
     }

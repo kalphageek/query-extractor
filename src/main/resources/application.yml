@@ -15,6 +15,11 @@ app:
       username: pgadmin
       url: jdbc:postgresql://db.deogi:5432/postgres
       driverClassName: org.postgresql.Driver
+    ehub:
+      password: pgadmin
+      username: pgadmin
+      url: jdbc:postgresql://db.deogi:5432/postgres
+      driverClassName: org.postgresql.Driver
 logging:
   level:
     org:
