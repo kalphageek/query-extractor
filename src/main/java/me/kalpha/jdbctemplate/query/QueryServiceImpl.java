@@ -23,14 +23,14 @@ public class QueryServiceImpl implements QueryService {
     EntityManager ehubEntityManater;
 
     private QueryRepository queryRepository;
-    private QueryRepositoryOracleImpl queryRepositoryOracle;
-    private QueryRepositoryOthersImpl queryRepositoryOthers;
+    private QueryRepositoryOracleImpl batchQueryRepository;
+    private QueryRepositoryOthersImpl ehubQueryRepository;
 
     @Autowired
     public QueryServiceImpl(@Qualifier(Constants.BATCH_UNIT_NAME) EntityManager batchEntityManager,
                             @Qualifier(Constants.EHUB_UNIT_NAME) EntityManager ehubEntityManater) {
-        queryRepositoryOracle = new QueryRepositoryOracleImpl(ehubEntityManater);
-        queryRepositoryOthers = new QueryRepositoryOthersImpl(batchEntityManager);
+        batchQueryRepository = new QueryRepositoryOracleImpl(ehubEntityManater);
+        ehubQueryRepository = new QueryRepositoryOthersImpl(batchEntityManager);
     }
 
 
@@ -86,10 +86,10 @@ public class QueryServiceImpl implements QueryService {
     private void setRepository(String systemId) {
         switch (systemId) {
             case Constants.SYS_BATCH:
-                queryRepository = queryRepositoryOthers;
+                queryRepository = ehubQueryRepository;
                 break;
             case Constants.SYS_EHUB:
-                queryRepository = queryRepositoryOthers;
+                queryRepository = ehubQueryRepository;
         }
     }
 
