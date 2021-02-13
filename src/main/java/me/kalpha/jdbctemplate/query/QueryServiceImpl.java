@@ -15,19 +15,24 @@ import javax.persistence.EntityManager;
 import java.util.List;
 
 /**
- * {@link EntityManagerConfig}의 Name EntityManager를 Injection해서 Repository 생성자로 전달한다.
+ * {@link EntityManagerConfig}의 Named EntityManager를 Injection해서 Repository 생성자로 전달한다.
  */
 @Service
 public class QueryServiceImpl implements QueryService {
-    @Qualifier(Constants.BATCH_UNIT_NAME)
-    @Autowired
     EntityManager batchEntityManager;
-
-    @Qualifier(Constants.EHUB_UNIT_NAME)
-    @Autowired
     EntityManager ehubEntityManater;
 
     private QueryRepository queryRepository;
+    private QueryRepositoryOracleImpl queryRepositoryOracle;
+    private QueryRepositoryOthersImpl queryRepositoryOthers;
+
+    @Autowired
+    public QueryServiceImpl(@Qualifier(Constants.BATCH_UNIT_NAME) EntityManager batchEntityManager,
+                            @Qualifier(Constants.EHUB_UNIT_NAME) EntityManager ehubEntityManater) {
+        queryRepositoryOracle = new QueryRepositoryOracleImpl(ehubEntityManater);
+        queryRepositoryOthers = new QueryRepositoryOthersImpl(batchEntityManager);
+    }
+
 
     @Override
     public List<QueryResult> findSamples(SamplesDto samplesDto) {
@@ -81,10 +86,10 @@ public class QueryServiceImpl implements QueryService {
     private void setRepository(String systemId) {
         switch (systemId) {
             case Constants.SYS_BATCH:
-                queryRepository = new QueryRepositoryOthersImpl(batchEntityManager);
+                queryRepository = queryRepositoryOthers;
                 break;
             case Constants.SYS_EHUB:
-                queryRepository = new QueryRepositoryOthersImpl(ehubEntityManater);
+                queryRepository = queryRepositoryOthers;
         }
     }
 
