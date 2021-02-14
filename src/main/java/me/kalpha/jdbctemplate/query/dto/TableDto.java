@@ -2,16 +2,19 @@ package me.kalpha.jdbctemplate.query.dto;
 
 import lombok.*;
 
+import java.time.LocalDateTime;
+
 @Getter @Setter
 @AllArgsConstructor
 @Builder
 public class TableDto {
     private String systemId;
-    private String dbType;
     private String sql;
     private Object[] params;
     private String userId;
     private TableDto.Table table;
+    @Builder.Default
+    private LocalDateTime requiredTime = LocalDateTime.now();
 
     public void updateSqlFromTable() {
         StringBuffer sb = new StringBuffer(String.format("select %s from %s", table.getSelect(), table.getFrom()));

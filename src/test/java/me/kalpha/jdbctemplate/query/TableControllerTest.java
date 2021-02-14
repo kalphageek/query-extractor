@@ -121,7 +121,6 @@ public class TableControllerTest extends BaseControllerTest {
 
     private RequestFieldsSnippet getSamplesFieldsSnippet() {
         return relaxedRequestFields(
-                fieldWithPath("dbType").description("조회하려는 DB 타입. ex) ORACLE, GPDB, DB2, HIVE, IMPALA"),
                 fieldWithPath("systemId").description("데이터를 조회하는 시스템ID"),
                 fieldWithPath("table").description("테이블명")
         );
@@ -129,10 +128,10 @@ public class TableControllerTest extends BaseControllerTest {
 
     private RequestFieldsSnippet getTableFieldsSnippet() {
         return relaxedRequestFields(
-                fieldWithPath("dbType").description("조회하려는 DB 타입. ex) ORACLE, GPDB, DB2, HIVE, IMPALA"),
                 fieldWithPath("params").description("Bind Variable을 위한 파라미터 배열"),
                 fieldWithPath("userId").description("사용자 사번"),
                 fieldWithPath("systemId").description("Catalog의 시스템ID"),
+                fieldWithPath("requiredTime").description("실행시간"),
                 fieldWithPath("table.tableId").description("Catalog의 테이블ID"),
                 fieldWithPath("table.select").description("[select]제외한 select절"),
                 fieldWithPath("table.from").description("[from]제외한 from절"),

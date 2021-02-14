@@ -12,6 +12,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityManager;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 /**
@@ -19,17 +20,14 @@ import java.util.List;
  */
 @Service
 public class QueryServiceImpl implements QueryService {
-    EntityManager batchEntityManager;
-    EntityManager ehubEntityManater;
-
     private QueryRepository queryRepository;
     private QueryRepositoryOracleImpl batchQueryRepository;
     private QueryRepositoryOthersImpl ehubQueryRepository;
 
     @Autowired
     public QueryServiceImpl(@Qualifier(Constants.BATCH_UNIT_NAME) EntityManager batchEntityManager,
-                            @Qualifier(Constants.EHUB_UNIT_NAME) EntityManager ehubEntityManater) {
-        batchQueryRepository = new QueryRepositoryOracleImpl(ehubEntityManater);
+                            @Qualifier(Constants.EHUB_UNIT_NAME) EntityManager ehubEntityManager) {
+        batchQueryRepository = new QueryRepositoryOracleImpl(ehubEntityManager);
         ehubQueryRepository = new QueryRepositoryOthersImpl(batchEntityManager);
     }
 
@@ -43,7 +41,7 @@ public class QueryServiceImpl implements QueryService {
     @Override
     public long extractTable(TableDto tableDto) {
         List list = findTable(tableDto);
-        String fileName= null;
+        String fileName = String.format("%s-%s", tableDto.getTable().getFrom(), tableDto.getRequiredTime().format(DateTimeFormatter.ofPattern("yyyyMMddHHmmss")));
         return saveResult(list, fileName);
     }
 
@@ -67,7 +65,7 @@ public class QueryServiceImpl implements QueryService {
 
     @Override
     public long extractByQuery(QueryDto queryDto) {
-        String fileName= null;
+        String fileName= String.format("%s-%s", queryDto.getSystemId(), queryDto.getRequiredTime().format(DateTimeFormatter.ofPattern("yyyyMMddHHmmss")));
         return saveResult(queryRepository.findByQuery(queryDto), fileName);
     }
 

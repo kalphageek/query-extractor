@@ -117,11 +117,11 @@ public class QueryControllerTest extends BaseControllerTest {
 
     private RequestFieldsSnippet getQueryFieldsSnippet() {
         return relaxedRequestFields(
-                fieldWithPath("dbType").description("조회하려는 DB 타입. ex) ORACLE, GPDB, DB2, HIVE, IMPALA"),
                 fieldWithPath("sql").description("Bind Variable을 갖는 SQL"),
                 fieldWithPath("params").description("Bind Variable을 위한 파라미터 배열"),
                 fieldWithPath("userId").description("사용자 사번"),
-                fieldWithPath("systemId").description("데이터를 조회하는 시스템ID")
+                fieldWithPath("systemId").description("데이터를 조회하는 시스템ID"),
+                fieldWithPath("requiredTime").description("실행시간")
         );
     }
 }
