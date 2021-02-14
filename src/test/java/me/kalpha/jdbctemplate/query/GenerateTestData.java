@@ -11,14 +11,14 @@ import java.util.List;
 public class GenerateTestData {
     public static QueryDto generateQueryDto() {
         String sql = "select job_execution_id,version,job_instance_id,create_time,start_time,end_time,status,exit_code,last_updated\n" +
-                "\tfrom batch_job_execution\n" +
-                "\twhere create_time >= to_date(?,'yyyy-MM-dd')\n" +
-                "\tand create_time < to_date(?,'yyyy-MM-dd') + 1\n" +
-                "\tand job_instance_id > ?\n" +
-                "\tand exit_code like ?\n" +
-                "\tand exit_message is not null and exit_message <> ''\n" +
-                "\tand status in (%s)\n" +
-                "\torder by job_execution_id desc, version desc";
+                "  from batch_job_execution\n" +
+                " where create_time >= to_date(?,'yyyy-MM-dd')\n" +
+                "   and create_time < to_date(?,'yyyy-MM-dd') + 1\n" +
+                "   and job_instance_id > ?\n" +
+                "   and exit_code like ?\n" +
+                "   and exit_message is not null and exit_message <> ''\n" +
+                "   and status in (%s)\n" +
+                " order by job_execution_id desc, version desc";
         //in절 -->
         List<String> inClouse = new ArrayList<>();
         inClouse.add("FAILED");
@@ -46,11 +46,11 @@ public class GenerateTestData {
         String select = "job_execution_id,version,job_instance_id,create_time,start_time,end_time,status,exit_code,last_updated";
         String from = "batch_job_execution";
         String where = "create_time >= to_date(?,'yyyy-MM-dd')\n" +
-                "\tand create_time < to_date(?,'yyyy-MM-dd') + 1\n" +
-                "\tand job_instance_id > ?\n" +
-                "\tand exit_code like ?\n" +
-                "\tand exit_message is not null and exit_message <> ''\n" +
-                "\tand status in (%s)\n";
+                "  and create_time < to_date(?,'yyyy-MM-dd') + 1\n" +
+                "  and job_instance_id > ?\n" +
+                "  and exit_code like ?\n" +
+                "  and exit_message is not null and exit_message <> ''\n" +
+                "  and status in (%s)\n";
         String orderBy = "job_execution_id desc, version desc";
         //in절 -->
         List<String> inClouse = new ArrayList<>();

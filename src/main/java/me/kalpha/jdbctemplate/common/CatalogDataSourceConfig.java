@@ -67,7 +67,8 @@ public class CatalogDataSourceConfig {
         return builder
                 .dataSource(catalogDataSource())
                 .properties(properties)
-                .persistenceUnit(Constants.CATALOG_UNIT_NAME)
+// em.createNativeQuery를 사용하는 경우에 만 필요
+//                .persistenceUnit(Constants.CATALOG_UNIT_NAME)
                 .packages("me.kalpha.jdbctemplate.catalog")//entities
                 .build();
     }

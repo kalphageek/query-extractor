@@ -17,6 +17,9 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+/**
+ * 생성자로 전달받은 Named EntityManager를 이용해 원하는 DB에 접속한다
+ */
 public class QueryRepositoryOracleImpl implements QueryRepository {
 
     private EntityManager em;
