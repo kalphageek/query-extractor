@@ -14,6 +14,6 @@ public class AccountService {
 
     public Account getAccount(String userId) {
         Optional<Account> optionalAccount = accountRepository.findById(userId);
-        return optionalAccount.orElse(new Account());
+        return optionalAccount.orElseThrow(() -> new NoSuchElementException(userId));
     }
 }
