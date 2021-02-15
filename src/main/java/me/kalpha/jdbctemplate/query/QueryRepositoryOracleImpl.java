@@ -41,8 +41,10 @@ public class QueryRepositoryOracleImpl implements QueryRepository {
                         "       exists (select * from (%s))";
         valdateSql = String.format(valdateSql, queryDto.getSql());
         Query query = em.createNativeQuery(valdateSql);
-        for (int i=0; i<queryDto.getParams().length; i++) {
-            query.setParameter(i+1, queryDto.getParams()[i]);
+        if (queryDto.getParams() != null && queryDto.getParams().length != 0) {
+            for (int i = 0; i < queryDto.getParams().length; i++) {
+                query.setParameter(i + 1, queryDto.getParams()[i]);
+            }
         }
         Optional<Integer> valid = query.getResultList().stream().findAny();
         return valid.isPresent();
@@ -59,8 +61,11 @@ public class QueryRepositoryOracleImpl implements QueryRepository {
     @Override
     public List<Object[]> findTable(TableDto tableDto) {
         Query query = em.createNativeQuery(tableDto.getSql());
-        for (int i=0; i<tableDto.getParams().length; i++) {
-            query.setParameter(i+1, tableDto.getParams()[i]);
+
+        if (tableDto.getParams() != null && tableDto.getParams().length != 0) {
+            for (int i = 0; i < tableDto.getParams().length; i++) {
+                query.setParameter(i + 1, tableDto.getParams()[i]);
+            }
         }
         return query.getResultList();
     }
@@ -79,8 +84,10 @@ public class QueryRepositoryOracleImpl implements QueryRepository {
                         " where rnum > %d"
                 , tableDto.getTable().getFrom(), end, start);
         Query query = em.createNativeQuery(pagingQuery);
-        for (int i=0; i<tableDto.getParams().length; i++) {
-            query.setParameter(i+1, tableDto.getParams()[i]);
+        if (tableDto.getParams() != null && tableDto.getParams().length != 0) {
+            for (int i = 0; i < tableDto.getParams().length; i++) {
+                query.setParameter(i + 1, tableDto.getParams()[i]);
+            }
         }
         return getRecords(query, pageable, count(tableDto));
     }
@@ -103,8 +110,11 @@ public class QueryRepositoryOracleImpl implements QueryRepository {
                         " where rnum > %d"
                 , queryDto.getSql(), end, start);
         Query query = em.createNativeQuery(pagingQuery);
-        for (int i=0; i<queryDto.getParams().length; i++) {
-            query.setParameter(i+1, queryDto.getParams()[i]);
+
+        if (queryDto.getParams() != null && queryDto.getParams().length != 0) {
+            for (int i = 0; i < queryDto.getParams().length; i++) {
+                query.setParameter(i + 1, queryDto.getParams()[i]);
+            }
         }
         return getRecords(query, pageable, count(queryDto));
     }
@@ -112,8 +122,10 @@ public class QueryRepositoryOracleImpl implements QueryRepository {
     @Override
     public List<Object[]> findByQuery(QueryDto queryDto) {
         Query query = em.createNativeQuery(queryDto.getSql());
-        for (int i = 0; i < queryDto.getParams().length; i++) {
-            query.setParameter(i + 1, queryDto.getParams()[i]);
+        if (queryDto.getParams() != null && queryDto.getParams().length != 0) {
+            for (int i = 0; i < queryDto.getParams().length; i++) {
+                query.setParameter(i + 1, queryDto.getParams()[i]);
+            }
         }
         return query.getResultList();
     }
@@ -138,8 +150,10 @@ public class QueryRepositoryOracleImpl implements QueryRepository {
                 ,tableDto.getTable().getFrom() ,tableDto.getTable().getWhere());
 
         Query query = em.createNativeQuery(sql);
-        for (int i=0; i<tableDto.getParams().length; i++) {
-            query.setParameter(i+1, tableDto.getParams()[i]);
+        if (tableDto.getParams() != null && tableDto.getParams().length != 0) {
+            for (int i = 0; i < tableDto.getParams().length; i++) {
+                query.setParameter(i + 1, tableDto.getParams()[i]);
+            }
         }
         return query.getFirstResult();
     }
@@ -148,8 +162,10 @@ public class QueryRepositoryOracleImpl implements QueryRepository {
         String sql = String.format("select count(*) from (%s) t", queryDto.getSql());
 
         Query query = em.createNativeQuery(sql);
-        for (int i=0; i<queryDto.getParams().length; i++) {
-            query.setParameter(i+1, queryDto.getParams()[i]);
+        if (queryDto.getParams() != null && queryDto.getParams().length != 0) {
+            for (int i = 0; i < queryDto.getParams().length; i++) {
+                query.setParameter(i + 1, queryDto.getParams()[i]);
+            }
         }
         return query.getFirstResult();
     }

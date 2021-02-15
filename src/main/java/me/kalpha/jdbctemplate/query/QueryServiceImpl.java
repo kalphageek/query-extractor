@@ -21,13 +21,13 @@ import java.util.List;
 @Service
 public class QueryServiceImpl implements QueryService {
     private QueryRepository queryRepository;
-    private QueryRepositoryOracleImpl batchQueryRepository;
+    private QueryRepositoryOthersImpl batchQueryRepository;
     private QueryRepositoryOthersImpl ehubQueryRepository;
 
     @Autowired
     public QueryServiceImpl(@Qualifier(Constants.BATCH_UNIT_NAME) EntityManager batchEntityManager,
                             @Qualifier(Constants.EHUB_UNIT_NAME) EntityManager ehubEntityManager) {
-        batchQueryRepository = new QueryRepositoryOracleImpl(ehubEntityManager);
+        batchQueryRepository = new QueryRepositoryOthersImpl(ehubEntityManager);
         ehubQueryRepository = new QueryRepositoryOthersImpl(batchEntityManager);
     }
 
@@ -84,7 +84,7 @@ public class QueryServiceImpl implements QueryService {
     private void setRepository(String systemId) {
         switch (systemId) {
             case Constants.SYS_BATCH:
-                queryRepository = ehubQueryRepository;
+                queryRepository = batchQueryRepository;
                 break;
             case Constants.SYS_EHUB:
                 queryRepository = ehubQueryRepository;

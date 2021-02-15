@@ -5,11 +5,13 @@ import lombok.*;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.Table;
 
 @Getter
 @NoArgsConstructor
 @EqualsAndHashCode(of = "userId")
-@Entity(name = "account")
+@Entity
+@Table(name = "account")
 public class Account {
     @Id
     @Column(name = "user_id")

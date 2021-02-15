@@ -44,8 +44,10 @@ public class QueryRepositoryOthersImpl implements QueryRepository {
                         ") as result";
         valdateSql = String.format(valdateSql, queryDto.getSql());
         Query query = em.createNativeQuery(valdateSql);
-        for (int i=0; i<queryDto.getParams().length; i++) {
-            query.setParameter(i+1, queryDto.getParams()[i]);
+        if (queryDto.getParams() != null && queryDto.getParams().length != 0) {
+            for (int i = 0; i < queryDto.getParams().length; i++) {
+                query.setParameter(i + 1, queryDto.getParams()[i]);
+            }
         }
         return (Boolean) query.getSingleResult();
     }
@@ -60,8 +62,10 @@ public class QueryRepositoryOthersImpl implements QueryRepository {
     @Override
     public List<Object[]> findTable(TableDto tableDto) {
         Query query = em.createNativeQuery(tableDto.getSql());
-        for (int i = 0; i < tableDto.getParams().length; i++) {
-            query.setParameter(i + 1, tableDto.getParams()[i]);
+        if (tableDto.getParams() != null && tableDto.getParams().length != 0) {
+            for (int i = 0; i < tableDto.getParams().length; i++) {
+                query.setParameter(i + 1, tableDto.getParams()[i]);
+            }
         }
         return query.getResultList();
     }
@@ -71,8 +75,10 @@ public class QueryRepositoryOthersImpl implements QueryRepository {
         String sql = String.format("%s limit %d offset %d"
                 , tableDto.getSql(), pageable.getPageSize(), pageable.getOffset());
         Query query = em.createNativeQuery(sql);
-        for (int i = 0; i < tableDto.getParams().length; i++) {
-            query.setParameter(i + 1, tableDto.getParams()[i]);
+        if (tableDto.getParams() != null && tableDto.getParams().length != 0) {
+            for (int i = 0; i < tableDto.getParams().length; i++) {
+                query.setParameter(i + 1, tableDto.getParams()[i]);
+            }
         }
         return getRecords(query, pageable, count(tableDto));
     }
@@ -80,8 +86,10 @@ public class QueryRepositoryOthersImpl implements QueryRepository {
     @Override
     public List<Object[]> findByQuery(QueryDto queryDto) {
         Query query = em.createNativeQuery(queryDto.getSql());
-        for (int i = 0; i < queryDto.getParams().length; i++) {
-            query.setParameter(i + 1, queryDto.getParams()[i]);
+        if (queryDto.getParams() != null && queryDto.getParams().length != 0) {
+            for (int i = 0; i < queryDto.getParams().length; i++) {
+                query.setParameter(i + 1, queryDto.getParams()[i]);
+            }
         }
         return query.getResultList();
     }
@@ -90,8 +98,10 @@ public class QueryRepositoryOthersImpl implements QueryRepository {
         String pagingQuery = String.format("select * from (%s) t limit %d offset %d"
                 , queryDto.getSql(), pageable.getPageSize(), pageable.getOffset());
         Query query = em.createNativeQuery(pagingQuery);
-        for (int i=0; i<queryDto.getParams().length; i++) {
-            query.setParameter(i+1, queryDto.getParams()[i]);
+        if (queryDto.getParams() != null && queryDto.getParams().length != 0) {
+            for (int i = 0; i < queryDto.getParams().length; i++) {
+                query.setParameter(i + 1, queryDto.getParams()[i]);
+            }
         }
         return getRecords(query, pageable, count(queryDto));
     }
@@ -116,8 +126,10 @@ public class QueryRepositoryOthersImpl implements QueryRepository {
                 ,tableDto.getTable().getFrom() ,tableDto.getTable().getWhere());
 
         Query query = em.createNativeQuery(sql);
-        for (int i=0; i<tableDto.getParams().length; i++) {
-            query.setParameter(i+1, tableDto.getParams()[i]);
+        if (tableDto.getParams() != null && tableDto.getParams().length != 0) {
+            for (int i = 0; i < tableDto.getParams().length; i++) {
+                query.setParameter(i + 1, tableDto.getParams()[i]);
+            }
         }
         return query.getFirstResult();
     }
@@ -126,8 +138,10 @@ public class QueryRepositoryOthersImpl implements QueryRepository {
         String sql = String.format("select count(*) from (%s) t", queryDto.getSql());
 
         Query query = em.createNativeQuery(sql);
-        for (int i=0; i<queryDto.getParams().length; i++) {
-            query.setParameter(i+1, queryDto.getParams()[i]);
+        if (queryDto.getParams() != null && queryDto.getParams().length != 0) {
+            for (int i = 0; i < queryDto.getParams().length; i++) {
+                query.setParameter(i + 1, queryDto.getParams()[i]);
+            }
         }
         return query.getFirstResult();
     }

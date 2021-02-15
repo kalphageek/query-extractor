@@ -6,7 +6,7 @@ Oracle, Hive, PostgreSQL 등 다양한 DB에 적용할 수 있다.
 ## Project 구성
 1. JPA nativeQuery 적용
 2. Unit Test - Junit 5
-3. [API Documents - Rest Docs](localhost:8080/docs/index.html)    
+3. API Documents - Rest Docs (http://localhost:8080/docs/index.html)    
    * AsciiDocs skin - adoc-colony.css
 
 ## AsciiDocs Skin 적용
