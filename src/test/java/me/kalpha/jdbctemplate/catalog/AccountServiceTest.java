@@ -20,10 +20,10 @@ class AccountServiceTest {
     @Test
     public void save() {
         Account account = Account.builder()
-                .email("kang@email.com")
+                .email("yu@email.com")
                 .role("USER")
-                .userId("kang")
-                .password("kang")
+                .userId("yu")
+                .password("yu")
                 .build();
         Account savedAccount = accountService.save(account);
         assertTrue(account.getUserId().equals(savedAccount.getUserId()));
