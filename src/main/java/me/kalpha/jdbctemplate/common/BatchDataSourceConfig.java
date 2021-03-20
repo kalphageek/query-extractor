@@ -43,7 +43,7 @@ public class BatchDataSourceConfig {
     }
 
     @Bean
-    @ConfigurationProperties("app.datasource.batch.configuration")
+    @ConfigurationProperties("app.datasource.batch.hikari")
     public DataSource batchDataSource() {
         return batchDataSourceProperties().initializeDataSourceBuilder()
                 .type(HikariDataSource.class).build();
@@ -67,7 +67,7 @@ public class BatchDataSourceConfig {
                 .packages("me.kalpha.jdbctemplate.batch")//entities
                 .build();
     }
-    @Primary
+
     @Bean
     public PlatformTransactionManager batchTransactionManager(
             final @Qualifier("batchEntityManagerFactory") LocalContainerEntityManagerFactoryBean batchEntityManagerFactory) {

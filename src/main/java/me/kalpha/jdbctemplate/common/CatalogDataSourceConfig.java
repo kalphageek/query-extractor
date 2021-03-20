@@ -45,7 +45,7 @@ public class CatalogDataSourceConfig {
 
     @Bean
     @Primary
-    @ConfigurationProperties("app.datasource.catalog.configuration")
+    @ConfigurationProperties("app.datasource.catalog.hikari")
     public DataSource catalogDataSource() {
         return catalogDataSourceProperties().initializeDataSourceBuilder()
                 .type(HikariDataSource.class).build();

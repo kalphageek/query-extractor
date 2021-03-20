@@ -16,4 +16,9 @@ public class AccountService {
         Optional<Account> optionalAccount = accountRepository.findById(userId);
         return optionalAccount.orElseThrow(() -> new NoSuchElementException(userId));
     }
+
+    public Account save(Account account) {
+        Account savedAccount = accountRepository.save(account);
+        return savedAccount;
+    }
 }

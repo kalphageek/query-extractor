@@ -8,7 +8,8 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 
 @Getter
-@NoArgsConstructor
+@Builder
+@AllArgsConstructor @NoArgsConstructor
 @EqualsAndHashCode(of = "userId")
 @Entity
 @Table(name = "account")

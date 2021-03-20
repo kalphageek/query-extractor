@@ -44,7 +44,7 @@ public class EhubDataSourceConfig {
     }
 
     @Bean
-    @ConfigurationProperties("app.datasource.ehub.configuration")
+    @ConfigurationProperties("app.datasource.ehub.hikari")
     public DataSource ehubDataSource() {
         return ehubDataSourceProperties().initializeDataSourceBuilder()
                 .type(HikariDataSource.class).build();
@@ -68,7 +68,6 @@ public class EhubDataSourceConfig {
                 .packages("me.kalpha.jdbctemplate.ehub")//entities
                 .build();
     }
-    @Primary
     @Bean
     public PlatformTransactionManager ehubTransactionManager(
             final @Qualifier("ehubEntityManagerFactory") LocalContainerEntityManagerFactoryBean ehubEntityManagerFactory) {
