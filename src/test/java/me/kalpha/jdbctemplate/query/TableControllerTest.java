@@ -100,13 +100,14 @@ public class TableControllerTest extends BaseControllerTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(tableDto))
                 .param("page","0")
-                .param("size","10"))
+//                .param("size","10")
+                )
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andDo(document("table-paging",
                         requestParameters(
-                                parameterWithName("page").description("page to retrieve, begin with and default is 1"),
-                                parameterWithName("size").description("Size of the page to retrieve, default 10")
+                                parameterWithName("page").description("page to retrieve, begin with and default is 1")//,
+//                                parameterWithName("size").description("Size of the page to retrieve, default 10")
                         ),
                         relaxedResponseFields(
                                 fieldWithPath("page.number").type(JsonFieldType.NUMBER).description("The number of this page."),

@@ -46,3 +46,23 @@ mvn package
 3. systemId별로 EntityManager 선택 (QueryServiceImpl.java)
 4. systemId별로 QueryRepositoryOthersImpl 생성하면서 EntityManager 전달 (QueryServiceImpl.java)
 5. 전달받은 EntityManager를 통해 createNativeQuery 실행  (QueryRepositoryOthersImpl.java)
+
+## Pageable
+1. Global Default Size 설정, application.yml
+```yaml
+spring:
+  data:
+    web:
+      pageable:
+        default-page-size: 6
+```
+2. 메소드 Default Size 설정, Pageable 아규먼트에 추가
+```
+Pageable pageable --> @PageableDefault(size = 8) Pageable pageable
+```
+3. Entity -> DTO
+```java
+Page<Member> page = memberRepository.findAll(pageable);
+Page<MemberDto> dtoPage = page.map(member -> new MemberDto(member.getId(), member.getUsername(), member.getTeamId()));
+retur dtoPage;
+```

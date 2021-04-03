@@ -7,6 +7,7 @@ import me.kalpha.jdbctemplate.query.dto.TableDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.data.web.PagedResourcesAssembler;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
@@ -77,7 +78,7 @@ public class TableController {
      * @return 샘플데이터
      */
     @GetMapping
-    public ResponseEntity findTable(Pageable pageable, PagedResourcesAssembler assembler, @RequestBody TableDto tableDto) {
+    public ResponseEntity findTable(@PageableDefault(size = 8) Pageable pageable, PagedResourcesAssembler assembler, @RequestBody TableDto tableDto) {
         Page<QueryResult> page =  queryService.findTable(pageable, tableDto);
 
         // Hateoas (Link 및 Profile)
