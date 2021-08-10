@@ -9,9 +9,9 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>me.kalpha</groupId>
-	<artifactId>jdbc-template</artifactId>
+	<artifactId>query-extractor</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>jdbc-template</name>
+	<name>query-extractor</name>
 	<description>Demo project for Spring Boot</description>
 
 	<properties>
