@@ -10,20 +10,20 @@ spring:
 app:
   datasource:
     catalog:
-      password: pgadmin
-      username: pgadmin
-      url: jdbc:postgresql://db.deogi:5432/catalog
-      driverClassName: org.postgresql.Driver
+      url: jdbc:h2:tcp://localhost/~/workspace/h2/data/catalog
+      username: sa
+      password:
+      driver-class-name: org.h2.Driver
     batch:
-      password: pgadmin
-      username: pgadmin
-      url: jdbc:postgresql://db.deogi:5432/postgres
-      driverClassName: org.postgresql.Driver
+      url: jdbc:h2:tcp://localhost/~/workspace/h2/data/local
+      username: sa
+      password:
+      driver-class-name: org.h2.Driver
     ehub:
-      password: pgadmin
-      username: pgadmin
-      url: jdbc:postgresql://db.deogi:5432/postgres
-      driverClassName: org.postgresql.Driver
+      url: jdbc:h2:tcp://localhost/~/workspace/h2/data/local
+      username: sa
+      password:
+      driver-class-name: org.h2.Driver
 logging:
   level:
     org:
