@@ -27,8 +27,8 @@ public class QueryServiceImpl implements QueryService {
     @Autowired
     public QueryServiceImpl(@Qualifier(Constants.BATCH_UNIT_NAME) EntityManager batchEntityManager,
                             @Qualifier(Constants.EHUB_UNIT_NAME) EntityManager ehubEntityManager) {
-        batchQueryRepository = new QueryRepositoryOthersImpl(ehubEntityManager);
-        ehubQueryRepository = new QueryRepositoryOthersImpl(batchEntityManager);
+        batchQueryRepository = new QueryRepositoryOthersImpl(batchEntityManager);
+        ehubQueryRepository = new QueryRepositoryOthersImpl(ehubEntityManager);
     }
 
 
@@ -42,6 +42,7 @@ public class QueryServiceImpl implements QueryService {
     public long extractTable(TableDto tableDto) {
         List list = findTable(tableDto);
         String fileName = String.format("%s-%s", tableDto.getTable().getFrom(), tableDto.getRequiredTime().format(DateTimeFormatter.ofPattern("yyyyMMddHHmmss")));
+        setRepository(tableDto.getSystemId());
         return saveResult(list, fileName);
     }
 
@@ -65,6 +66,7 @@ public class QueryServiceImpl implements QueryService {
 
     @Override
     public long extractByQuery(QueryDto queryDto) {
+        setRepository(queryDto.getSystemId());
         String fileName= String.format("%s-%s", queryDto.getSystemId(), queryDto.getRequiredTime().format(DateTimeFormatter.ofPattern("yyyyMMddHHmmss")));
         return saveResult(queryRepository.findByQuery(queryDto), fileName);
     }

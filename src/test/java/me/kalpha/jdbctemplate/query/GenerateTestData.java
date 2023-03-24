@@ -24,7 +24,7 @@ public class GenerateTestData {
                 "  join team on member.team_id = team.id\n" +
                 " where age > ?\n" +
                 "   and username like ?\n" +
-                "   and team.name in (%)\n" +
+                "   and team.name in (%s)\n" +
                 " order by team_id, member.id";
         //in절 -->
         List<String> inClouse = new ArrayList<>();
@@ -60,11 +60,11 @@ public class GenerateTestData {
 //                "   and exit_message is not null and exit_message <> ''\n" +
 //                "   and status in (%s)\n";
 //        String orderBy = "job_execution_id desc, version desc";
-        String select = "select id, age, created_at, username, team_id";
+        String select = "id, age, created_at, username, team_id";
         String from = "member";
         String where = "age > ?\n" +
                 "   and username like ?\n" +
-                "   and team_id in (%)";
+                "   and team_id in (%s)";
         String orderBy = "team_id, id";
         //in절 -->
         List<String> inClouse = new ArrayList<>();
