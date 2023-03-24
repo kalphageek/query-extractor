@@ -71,6 +71,22 @@ public class QueryRepositoryOracleImpl implements QueryRepository {
     }
 
     @Override
+    public List<QueryResult> findTable(TableDto tableDto, Long limit) {
+        String sql = String.format(
+                "select *\n" +
+                        "  from (%s)\n" +
+                        " where rownum <= %d"
+                , tableDto.getTable().getFrom(), tableDto.getLimit());
+        Query query = em.createNativeQuery(sql);
+        if (tableDto.getParams() != null && tableDto.getParams().length != 0) {
+            for (int i = 0; i < tableDto.getParams().length; i++) {
+                query.setParameter(i + 1, tableDto.getParams()[i]);
+            }
+        }
+        return getRecords(query);
+    }
+
+    @Override
     public Page<QueryResult> findTable(Pageable pageable, TableDto tableDto) {
         Integer start = pageable.getPageNumber() * pageable.getPageSize();
         Integer end = (pageable.getPageNumber() + 1) * pageable.getPageSize();

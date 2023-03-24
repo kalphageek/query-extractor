@@ -39,6 +39,12 @@ public class QueryServiceImpl implements QueryService {
     }
 
     @Override
+    public List<QueryResult> findTable(TableDto tableDto, Long limit) {
+        setRepository(tableDto.getSystemId());
+        return queryRepository.findTable(tableDto, limit);
+    }
+
+    @Override
     public long extractTable(TableDto tableDto) {
         List list = findTable(tableDto);
         String fileName = String.format("%s-%s", tableDto.getTable().getFrom(), tableDto.getRequiredTime().format(DateTimeFormatter.ofPattern("yyyyMMddHHmmss")));

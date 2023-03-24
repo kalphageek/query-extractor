@@ -5,13 +5,9 @@ import me.kalpha.jdbctemplate.query.dto.QueryDto;
 import me.kalpha.jdbctemplate.query.dto.QueryResult;
 import me.kalpha.jdbctemplate.query.dto.SamplesDto;
 import me.kalpha.jdbctemplate.query.dto.TableDto;
-import me.kalpha.jdbctemplate.query.QueryRepository;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
-import org.springframework.stereotype.Repository;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -68,6 +64,19 @@ public class QueryRepositoryOthersImpl implements QueryRepository {
             }
         }
         return query.getResultList();
+    }
+
+    @Override
+    public List<QueryResult> findTable(TableDto tableDto, Long limit) {
+        String sql = String.format("%s limit %d"
+                , tableDto.getSql(), tableDto.getLimit());
+        Query query = em.createNativeQuery(sql);
+        if (tableDto.getParams() != null && tableDto.getParams().length != 0) {
+            for (int i = 0; i < tableDto.getParams().length; i++) {
+                query.setParameter(i + 1, tableDto.getParams()[i]);
+            }
+        }
+        return getRecords(query);
     }
 
     @Override

@@ -12,6 +12,7 @@ import java.util.List;
 public interface QueryService {
     public List<QueryResult> findSamples(SamplesDto samplesDto);
 
+    public List<QueryResult> findTable(TableDto tableDto, Long limit);
     public Page<QueryResult> findTable(Pageable pageable, TableDto tableDto);
     public long extractTable(TableDto tableDto);
 

@@ -14,6 +14,8 @@ public class TableDto {
     private String userId;
     private TableDto.Table table;
     @Builder.Default
+    private Long limit = 10L;
+    @Builder.Default
     private LocalDateTime requiredTime = LocalDateTime.now();
 
     public void updateSqlFromTable() {

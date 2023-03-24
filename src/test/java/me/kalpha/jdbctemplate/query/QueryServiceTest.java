@@ -42,6 +42,15 @@ public class QueryServiceTest {
     }
 
     @Test
+    public void find_table() {
+        TableDto tableDto = GenerateTestData.generateTableDto();
+
+        List<QueryResult> results = queryService.findTable(tableDto, 20L);
+        results.stream().forEach(System.out::println);
+
+        assertNotNull(results);
+    }
+    @Test
     public void find_table_pageable() {
         TableDto tableDto = GenerateTestData.generateTableDto();
 

@@ -15,6 +15,7 @@ public interface QueryRepository {
 
     public List<QueryResult> findSamples(SamplesDto samplesDto);
     public List<Object[]> findTable(TableDto tableDto);
+    public List<QueryResult> findTable(TableDto tableDto, Long limit);
     public Page<QueryResult> findTable(Pageable pageable, TableDto tableDto);
 
     public Boolean validateSql(QueryDto queryDto);
