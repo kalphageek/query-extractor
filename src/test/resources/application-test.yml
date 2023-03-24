@@ -1,12 +1,16 @@
-spring:
+app:
   datasource:
-    username: sa
-    password:
-    url: jdbc:h2:mem:testdb
-    driver-class-name: org.h2.Driver
-    hikari:
-      jdbc-url: jdbc:h2:mem:testdb
-  jpa:
-    properties:
-      hibernate:
-        dialect: org.hibernate.dialect.H2Dialect
+    catalog:
+      url: jdbc:h2:mem:testdb
+      username: sa
+      password:
+      driver-class-name: org.h2.Driver
+
+#spring:
+#  datasource:
+#    username: sa
+#    password:
+#    url: jdbc:h2:mem:testdb
+#    driver-class-name: org.h2.Driver
+#    hikari:
+#      jdbc-url: jdbc:h2:mem:
