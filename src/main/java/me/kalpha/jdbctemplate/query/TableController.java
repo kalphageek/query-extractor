@@ -53,19 +53,6 @@ public class TableController {
         return ResponseEntity.ok().body(outputModel);
     }
 
-    @GetMapping
-    public ResponseEntity findTable(@RequestBody TableDto tableDto) {
-        List<QueryResult> results = queryService.findTable(tableDto, tableDto.getLimit());
-        CollectionModel<QueryResult> outputModel = CollectionModel.of(results);
-
-        outputModel.add(Link.of("/docs/index.html#resources-table").withRel("profile"))
-                .add(linkTo(this.getClass()).slash("table").withSelfRel())
-                .add(linkTo(this.getClass()).withRel("samples"))
-                .add(linkTo(this.getClass()).withRel("table-paging"))
-                .add(linkTo(this.getClass()).withRel("table-extract"));
-
-        return ResponseEntity.ok().body(outputModel);
-    }
     /**
      * @param tableDto Query할 테이블명, DBType (ORACLE / OTHERS)
      * @return 추출 레코드 수
@@ -92,7 +79,7 @@ public class TableController {
      * @return 샘플데이터
      */
     @GetMapping("/paging")
-    public ResponseEntity findTable(@PageableDefault(size = 8) Pageable pageable, PagedResourcesAssembler assembler, @RequestBody TableDto tableDto) {
+    public ResponseEntity findTable(@PageableDefault(size = 20, page = 0) Pageable pageable, PagedResourcesAssembler assembler, @RequestBody TableDto tableDto) {
         Page<QueryResult> page =  queryService.findTable(pageable, tableDto);
 
         // Hateoas (Link 및 Profile)
@@ -105,4 +92,17 @@ public class TableController {
         return ResponseEntity.ok().body(pagedModel);
     }
 
+    @GetMapping
+    public ResponseEntity findTable(@RequestBody TableDto tableDto) {
+        List<QueryResult> results = queryService.findTable(tableDto, tableDto.getLimit());
+        CollectionModel<QueryResult> outputModel = CollectionModel.of(results);
+
+        outputModel.add(Link.of("/docs/index.html#resources-table").withRel("profile"))
+                .add(linkTo(this.getClass()).slash("table").withSelfRel())
+                .add(linkTo(this.getClass()).withRel("samples"))
+                .add(linkTo(this.getClass()).withRel("table-paging"))
+                .add(linkTo(this.getClass()).withRel("table-extract"));
+
+        return ResponseEntity.ok().body(outputModel);
+    }
 }

@@ -101,11 +101,11 @@ public class TableControllerTest extends BaseControllerTest {
     public void find_table_pageable() throws Exception {
         TableDto tableDto = GenerateTestData.generateTableDto();
 
-        mockMvc.perform(RestDocumentationRequestBuilders.get("/data/table/paging")
+        mockMvc.perform(RestDocumentationRequestBuilders.get("/data/table/paging?page=0&size=10")
                     .contentType(MediaType.APPLICATION_JSON)
                     .content(objectMapper.writeValueAsString(tableDto))
-                    .param("page","0")
-                    .param("size","10")
+//                    .param("page","0")
+//                    .param("size","10")
                 )
                 .andDo(print())
                 .andExpect(status().isOk())

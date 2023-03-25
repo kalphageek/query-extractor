@@ -65,7 +65,7 @@ public class QueryControllerTest extends BaseControllerTest {
     public void query_pageable() throws Exception {
         QueryDto queryDto = GenerateTestData.generateQueryDto();
 
-        mockMvc.perform(RestDocumentationRequestBuilders.get("/data/query")
+        mockMvc.perform(RestDocumentationRequestBuilders.get("/data/query/paging")
                     .contentType(MediaType.APPLICATION_JSON)
                     .content(objectMapper.writeValueAsString(queryDto))
                     .param("page","0")
@@ -89,6 +89,30 @@ public class QueryControllerTest extends BaseControllerTest {
         ;
     }
 
+    @DisplayName("정상 : Query 조회 Unpaging")
+    @Test
+    public void query() throws Exception {
+        QueryDto queryDto = GenerateTestData.generateQueryDto();
+
+        mockMvc.perform(RestDocumentationRequestBuilders.get("/data/query")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(queryDto))
+                )
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("_embedded.queryResults[0].record").exists())
+                .andDo(document("query",
+                        //links.adoc 생성
+                        links(halLinks(),
+                                linkWithRel("profile").description("link to profile"),
+                                linkWithRel("self").description("link to self api"),
+                                linkWithRel("query-paging").description("link to paging query api"),
+                                linkWithRel("query-extract").description("link to query extract api")
+                        ),
+                        getQueryFieldsSnippet()
+                ))
+        ;
+    }
     @DisplayName("정상 : Query 추출")
     @Test
     public void query_extract() throws Exception {
@@ -105,7 +129,8 @@ public class QueryControllerTest extends BaseControllerTest {
                         links(halLinks(),
                                 linkWithRel("profile").description("link to profile"),
                                 linkWithRel("self").description("link to self api"),
-                                linkWithRel("query-paging").description("link to paging query api")
+                                linkWithRel("query-paging").description("link to paging query api"),
+                                linkWithRel("query").description("link to query api")
                         ),
                         getQueryFieldsSnippet(),
                         relaxedResponseFields(
@@ -120,8 +145,8 @@ public class QueryControllerTest extends BaseControllerTest {
                 fieldWithPath("sql").description("Bind Variable을 갖는 SQL"),
                 fieldWithPath("params").description("Bind Variable을 위한 파라미터 배열"),
                 fieldWithPath("userId").description("사용자 사번"),
-                fieldWithPath("systemId").description("데이터를 조회하는 시스템ID"),
-                fieldWithPath("requiredTime").description("실행시간")
+                fieldWithPath("systemId").description("데이터를 조회하는 시스템ID")//,
+//                fieldWithPath("requiredTime").description("실행시간")
         );
     }
 }
