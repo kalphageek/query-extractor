@@ -1,6 +1,7 @@
-package me.kalpha.jdbctemplate.common;
+package me.kalpha.jdbctemplate.config;
 
 import com.zaxxer.hikari.HikariDataSource;
+import me.kalpha.jdbctemplate.common.Constants;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceProperties;
@@ -22,60 +23,55 @@ import javax.sql.DataSource;
 
 @Configuration
 @EnableJpaRepositories(
-        entityManagerFactoryRef = "catalogEntityManagerFactory",
-        transactionManagerRef = "catalogTransactionManager",
-        basePackages = {"me.kalpha.jdbctemplate.catalog"}//repositories
+        entityManagerFactoryRef = "batchEntityManagerFactory",
+        transactionManagerRef = "batchTransactionManager",
+        basePackages = {"me.kalpha.jdbctemplate.batch"}//repositories
 )
 @EnableTransactionManagement
-public class CatalogDataSourceConfig {
+public class BatchDataSourceConfig {
     private final JpaProperties jpaProperties;
     private final HibernateProperties hibernateProperties;
 
     @Autowired
-    public CatalogDataSourceConfig(JpaProperties jpaProperties, HibernateProperties hibernateProperties) {
+    public BatchDataSourceConfig(JpaProperties jpaProperties, HibernateProperties hibernateProperties) {
         this.jpaProperties = jpaProperties;
         this.hibernateProperties = hibernateProperties;
     }
     @Bean
-    @Primary
-    @ConfigurationProperties("app.datasource.catalog")
-    public DataSourceProperties catalogDataSourceProperties() {
+    @ConfigurationProperties("app.datasource.batch")
+    public DataSourceProperties batchDataSourceProperties() {
         return new DataSourceProperties();
     }
 
     @Bean
-    @Primary
-    @ConfigurationProperties("app.datasource.catalog.hikari")
-    public DataSource catalogDataSource() {
-        return catalogDataSourceProperties().initializeDataSourceBuilder()
+    @ConfigurationProperties("app.datasource.batch.hikari")
+    public DataSource batchDataSource() {
+        return batchDataSourceProperties().initializeDataSourceBuilder()
                 .type(HikariDataSource.class).build();
     }
 
     /**
-     * CATALOG DB EntityManager Setup
+     * BATCH DB EntityManager Setup
      * @param builder
      * @return
      */
-    @Primary
-    @Bean(name = "catalogEntityManagerFactory")
-    public LocalContainerEntityManagerFactoryBean catalogEntityManagerFactory(EntityManagerFactoryBuilder builder) {
-        hibernateProperties.setDdlAuto("create");
+    @Bean(name = "batchEntityManagerFactory")
+    public LocalContainerEntityManagerFactoryBean batchEntityManagerFactory(EntityManagerFactoryBuilder builder) {
+        hibernateProperties.setDdlAuto("none");
         jpaProperties.setDatabasePlatform("org.hibernate.dialect.H2Dialect");
-
         var properties = hibernateProperties.determineHibernateProperties(
                 jpaProperties.getProperties(), new HibernateSettings());
         return builder
-                .dataSource(catalogDataSource())
+                .dataSource(batchDataSource())
                 .properties(properties)
-// em.createNativeQuery를 사용하는 경우에 만 필요
-//                .persistenceUnit(Constants.CATALOG_UNIT_NAME)
-                .packages("me.kalpha.jdbctemplate.catalog")//entities
+                .persistenceUnit(Constants.BATCH_UNIT_NAME)
+                .packages("me.kalpha.jdbctemplate.batch")//entities
                 .build();
     }
-    @Primary
+
     @Bean
-    public PlatformTransactionManager catalogTransactionManager(
-            final @Qualifier("catalogEntityManagerFactory") LocalContainerEntityManagerFactoryBean catalogEntityManagerFactory) {
-        return new JpaTransactionManager(catalogEntityManagerFactory.getObject());
+    public PlatformTransactionManager batchTransactionManager(
+            final @Qualifier("batchEntityManagerFactory") LocalContainerEntityManagerFactoryBean batchEntityManagerFactory) {
+        return new JpaTransactionManager(batchEntityManagerFactory.getObject());
     }
 }

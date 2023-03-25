@@ -1,6 +1,7 @@
-package me.kalpha.jdbctemplate.common;
+package me.kalpha.jdbctemplate.config;
 
 import com.zaxxer.hikari.HikariDataSource;
+import me.kalpha.jdbctemplate.common.Constants;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceProperties;

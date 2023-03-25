@@ -1,9 +1,11 @@
-package me.kalpha.jdbctemplate.query;
+package me.kalpha.jdbctemplate.query.controller;
 
 import me.kalpha.jdbctemplate.query.dto.ExtractResult;
 import me.kalpha.jdbctemplate.query.dto.QueryResult;
 import me.kalpha.jdbctemplate.query.dto.SamplesDto;
 import me.kalpha.jdbctemplate.query.dto.TableDto;
+import me.kalpha.jdbctemplate.query.service.QueryService;
+import me.kalpha.jdbctemplate.query.service.QueryValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

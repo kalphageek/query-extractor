@@ -1,4 +1,4 @@
-package me.kalpha.jdbctemplate.common;
+package me.kalpha.jdbctemplate.config;
 
 import com.zaxxer.hikari.HikariDataSource;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,55 +22,60 @@ import javax.sql.DataSource;
 
 @Configuration
 @EnableJpaRepositories(
-        entityManagerFactoryRef = "batchEntityManagerFactory",
-        transactionManagerRef = "batchTransactionManager",
-        basePackages = {"me.kalpha.jdbctemplate.batch"}//repositories
+        entityManagerFactoryRef = "catalogEntityManagerFactory",
+        transactionManagerRef = "catalogTransactionManager",
+        basePackages = {"me.kalpha.jdbctemplate.catalog"}//repositories
 )
 @EnableTransactionManagement
-public class BatchDataSourceConfig {
+public class CatalogDataSourceConfig {
     private final JpaProperties jpaProperties;
     private final HibernateProperties hibernateProperties;
 
     @Autowired
-    public BatchDataSourceConfig(JpaProperties jpaProperties, HibernateProperties hibernateProperties) {
+    public CatalogDataSourceConfig(JpaProperties jpaProperties, HibernateProperties hibernateProperties) {
         this.jpaProperties = jpaProperties;
         this.hibernateProperties = hibernateProperties;
     }
     @Bean
-    @ConfigurationProperties("app.datasource.batch")
-    public DataSourceProperties batchDataSourceProperties() {
+    @Primary
+    @ConfigurationProperties("app.datasource.catalog")
+    public DataSourceProperties catalogDataSourceProperties() {
         return new DataSourceProperties();
     }
 
     @Bean
-    @ConfigurationProperties("app.datasource.batch.hikari")
-    public DataSource batchDataSource() {
-        return batchDataSourceProperties().initializeDataSourceBuilder()
+    @Primary
+    @ConfigurationProperties("app.datasource.catalog.hikari")
+    public DataSource catalogDataSource() {
+        return catalogDataSourceProperties().initializeDataSourceBuilder()
                 .type(HikariDataSource.class).build();
     }
 
     /**
-     * BATCH DB EntityManager Setup
+     * CATALOG DB EntityManager Setup
      * @param builder
      * @return
      */
-    @Bean(name = "batchEntityManagerFactory")
-    public LocalContainerEntityManagerFactoryBean batchEntityManagerFactory(EntityManagerFactoryBuilder builder) {
-        hibernateProperties.setDdlAuto("none");
+    @Primary
+    @Bean(name = "catalogEntityManagerFactory")
+    public LocalContainerEntityManagerFactoryBean catalogEntityManagerFactory(EntityManagerFactoryBuilder builder) {
+        hibernateProperties.setDdlAuto("create");
         jpaProperties.setDatabasePlatform("org.hibernate.dialect.H2Dialect");
+
         var properties = hibernateProperties.determineHibernateProperties(
                 jpaProperties.getProperties(), new HibernateSettings());
         return builder
-                .dataSource(batchDataSource())
+                .dataSource(catalogDataSource())
                 .properties(properties)
-                .persistenceUnit(Constants.BATCH_UNIT_NAME)
-                .packages("me.kalpha.jdbctemplate.batch")//entities
+// em.createNativeQuery를 사용하는 경우에 만 필요
+//                .persistenceUnit(Constants.CATALOG_UNIT_NAME)
+                .packages("me.kalpha.jdbctemplate.catalog")//entities
                 .build();
     }
-
+    @Primary
     @Bean
-    public PlatformTransactionManager batchTransactionManager(
-            final @Qualifier("batchEntityManagerFactory") LocalContainerEntityManagerFactoryBean batchEntityManagerFactory) {
-        return new JpaTransactionManager(batchEntityManagerFactory.getObject());
+    public PlatformTransactionManager catalogTransactionManager(
+            final @Qualifier("catalogEntityManagerFactory") LocalContainerEntityManagerFactoryBean catalogEntityManagerFactory) {
+        return new JpaTransactionManager(catalogEntityManagerFactory.getObject());
     }
 }

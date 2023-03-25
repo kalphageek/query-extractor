@@ -1,4 +1,4 @@
-package me.kalpha.jdbctemplate.query;
+package me.kalpha.jdbctemplate.query.repository;
 
 import me.kalpha.jdbctemplate.query.dto.QueryDto;
 import me.kalpha.jdbctemplate.query.dto.QueryResult;

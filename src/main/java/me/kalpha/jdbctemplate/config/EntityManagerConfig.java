@@ -1,4 +1,4 @@
-package me.kalpha.jdbctemplate.query;
+package me.kalpha.jdbctemplate.config;
 
 import me.kalpha.jdbctemplate.common.Constants;
 import org.springframework.beans.factory.annotation.Autowired;
