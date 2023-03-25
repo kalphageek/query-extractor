@@ -47,11 +47,25 @@ public class TableController {
         CollectionModel<QueryResult> outputModel = CollectionModel.of(list);
         outputModel.add(Link.of("/docs/index.html#resources-table-samples").withRel("profile"))
                 .add(linkTo(this.getClass()).slash("samples").withSelfRel())
+                .add(linkTo(this.getClass()).withRel("table"))
                 .add(linkTo(this.getClass()).withRel("table-paging"))
                 .add(linkTo(this.getClass()).withRel("table-extract"));
         return ResponseEntity.ok().body(outputModel);
     }
 
+    @GetMapping
+    public ResponseEntity findTable(@RequestBody TableDto tableDto) {
+        List<QueryResult> results = queryService.findTable(tableDto, tableDto.getLimit());
+        CollectionModel<QueryResult> outputModel = CollectionModel.of(results);
+
+        outputModel.add(Link.of("/docs/index.html#resources-table").withRel("profile"))
+                .add(linkTo(this.getClass()).slash("table").withSelfRel())
+                .add(linkTo(this.getClass()).withRel("samples"))
+                .add(linkTo(this.getClass()).withRel("table-paging"))
+                .add(linkTo(this.getClass()).withRel("table-extract"));
+
+        return ResponseEntity.ok().body(outputModel);
+    }
     /**
      * @param tableDto Query할 테이블명, DBType (ORACLE / OTHERS)
      * @return 추출 레코드 수
@@ -64,6 +78,7 @@ public class TableController {
         entityModel.add(Link.of("/docs/index.html#resources-table-extract").withRel("profile"))
                 .add(linkTo(this.getClass()).withSelfRel())
                 .add(linkTo(this.getClass()).withRel("table-paging"))
+                .add(linkTo(this.getClass()).withRel("table"))
                 .add(linkTo(this.getClass()).slash("samples").withRel("table-samples"))
         ;
         return ResponseEntity.ok().body(entityModel);
@@ -76,7 +91,7 @@ public class TableController {
      * @param tableDto  Query할 테이블명, DBType (ORACLE / OTHERS)
      * @return 샘플데이터
      */
-    @GetMapping
+    @GetMapping("/paging")
     public ResponseEntity findTable(@PageableDefault(size = 8) Pageable pageable, PagedResourcesAssembler assembler, @RequestBody TableDto tableDto) {
         Page<QueryResult> page =  queryService.findTable(pageable, tableDto);
 

@@ -33,7 +33,6 @@ public class TableDto {
     @AllArgsConstructor
     @Builder
     public static class Table {
-        private String tableId;
         @NonNull
         private String select;
         @NonNull

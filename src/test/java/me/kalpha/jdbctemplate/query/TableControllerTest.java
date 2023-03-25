@@ -40,6 +40,7 @@ public class TableControllerTest extends BaseControllerTest {
                         links(halLinks(),
                                 linkWithRel("profile").description("link to profile"),
                                 linkWithRel("self").description("link to self api"),
+                                linkWithRel("table").description("link to table api"),
                                 linkWithRel("table-paging").description("link to table paging api"),
                                 linkWithRel("table-extract").description("link to table extract api")
                         ),
@@ -51,7 +52,7 @@ public class TableControllerTest extends BaseControllerTest {
         ;
     }
 
-    @DisplayName("정상 : Table unpaged")
+    @DisplayName("정상 : Table unpaging")
     @Test
     public void find_table() throws Exception {
         TableDto tableDto = GenerateTestData.generateTableDto();
@@ -61,6 +62,9 @@ public class TableControllerTest extends BaseControllerTest {
                 .content(objectMapper.writeValueAsString(tableDto)))
                 .andDo(print())
                 .andExpect(status().isOk())
+                .andDo(document("table",
+                        getTableFieldsSnippet()
+                ))
         ;
     }
 
@@ -80,6 +84,7 @@ public class TableControllerTest extends BaseControllerTest {
                         links(halLinks(),
                                 linkWithRel("profile").description("link to profile"),
                                 linkWithRel("self").description("link to self api"),
+                                linkWithRel("table").description("link to table api"),
                                 linkWithRel("table-paging").description("link to table paging api"),
                                 linkWithRel("table-samples").description("link to table samples api")
                         ),
@@ -96,18 +101,18 @@ public class TableControllerTest extends BaseControllerTest {
     public void find_table_pageable() throws Exception {
         TableDto tableDto = GenerateTestData.generateTableDto();
 
-        mockMvc.perform(RestDocumentationRequestBuilders.get("/data/table")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(tableDto))
-                .param("page","0")
-//                .param("size","10")
+        mockMvc.perform(RestDocumentationRequestBuilders.get("/data/table/paging")
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(objectMapper.writeValueAsString(tableDto))
+                    .param("page","0")
+                    .param("size","10")
                 )
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andDo(document("table-paging",
                         requestParameters(
-                                parameterWithName("page").description("page to retrieve, begin with and default is 1")//,
-//                                parameterWithName("size").description("Size of the page to retrieve, default 10")
+                                parameterWithName("page").description("page to retrieve, begin with and default is 1"),
+                                parameterWithName("size").description("Size of the page to retrieve, default 10")
                         ),
                         relaxedResponseFields(
                                 fieldWithPath("page.number").type(JsonFieldType.NUMBER).description("The number of this page."),
@@ -132,8 +137,7 @@ public class TableControllerTest extends BaseControllerTest {
                 fieldWithPath("params").description("Bind Variable을 위한 파라미터 배열"),
                 fieldWithPath("userId").description("사용자 사번"),
                 fieldWithPath("systemId").description("Catalog의 시스템ID"),
-                fieldWithPath("requiredTime").description("실행시간"),
-                fieldWithPath("table.tableId").description("Catalog의 테이블ID"),
+//                fieldWithPath("requiredTime").description("실행시간"),
                 fieldWithPath("table.select").description("[select]제외한 select절"),
                 fieldWithPath("table.from").description("[from]제외한 from절"),
                 fieldWithPath("table.where").description("[where]제외한 where절"),
