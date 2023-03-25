@@ -146,6 +146,23 @@ public class QueryRepositoryOracleImpl implements QueryRepository {
         return query.getResultList();
     }
 
+    @Override
+    public List<QueryResult> findByQuery(QueryDto queryDto, Long limit) {
+        String sql = String.format(
+                "select *\n" +
+                        "  from (%s)\n" +
+                        " where rownum <= %d"
+                , queryDto.getSql(), queryDto.getLimit());
+        Query query = em.createNativeQuery(sql);
+
+        if (queryDto.getParams() != null && queryDto.getParams().length != 0) {
+            for (int i = 0; i < queryDto.getParams().length; i++) {
+                query.setParameter(i + 1, queryDto.getParams()[i]);
+            }
+        }
+        return getRecords(query);
+    }
+
     //---------------------------------------------------------------------
     private List getRecords(Query query) {
         List<Object[]> queryResults = query.getResultList();

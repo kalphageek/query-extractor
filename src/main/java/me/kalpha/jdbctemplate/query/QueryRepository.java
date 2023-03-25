@@ -21,5 +21,6 @@ public interface QueryRepository {
     public Boolean validateSql(QueryDto queryDto);
 
     public List<Object[]> findByQuery(QueryDto queryDto);
+    public List<QueryResult> findByQuery(QueryDto queryDto, Long limit);
     public Page<QueryResult> findByQuery(Pageable pageable, QueryDto queryDto);
 }

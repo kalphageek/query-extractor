@@ -14,5 +14,7 @@ public class QueryDto {
     private Object[] params;
     private String userId;
     @Builder.Default
+    private Long limit = 10L;
+    @Builder.Default
     private LocalDateTime requiredTime = LocalDateTime.now();
 }

@@ -41,7 +41,7 @@ public class QueryServiceImpl implements QueryService {
     @Override
     public List<QueryResult> findTable(TableDto tableDto, Long limit) {
         setRepository(tableDto.getSystemId());
-        return queryRepository.findTable(tableDto, limit);
+        return queryRepository.findTable(tableDto, tableDto.getLimit());
     }
 
     @Override
@@ -62,6 +62,12 @@ public class QueryServiceImpl implements QueryService {
     public Boolean validateSql(QueryDto queryDto) {
         setRepository(queryDto.getSystemId());
         return queryRepository.validateSql(queryDto);
+    }
+
+    @Override
+    public List<QueryResult> findByQuery(QueryDto queryDto, Long limit) {
+        setRepository(queryDto.getSystemId());
+        return queryRepository.findByQuery(queryDto, queryDto.getLimit());
     }
 
     @Override

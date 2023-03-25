@@ -48,7 +48,7 @@ public class QueryServiceTest {
         List<QueryResult> results = queryService.findTable(tableDto, 20L);
         results.stream().forEach(System.out::println);
 
-        assertNotNull(results);
+        assertTrue(results.size() == tableDto.getLimit());
     }
     @Test
     public void find_table_pageable() {

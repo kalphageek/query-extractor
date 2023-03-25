@@ -102,6 +102,20 @@ public class QueryRepositoryOthersImpl implements QueryRepository {
         }
         return query.getResultList();
     }
+
+    @Override
+    public List<QueryResult> findByQuery(QueryDto queryDto, Long limit) {
+        String pagingQuery = String.format("select * from (%s) t limit %d"
+                , queryDto.getSql(), queryDto.getLimit());
+        Query query = em.createNativeQuery(pagingQuery);
+        if (queryDto.getParams() != null && queryDto.getParams().length != 0) {
+            for (int i = 0; i < queryDto.getParams().length; i++) {
+                query.setParameter(i + 1, queryDto.getParams()[i]);
+            }
+        }
+        return getRecords(query);
+    }
+
     @Override
     public Page<QueryResult> findByQuery(Pageable pageable, QueryDto queryDto) {
         String pagingQuery = String.format("select * from (%s) t limit %d offset %d"

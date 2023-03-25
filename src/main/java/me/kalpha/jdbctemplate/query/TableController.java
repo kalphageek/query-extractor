@@ -53,7 +53,6 @@ public class TableController {
     }
 
     /**
-     * 샘플데이터를 가장 빠른 속도록 조회한다. 조건과 순서를 지정할 수 없다
      * @param tableDto Query할 테이블명, DBType (ORACLE / OTHERS)
      * @return 추출 레코드 수
      */

@@ -18,6 +18,7 @@ public interface QueryService {
 
     public Boolean validateSql(QueryDto queryDto);
 
+    public List<QueryResult> findByQuery(QueryDto queryDto, Long limit);
     public Page<QueryResult> findByQuery(Pageable pageable, QueryDto queryDto);
     public long extractByQuery(QueryDto queryDto);
 }
