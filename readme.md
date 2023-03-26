@@ -66,3 +66,22 @@ Page<Member> page = memberRepository.findAll(pageable);
 Page<MemberDto> dtoPage = page.map(member -> new MemberDto(member.getId(), member.getUsername(), member.getTeamId()));
 return dtoPage;
 ```
+
+## H2 운영DB 설정
+> 파일 모드
+1. H2 Download
+> https://h2database.com/html/main.html
+2. 파일생성 및 H2 실행
+```bash
+$ cd ~/workspace/h2/
+$ mkdir data
+$ touch data/querydsl.mv.db
+$ chmod 755 bin/h2.sh
+$ bin/h2.sh # Web Browser 자동실행
+```
+3. file/TCP모드 접속
+> 처음 개발할 때는 Test 결과확인을 위해 file/TCP 모드를 사용하고, 운영중 Test는 Memory 모드를 사용한다
+* 저장한 설정 : Generic H2 (Embedded)
+* JDBC URL : jdbc:h2:tcp://localhost/~/workspace/h2/data/querydsl
+4. 스키마 / 데이터 자동생성
+> resources 아래에 schema.sql, data.sql 를 생성해 넣는다.
