@@ -71,6 +71,9 @@ public class TableControllerTest extends BaseControllerTest {
                                 linkWithRel("table-paging").description("link to table paging api"),
                                 linkWithRel("table-sample").description("link to table sample api")
                         ),
+                        relaxedResponseFields(
+                                fieldWithPath("_embedded.queryResults[0].record").type("List").description("Table Result 리스트")
+                        ),
                         getTableFieldsSnippet()
                 ))
         ;

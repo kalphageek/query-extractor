@@ -19,11 +19,11 @@ Oracle, Hive, PostgreSQL 등 다양한 DB에 적용할 수 있다.
 ```
 5. index.adoc에 skin 적용
 ```shell
-asciidoctor index.adoc
+$ asciidoctor index.adoc
 ```
 6. Maven package
 ```shell
-mvn package
+$ mvn package
 ```
 
 ## Multi DataSource 설정 : createNativeQuery를 사용하는 경우
@@ -58,11 +58,11 @@ spring:
 ```
 2. 메소드 Default Size 설정, Pageable 아규먼트에 추가
 ```
-Pageable pageable --> @PageableDefault(size = 8) Pageable pageable
+Pageable pageable --> @PageableDefault(size = 8, page = 0) Pageable pageable
 ```
 3. Entity -> DTO
 ```java
 Page<Member> page = memberRepository.findAll(pageable);
 Page<MemberDto> dtoPage = page.map(member -> new MemberDto(member.getId(), member.getUsername(), member.getTeamId()));
-retur dtoPage;
+return dtoPage;
 ```

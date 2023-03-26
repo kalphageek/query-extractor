@@ -112,7 +112,7 @@ operation::query-paging[snippets='curl-request,request-parameters,request-fields
 
 `GET` 요청을 사용하여 Query 결과를 Http Response로 조회할 수 있다.
 
-operation::query-limit[snippets='curl-request,request-parameters,request-fields,http-response,response-fields,links']
+operation::query-limit[snippets='curl-request,request-fields,http-response,response-fields,links']
 
 [[resources-query-extract]]
 
@@ -150,7 +150,7 @@ operation::table-paging[snippets='curl-request,request-parameters,request-fields
 
 `Get` 요청을 사용해서 테이블 Sample Http Response로 조회할 수 있다.
 
-operation::table-limit[snippets='curl-request,request-parameters,request-fields,http-response,response-fields,links']
+operation::table-limit[snippets='curl-request,request-fields,http-response,response-fields,links']
 
 [[resources-table-extract]]
 

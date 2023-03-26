@@ -8,6 +8,7 @@ import org.springframework.http.MediaType;
 import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders;
 import org.springframework.restdocs.payload.JsonFieldType;
 import org.springframework.restdocs.payload.RequestFieldsSnippet;
+import org.springframework.restdocs.payload.ResponseFieldsSnippet;
 
 import static org.springframework.restdocs.hypermedia.HypermediaDocumentation.*;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
@@ -85,7 +86,7 @@ public class QueryControllerTest extends BaseControllerTest {
                                 parameterWithName("page").description("page to retrieve, begin with and default is 1"),
                                 parameterWithName("size").description("Size of the page to retrieve, default 10")
                         ),
-                        getQueryFieldsSnippet(),
+                        getRequestFieldsSnippet(),
                         relaxedResponseFields(
                                 fieldWithPath("page.number").type(JsonFieldType.NUMBER).description("The number of this page."),
                                 fieldWithPath("page.size").type(JsonFieldType.NUMBER).description("The size of this page."),
@@ -123,7 +124,10 @@ public class QueryControllerTest extends BaseControllerTest {
                                 linkWithRel("query-paging").description("link to paging query api"),
                                 linkWithRel("query-extract").description("link to query extract api")
                         ),
-                        getQueryFieldsSnippet()
+                        relaxedResponseFields(
+                                fieldWithPath("_embedded.queryResults[0].record").type("List").description("Query Result 리스트")
+                        ),
+                        getRequestFieldsSnippet()
                 ))
         ;
     }
@@ -146,7 +150,7 @@ public class QueryControllerTest extends BaseControllerTest {
                                 linkWithRel("query-paging").description("link to paging query api"),
                                 linkWithRel("query-limit").description("link to query api")
                         ),
-                        getQueryFieldsSnippet(),
+                        getRequestFieldsSnippet(),
                         relaxedResponseFields(
                                 fieldWithPath("count").description("Extract count")
                         )
@@ -154,7 +158,7 @@ public class QueryControllerTest extends BaseControllerTest {
         ;
     }
 
-    private RequestFieldsSnippet getQueryFieldsSnippet() {
+    private RequestFieldsSnippet getRequestFieldsSnippet() {
         return relaxedRequestFields(
                 fieldWithPath("sql").description("Bind Variable을 갖는 SQL"),
                 fieldWithPath("params").description("Bind Variable을 위한 파라미터 배열"),
