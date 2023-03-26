@@ -52,7 +52,7 @@ public class QueryRepositoryOracleImpl implements QueryRepository {
 
     @Override
     public List<QueryResult> findSamples(SamplesDto samplesDto) {
-        String samplesSql = String.format("select * from %s where rownum <= %d", samplesDto.getTable(), Constants.SAMPLES_COUNT);
+        String samplesSql = String.format("select * from %s offset 0 rows fetch next %d rows only", samplesDto.getTable(), Constants.SAMPLES_COUNT);
         Query query = em.createNativeQuery(samplesSql);
         return getRecords(query);
     }
@@ -72,11 +72,8 @@ public class QueryRepositoryOracleImpl implements QueryRepository {
 
     @Override
     public List<QueryResult> findTable(TableDto tableDto, Long limit) {
-        String sql = String.format(
-                "select *\n" +
-                        "  from (%s)\n" +
-                        " where rownum <= %d"
-                , tableDto.getTable().getFrom(), tableDto.getLimit());
+        String sql = String.format("%s offset 0 rows fetch next %d rows only"
+                , tableDto.getSql(), tableDto.getLimit());
         Query query = em.createNativeQuery(sql);
         if (tableDto.getParams() != null && tableDto.getParams().length != 0) {
             for (int i = 0; i < tableDto.getParams().length; i++) {
@@ -88,17 +85,8 @@ public class QueryRepositoryOracleImpl implements QueryRepository {
 
     @Override
     public Page<QueryResult> findTable(Pageable pageable, TableDto tableDto) {
-        Integer start = pageable.getPageNumber() * pageable.getPageSize();
-        Integer end = (pageable.getPageNumber() + 1) * pageable.getPageSize();
-        String pagingQuery = String.format(
-                "select *\n" +
-                        "  from (select t2.*, rownum rnum\n" +
-                        "          from (select t.*, count(1) over()\n" +
-                        "                  from %s t\n" +
-                        "               ) t2\n" +
-                        "         where rownum <= %d)\n" +
-                        " where rnum > %d"
-                , tableDto.getTable().getFrom(), end, start);
+        String pagingQuery = String.format("%s offset %d rows fetch next %d rows only"
+                , tableDto.getSql(), pageable.getPageNumber(), pageable.getPageSize());
         Query query = em.createNativeQuery(pagingQuery);
         if (tableDto.getParams() != null && tableDto.getParams().length != 0) {
             for (int i = 0; i < tableDto.getParams().length; i++) {
@@ -110,23 +98,9 @@ public class QueryRepositoryOracleImpl implements QueryRepository {
 
     @Override
     public Page<QueryResult> findByQuery(Pageable pageable, QueryDto queryDto) {
-        Integer start = pageable.getPageNumber() * pageable.getPageSize();
-        Integer end = (pageable.getPageNumber() + 1) * pageable.getPageSize();
-        String pagingQuery = String.format(
-                "select *\n" +
-                        "  from (select t3.*, rownum as rnum\n" +
-                        "          from (select t2.*, count(1) over()\n" +
-                        "                  from (\n" +
-                        "--SQL Begin--\n" +
-                        "%s\n" +
-                        "--SQL End--\n" +
-                        "                       ) t2\n" +
-                        "                ) t3\n" +
-                        "          where rownum <= %d)\n" +
-                        " where rnum > %d"
-                , queryDto.getSql(), end, start);
+        String pagingQuery = String.format("%s offset %d rows fetch next %d rows only"
+                , queryDto.getSql(), pageable.getPageNumber(), pageable.getPageSize());
         Query query = em.createNativeQuery(pagingQuery);
-
         if (queryDto.getParams() != null && queryDto.getParams().length != 0) {
             for (int i = 0; i < queryDto.getParams().length; i++) {
                 query.setParameter(i + 1, queryDto.getParams()[i]);
@@ -148,10 +122,7 @@ public class QueryRepositoryOracleImpl implements QueryRepository {
 
     @Override
     public List<QueryResult> findByQuery(QueryDto queryDto, Long limit) {
-        String sql = String.format(
-                "select *\n" +
-                        "  from (%s)\n" +
-                        " where rownum <= %d"
+        String sql = String.format("%s offset 0 rows fetch next %d rows only"
                 , queryDto.getSql(), queryDto.getLimit());
         Query query = em.createNativeQuery(sql);
 
