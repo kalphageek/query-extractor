@@ -146,7 +146,7 @@ public class TableControllerTest extends BaseControllerTest {
 
     private RequestFieldsSnippet getSampleFieldsSnippet() {
         return relaxedRequestFields(
-                fieldWithPath("systemId").description("데이터를 조회하는 시스템ID"),
+                fieldWithPath("systemId").description("Catalog의 시스템ID : Batch(100), e-Hub(200)"),
                 fieldWithPath("table").description("테이블명")
         );
     }
@@ -155,7 +155,7 @@ public class TableControllerTest extends BaseControllerTest {
         return relaxedRequestFields(
                 fieldWithPath("params").description("Bind Variable을 위한 파라미터 배열"),
                 fieldWithPath("userId").description("사용자 사번"),
-                fieldWithPath("systemId").description("Catalog의 시스템ID"),
+                fieldWithPath("systemId").description("Catalog의 시스템ID : Batch(100), e-Hub(200)"),
                 fieldWithPath("table.select").description("[select]제외한 select절"),
                 fieldWithPath("table.from").description("[from]제외한 from절"),
                 fieldWithPath("table.where").description("[where]제외한 where절"),

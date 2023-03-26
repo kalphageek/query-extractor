@@ -163,7 +163,7 @@ public class QueryControllerTest extends BaseControllerTest {
                 fieldWithPath("sql").description("Bind Variable을 갖는 SQL"),
                 fieldWithPath("params").description("Bind Variable을 위한 파라미터 배열"),
                 fieldWithPath("userId").description("사용자 사번"),
-                fieldWithPath("systemId").description("데이터를 조회하는 시스템ID")//,
+                fieldWithPath("systemId").description("Catalog의 시스템ID : Batch(100), e-Hub(200)")//,
 //                fieldWithPath("requiredTime").description("실행시간")
         );
     }
