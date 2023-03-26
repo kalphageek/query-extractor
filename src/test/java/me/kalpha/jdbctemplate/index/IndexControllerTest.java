@@ -18,8 +18,8 @@ public class IndexControllerTest extends BaseControllerTest {
                 .andExpect(status().isOk())
                 .andDo(document("index",
                         links(
-                                linkWithRel("query").description("The <<resources-query, Query resource>>"),
-                                linkWithRel("table").description("The <<resources-table, Table resource>>")
+                                linkWithRel("query").description("The <<resources-query, Query>>-Join등 Query를 이용해 필요한 데이터를 얻을 수 있다"),
+                                linkWithRel("table").description("The <<resources-table, Table>>-단일 Table에 대한 필드/필터/컬럼순서를 정의해서 데이터를 얻을 수 있다")
                         ))
                 );
     }

@@ -24,8 +24,7 @@ import javax.sql.DataSource;
 @Configuration
 @EnableJpaRepositories(
         entityManagerFactoryRef = "ehubEntityManagerFactory",
-        transactionManagerRef = "ehubTransactionManager",
-        basePackages = {"me.kalpha.jdbctemplate.ehub"}//repositories
+        transactionManagerRef = "ehubTransactionManager"
 )
 @EnableTransactionManagement
 public class EhubDataSourceConfig {

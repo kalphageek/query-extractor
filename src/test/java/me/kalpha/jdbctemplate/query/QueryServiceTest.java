@@ -27,7 +27,7 @@ public class QueryServiceTest {
     public void find_samples() {
         SamplesDto samplesDto = GenerateTestData.generateSamplesDto();
 
-        List<QueryResult> list = queryService.findSamples(samplesDto);
+        List<QueryResult> list = queryService.findSample(samplesDto);
         list.stream().forEach(System.out::println);
 
         assertNotNull(list);

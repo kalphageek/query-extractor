@@ -62,9 +62,9 @@ public class QueryController {
         // Hateoas (Link 및 Profile)
         PagedModel pagedModel = assembler.toModel(page, r -> PagedModel.of((QueryResult) r));
         pagedModel.add(Link.of("/docs/index.html#resources-query-paging").withRel("profile"))
-                .add(linkTo(this.getClass()).withSelfRel())
+                .add(linkTo(this.getClass()).slash("query-paging").withSelfRel())
                 .add(linkTo(this.getClass()).withRel("query-extract"))
-                .add(linkTo(this.getClass()).withRel("query"));
+                .add(linkTo(this.getClass()).withRel("query-limit"));
 
         return ResponseEntity.ok().body(pagedModel);
     }
@@ -80,15 +80,15 @@ public class QueryController {
         // Hateoas (Link 및 Profile)
         CollectionModel<QueryResult> outputModel = CollectionModel.of(results);
 
-        outputModel.add(Link.of("/docs/index.html#resources-query").withRel("profile"))
-                .add(linkTo(this.getClass()).slash("query").withSelfRel())
+        outputModel.add(Link.of("/docs/index.html#resources-query-limit").withRel("profile"))
+                .add(linkTo(this.getClass()).slash("query-limit").withSelfRel())
                 .add(linkTo(this.getClass()).withRel("query-extract"))
                 .add(linkTo(this.getClass()).withRel("query-paging"));
 
         return ResponseEntity.ok().body(outputModel);
     }
 
-    @PostMapping
+    @PostMapping("/extract")
     public ResponseEntity extractByQuery(@RequestBody QueryDto queryDto, Errors errors) {
         queryValidator.validate(queryDto, errors);
         if (errors.hasErrors()) {
@@ -101,9 +101,9 @@ public class QueryController {
         //Hateoas
         EntityModel<ExtractResult> entityModel = EntityModel.of(extractResult);
         entityModel.add(Link.of("/docs/index.html#resources-query-extract").withRel("profile"))
-                .add(linkTo(this.getClass()).withSelfRel())
+                .add(linkTo(this.getClass()).slash("query-extract").withSelfRel())
                 .add(linkTo(this.getClass()).withRel("query-paging"))
-                .add(linkTo(this.getClass()).withRel("query"));
+                .add(linkTo(this.getClass()).withRel("query-limit"));
 
         return ResponseEntity.ok().body(entityModel);
     }

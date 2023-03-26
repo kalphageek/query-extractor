@@ -79,12 +79,13 @@ operation::overview-errors[snippets='http-response,links']
 = 리소스
 
 [[resources-index]]
+
 == 인덱스
 
-인덱스는 서비스 진입점을 제공한다.
-
+서비스 진입점은 /data이고, query와 table 2개의 Relation을 제공한다.
 
 [[resources-index-access]]
+
 === 인덱스 조회
 
 `GET` 요청을 사용하여 인덱스에 접근할 수 있다.
@@ -92,46 +93,69 @@ operation::overview-errors[snippets='http-response,links']
 operation::index[snippets='curl-request,http-response,links']
 
 [[resources-query]]
+
 == Query
 
 Query 결과를 조회하거나 추출할 때 사용한다.
 
-[[resources-query-extract]]
-=== Query 결과 추출
-
-`POST` 요청을 사용하여 Query 결과를 파일로 추출할 수 있다.
-
-operation::query-extract[snippets='curl-request,request-fields,http-response,response-fields,links']
-
 [[resources-query-paging]]
+
 === Query Paging 조회
 
 `GET` 요청을 사용하여 Query 결과를 Page별로 Http Response로 조회할 수 있다.
 
 operation::query-paging[snippets='curl-request,request-parameters,request-fields,http-response,response-fields,links']
 
+[[resources-query-limit]]
+
+=== Query 조회 (Limit)
+
+`GET` 요청을 사용하여 Query 결과를 Http Response로 조회할 수 있다.
+
+operation::query-limit[snippets='curl-request,request-parameters,request-fields,http-response,response-fields,links']
+
+[[resources-query-extract]]
+
+=== Query 결과 추출
+
+`POST` 요청을 사용하여 Query 결과를 파일로 추출할 수 있다.
+
+operation::query-extract[snippets='curl-request,request-fields,http-response,response-fields,links']
+
 [[resources-table]]
+
 == 테이블
 
 테이블의 데이터를 보거나, 추출할 수 있다.
 
-[[resources-table-samples]]
+[[resources-table-sample]]
+
 === 테이블 샘플 조회
 
-`Get` 요청을 사용해서 테이블을 Page별로 Http Response로 조회할 수 있다.
+`Get` 요청을 사용해서 테이블의 Sample 데이터를 Http Response로 조회할 수 있다.
 
-operation::table-samples[snippets='curl-request,request-fields,http-response,response-fields,links']
+operation::table-sample[snippets='curl-request,request-fields,http-response,response-fields,links']
 
 [[resources-table-paging]]
+
 === 테이블 Paging 조회
 
-`Get` 요청을 사용해서 테이블 Sample Http Response로 조회할 수 있다.
+`Get` 요청을 사용해서 테이블 Data를 Page별로 Http Response로 조회할 수 있다.
 
 operation::table-paging[snippets='curl-request,request-parameters,request-fields,http-response,response-fields,links']
 
+[[resources-table-limit]]
+
+=== 테이블 조회 (Limit)
+
+`Get` 요청을 사용해서 테이블 Sample Http Response로 조회할 수 있다.
+
+operation::table-limit[snippets='curl-request,request-parameters,request-fields,http-response,response-fields,links']
+
 [[resources-table-extract]]
+
 === 테이블 추출
 
-`Post` 요청을 사용해서 테이블을 추출할 수 있다.
+`Post` 요청을 사용해서 테이블을 파일로 추출할 수 있다.
 
 operation::table-extract[snippets='curl-request,request-fields,http-response,response-fields,links']

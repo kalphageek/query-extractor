@@ -24,8 +24,7 @@ import javax.sql.DataSource;
 @Configuration
 @EnableJpaRepositories(
         entityManagerFactoryRef = "batchEntityManagerFactory",
-        transactionManagerRef = "batchTransactionManager",
-        basePackages = {"me.kalpha.jdbctemplate.batch"}//repositories
+        transactionManagerRef = "batchTransactionManager"
 )
 @EnableTransactionManagement
 public class BatchDataSourceConfig {

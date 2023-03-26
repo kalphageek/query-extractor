@@ -27,27 +27,27 @@ public class TableControllerTest extends BaseControllerTest {
 
     @DisplayName("정상 : Table samples 조회. dbType과 from만 설정")
     @Test
-    public void find_samples() throws Exception {
+    public void find_sample() throws Exception {
         SamplesDto samplesDto = GenerateTestData.generateSamplesDto();
 
-        mockMvc.perform(get("/data/table/samples")
+        mockMvc.perform(get("/data/table/sample")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(samplesDto)))
                 .andDo(print())
                 .andExpect(status().isOk())
-                .andDo(document("table-samples",
+                .andDo(document("table-sample",
                         //links.adoc 생성
                         links(halLinks(),
                                 linkWithRel("profile").description("link to profile"),
                                 linkWithRel("self").description("link to self api"),
-                                linkWithRel("table").description("link to table api"),
+                                linkWithRel("table-limit").description("link to table api"),
                                 linkWithRel("table-paging").description("link to table paging api"),
                                 linkWithRel("table-extract").description("link to table extract api")
                         ),
                         relaxedResponseFields(
                                 fieldWithPath("_embedded.queryResults[0].record").description("Query 결과 (select)")
                         ),
-                        getSamplesFieldsSnippet()
+                        getSampleFieldsSnippet()
                 ))
         ;
     }
@@ -62,7 +62,15 @@ public class TableControllerTest extends BaseControllerTest {
                 .content(objectMapper.writeValueAsString(tableDto)))
                 .andDo(print())
                 .andExpect(status().isOk())
-                .andDo(document("table",
+                .andDo(document("table-limit",
+                        //links.adoc 생성
+                        links(halLinks(),
+                                linkWithRel("profile").description("link to profile"),
+                                linkWithRel("self").description("link to self api"),
+                                linkWithRel("table-extract").description("link to table extract api"),
+                                linkWithRel("table-paging").description("link to table paging api"),
+                                linkWithRel("table-sample").description("link to table sample api")
+                        ),
                         getTableFieldsSnippet()
                 ))
         ;
@@ -73,7 +81,7 @@ public class TableControllerTest extends BaseControllerTest {
     public void extract_table() throws Exception {
         TableDto tableDto = GenerateTestData.generateTableDto();
 
-        mockMvc.perform(post("/data/table")
+        mockMvc.perform(post("/data/table/extract")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(tableDto)))
                 .andDo(print())
@@ -84,9 +92,9 @@ public class TableControllerTest extends BaseControllerTest {
                         links(halLinks(),
                                 linkWithRel("profile").description("link to profile"),
                                 linkWithRel("self").description("link to self api"),
-                                linkWithRel("table").description("link to table api"),
+                                linkWithRel("table-limit").description("link to table api"),
                                 linkWithRel("table-paging").description("link to table paging api"),
-                                linkWithRel("table-samples").description("link to table samples api")
+                                linkWithRel("table-sample").description("link to table sample api")
                         ),
                         relaxedResponseFields(
                                 fieldWithPath("count").description("Extract count")
@@ -110,6 +118,14 @@ public class TableControllerTest extends BaseControllerTest {
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andDo(document("table-paging",
+                        //links.adoc 생성
+                        links(halLinks(),
+                                linkWithRel("profile").description("link to profile"),
+                                linkWithRel("self").description("link to self api"),
+                                linkWithRel("table-limit").description("link to table api"),
+                                linkWithRel("table-extract").description("link to table extract api"),
+                                linkWithRel("table-sample").description("link to table sample api")
+                        ),
                         requestParameters(
                                 parameterWithName("page").description("page to retrieve, begin with and default is 1"),
                                 parameterWithName("size").description("Size of the page to retrieve, default 10")
@@ -125,7 +141,7 @@ public class TableControllerTest extends BaseControllerTest {
         ;
     }
 
-    private RequestFieldsSnippet getSamplesFieldsSnippet() {
+    private RequestFieldsSnippet getSampleFieldsSnippet() {
         return relaxedRequestFields(
                 fieldWithPath("systemId").description("데이터를 조회하는 시스템ID"),
                 fieldWithPath("table").description("테이블명")
@@ -137,7 +153,6 @@ public class TableControllerTest extends BaseControllerTest {
                 fieldWithPath("params").description("Bind Variable을 위한 파라미터 배열"),
                 fieldWithPath("userId").description("사용자 사번"),
                 fieldWithPath("systemId").description("Catalog의 시스템ID"),
-//                fieldWithPath("requiredTime").description("실행시간"),
                 fieldWithPath("table.select").description("[select]제외한 select절"),
                 fieldWithPath("table.from").description("[from]제외한 from절"),
                 fieldWithPath("table.where").description("[where]제외한 where절"),

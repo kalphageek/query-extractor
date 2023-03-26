@@ -40,16 +40,16 @@ public class TableController {
      * @param samplesDto 조히할 테이블명, DBType (ORACLE / OTHERS)
      * @return 샘플데이터
      */
-    @GetMapping("/samples")
-    public ResponseEntity findSamples(@RequestBody SamplesDto samplesDto) {
+    @GetMapping("/sample")
+    public ResponseEntity findSample(@RequestBody SamplesDto samplesDto) {
 
-        List<QueryResult> list =  queryService.findSamples(samplesDto);
+        List<QueryResult> list =  queryService.findSample(samplesDto);
 
         // Hateoas (Link 및 Profile)
         CollectionModel<QueryResult> outputModel = CollectionModel.of(list);
-        outputModel.add(Link.of("/docs/index.html#resources-table-samples").withRel("profile"))
-                .add(linkTo(this.getClass()).slash("samples").withSelfRel())
-                .add(linkTo(this.getClass()).withRel("table"))
+        outputModel.add(Link.of("/docs/index.html#resources-table-sample").withRel("profile"))
+                .add(linkTo(this.getClass()).slash("table-sample").withSelfRel())
+                .add(linkTo(this.getClass()).withRel("table-limit"))
                 .add(linkTo(this.getClass()).withRel("table-paging"))
                 .add(linkTo(this.getClass()).withRel("table-extract"));
         return ResponseEntity.ok().body(outputModel);
@@ -59,16 +59,16 @@ public class TableController {
      * @param tableDto Query할 테이블명, DBType (ORACLE / OTHERS)
      * @return 추출 레코드 수
      */
-    @PostMapping
+    @PostMapping("/extract")
     public ResponseEntity extractTable(@RequestBody TableDto tableDto) {
         long extractCount = queryService.extractTable(tableDto);
         ExtractResult extractResult = new ExtractResult(extractCount);
         EntityModel<ExtractResult> entityModel = EntityModel.of(extractResult);
         entityModel.add(Link.of("/docs/index.html#resources-table-extract").withRel("profile"))
-                .add(linkTo(this.getClass()).withSelfRel())
+                .add(linkTo(this.getClass()).slash("table-extract").withSelfRel())
                 .add(linkTo(this.getClass()).withRel("table-paging"))
-                .add(linkTo(this.getClass()).withRel("table"))
-                .add(linkTo(this.getClass()).slash("samples").withRel("table-samples"))
+                .add(linkTo(this.getClass()).withRel("table-limit"))
+                .add(linkTo(this.getClass()).withRel("table-sample"))
         ;
         return ResponseEntity.ok().body(entityModel);
     }
@@ -87,9 +87,10 @@ public class TableController {
         // Hateoas (Link 및 Profile)
         PagedModel pagedModel = assembler.toModel(page, r -> EntityModel.of((QueryResult) r));
         pagedModel.add(Link.of("/docs/index.html#resources-table-paging").withRel("profile"))
-                .add(linkTo(this.getClass()).withSelfRel())
+                .add(linkTo(this.getClass()).slash("table-paging").withSelfRel())
                 .add(linkTo(this.getClass()).withRel("table-extract"))
-                .add(linkTo(this.getClass()).slash("samples").withRel("table-samples"))
+                .add(linkTo(this.getClass()).withRel("table-limit"))
+                .add(linkTo(this.getClass()).withRel("table-sample"))
         ;
         return ResponseEntity.ok().body(pagedModel);
     }
@@ -99,11 +100,11 @@ public class TableController {
         List<QueryResult> results = queryService.findTable(tableDto, tableDto.getLimit());
         CollectionModel<QueryResult> outputModel = CollectionModel.of(results);
 
-        outputModel.add(Link.of("/docs/index.html#resources-table").withRel("profile"))
-                .add(linkTo(this.getClass()).slash("table").withSelfRel())
-                .add(linkTo(this.getClass()).withRel("samples"))
+        outputModel.add(Link.of("/docs/index.html#resources-table-limit").withRel("profile"))
+                .add(linkTo(this.getClass()).slash("table-limit").withSelfRel())
                 .add(linkTo(this.getClass()).withRel("table-paging"))
-                .add(linkTo(this.getClass()).withRel("table-extract"));
+                .add(linkTo(this.getClass()).withRel("table-extract"))
+                .add(linkTo(this.getClass()).withRel("table-sample"));
 
         return ResponseEntity.ok().body(outputModel);
     }

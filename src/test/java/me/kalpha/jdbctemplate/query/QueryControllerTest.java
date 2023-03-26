@@ -74,6 +74,13 @@ public class QueryControllerTest extends BaseControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("_embedded.queryResults[0].record").exists())
                 .andDo(document("query-paging",
+                        //links.adoc 생성
+                        links(halLinks(),
+                                linkWithRel("profile").description("link to profile"),
+                                linkWithRel("self").description("link to self api"),
+                                linkWithRel("query-extract").description("link to extract query api"),
+                                linkWithRel("query-limit").description("link to query api")
+                        ),
                         requestParameters(
                                 parameterWithName("page").description("page to retrieve, begin with and default is 1"),
                                 parameterWithName("size").description("Size of the page to retrieve, default 10")
@@ -101,7 +108,14 @@ public class QueryControllerTest extends BaseControllerTest {
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("_embedded.queryResults[0].record").exists())
-                .andDo(document("query",
+                .andDo(document("query-limit",
+                        //links.adoc 생성
+                        links(halLinks(),
+                                linkWithRel("profile").description("link to profile"),
+                                linkWithRel("self").description("link to self api"),
+                                linkWithRel("query-paging").description("link to paging query api"),
+                                linkWithRel("query-extract").description("link to extract query api")
+                        ),
                         //links.adoc 생성
                         links(halLinks(),
                                 linkWithRel("profile").description("link to profile"),
@@ -118,7 +132,7 @@ public class QueryControllerTest extends BaseControllerTest {
     public void query_extract() throws Exception {
         QueryDto queryDto = GenerateTestData.generateQueryDto();
 
-        mockMvc.perform(post("/data/query")
+        mockMvc.perform(post("/data/query/extract")
                     .contentType(MediaType.APPLICATION_JSON)
                     .content(objectMapper.writeValueAsString(queryDto)))
                 .andDo(print())
@@ -130,7 +144,7 @@ public class QueryControllerTest extends BaseControllerTest {
                                 linkWithRel("profile").description("link to profile"),
                                 linkWithRel("self").description("link to self api"),
                                 linkWithRel("query-paging").description("link to paging query api"),
-                                linkWithRel("query").description("link to query api")
+                                linkWithRel("query-limit").description("link to query api")
                         ),
                         getQueryFieldsSnippet(),
                         relaxedResponseFields(

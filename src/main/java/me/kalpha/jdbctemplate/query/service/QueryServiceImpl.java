@@ -36,7 +36,7 @@ public class QueryServiceImpl implements QueryService {
 
 
     @Override
-    public List<QueryResult> findSamples(SamplesDto samplesDto) {
+    public List<QueryResult> findSample(SamplesDto samplesDto) {
         setRepository(samplesDto.getSystemId());
         return queryRepository.findSamples(samplesDto);
     }
