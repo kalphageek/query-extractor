@@ -57,7 +57,7 @@ public class EhubDataSourceConfig {
      */
     @Bean(name = "ehubEntityManagerFactory")
     public LocalContainerEntityManagerFactoryBean ehubEntityManagerFactory(EntityManagerFactoryBuilder builder) {
-        hibernateProperties.setDdlAuto("none");
+//        hibernateProperties.setDdlAuto("none");
         jpaProperties.setDatabasePlatform("org.hibernate.dialect.H2Dialect");
         var properties = hibernateProperties.determineHibernateProperties(
                 jpaProperties.getProperties(), new HibernateSettings());

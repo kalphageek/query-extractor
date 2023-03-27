@@ -22,12 +22,12 @@ public class EntityManagerConfig {
     @PersistenceContext(unitName = Constants.EHUB_UNIT_NAME)
     EntityManager ehubEntityManager;
 
-    @Bean(name = Constants.BATCH_UNIT_NAME)
+    @Bean(name = Constants.SYS_BATCH)
     public EntityManager getBatchEntityManager() {
         return batchEntityManager;
     }
 
-    @Bean(name = Constants.EHUB_UNIT_NAME)
+    @Bean(name = Constants.SYS_EHUB)
     public EntityManager getEhubEntityManager() {
         return ehubEntityManager;
     }

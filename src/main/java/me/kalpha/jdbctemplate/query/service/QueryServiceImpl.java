@@ -28,8 +28,8 @@ public class QueryServiceImpl implements QueryService {
     private QueryRepositoryOthersImpl ehubQueryRepository;
 
     @Autowired
-    public QueryServiceImpl(@Qualifier(Constants.BATCH_UNIT_NAME) EntityManager batchEntityManager,
-                            @Qualifier(Constants.EHUB_UNIT_NAME) EntityManager ehubEntityManager) {
+    public QueryServiceImpl(@Qualifier(Constants.SYS_BATCH) EntityManager batchEntityManager,
+                            @Qualifier(Constants.SYS_EHUB) EntityManager ehubEntityManager) {
         batchQueryRepository = new QueryRepositoryOthersImpl(batchEntityManager);
         ehubQueryRepository = new QueryRepositoryOthersImpl(ehubEntityManager);
     }

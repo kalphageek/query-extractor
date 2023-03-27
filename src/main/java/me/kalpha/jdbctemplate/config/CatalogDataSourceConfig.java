@@ -59,7 +59,7 @@ public class CatalogDataSourceConfig {
     @Primary
     @Bean(name = "catalogEntityManagerFactory")
     public LocalContainerEntityManagerFactoryBean catalogEntityManagerFactory(EntityManagerFactoryBuilder builder) {
-        hibernateProperties.setDdlAuto("create");
+//        hibernateProperties.setDdlAuto("create");
         jpaProperties.setDatabasePlatform("org.hibernate.dialect.H2Dialect");
 
         var properties = hibernateProperties.determineHibernateProperties(
