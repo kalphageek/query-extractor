@@ -1,5 +1,6 @@
-package me.kalpha.jdbctemplate.query;
+package me.kalpha.jdbctemplate.query.service;
 
+import me.kalpha.jdbctemplate.query.GenerateTestData;
 import me.kalpha.jdbctemplate.query.dto.QueryDto;
 import me.kalpha.jdbctemplate.query.dto.QueryResult;
 import me.kalpha.jdbctemplate.query.dto.SamplesDto;
@@ -91,6 +92,8 @@ public class QueryServiceTest {
 
         assertTrue(extractCount > 0);
     }
+
+
 
     //------------------------------------------------------------------------------------------------
 

@@ -1,6 +1,7 @@
-package me.kalpha.jdbctemplate.query;
+package me.kalpha.jdbctemplate.query.controller;
 
 import me.kalpha.jdbctemplate.common.BaseControllerTest;
+import me.kalpha.jdbctemplate.query.GenerateTestData;
 import me.kalpha.jdbctemplate.query.dto.QueryDto;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
