@@ -10,14 +10,13 @@ import java.time.LocalDateTime;
 @Builder
 public class TableVo {
     private String systemId;
-    private String sql;
+    private Table table;
     private Object[] params;
     private String userId;
-    private Table table;
-    @Builder.Default
-    private Long limit = 10L;
+    private Long limit;
     @Builder.Default
     private LocalDateTime requiredTime = LocalDateTime.now();
+    private String sql;
 
     public void updateSqlFromTable() {
         StringBuffer sb = new StringBuffer(String.format("select %s from %s", table.getSelect(), table.getFrom()));
