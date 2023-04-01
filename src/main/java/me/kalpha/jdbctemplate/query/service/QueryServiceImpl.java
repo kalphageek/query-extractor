@@ -5,14 +5,13 @@ import me.kalpha.jdbctemplate.config.EntityManagerConfig;
 import me.kalpha.jdbctemplate.query.dto.*;
 import me.kalpha.jdbctemplate.query.repository.QueryRepository;
 import me.kalpha.jdbctemplate.query.repository.QueryRepositoryOthersImpl;
-import org.hibernate.query.internal.NativeQueryImpl;
-import org.hibernate.transform.AliasToEntityMapResultTransformer;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
 import java.time.format.DateTimeFormatter;
@@ -52,22 +51,32 @@ public class QueryServiceImpl implements QueryService {
 
     @Override
     public List<QueryResult> findTable(TableDto tableDto, Long limit) {
+        TableVo tableVo = mapper.map(tableDto, TableVo.class);
+        tableVo.updateSqlFromTable();
+
         setRepository(tableDto.getSystemId());
-        return queryRepository.findTable(tableDto, tableDto.getLimit());
+        return queryRepository.findTable(tableVo, tableVo.getLimit());
     }
 
     @Override
     public long extractTable(TableDto tableDto) {
-        List list = findTable(tableDto);
-        String fileName = String.format("%s-%s", tableDto.getTable().getFrom(), tableDto.getRequiredTime().format(DateTimeFormatter.ofPattern("yyyyMMddHHmmss")));
-        setRepository(tableDto.getSystemId());
+        TableVo tableVo = mapper.map(tableDto, TableVo.class);
+        tableVo.updateSqlFromTable();
+        setRepository(tableVo.getSystemId());
+
+        List list = findTable(tableVo);
+        String fileName = String.format("%s-%s", tableVo.getTable().getFrom(), tableVo.getRequiredTime().format(DateTimeFormatter.ofPattern("yyyyMMddHHmmss")));
+
         return saveResult(list, fileName);
     }
 
     @Override
     public Page<QueryResult> findTable(Pageable pageable, TableDto tableDto) {
-        setRepository(tableDto.getSystemId());
-        return queryRepository.findTable(pageable, tableDto);
+        TableVo tableVo = mapper.map(tableDto, TableVo.class);
+        tableVo.updateSqlFromTable();
+        setRepository(tableVo.getSystemId());
+
+        return queryRepository.findTable(pageable, tableVo);
     }
 
     @Override
@@ -97,13 +106,11 @@ public class QueryServiceImpl implements QueryService {
 
     //-------------------------------------------------
 
-    private List<Object[]> findTable(TableDto tableDto) {
-        setRepository(tableDto.getSystemId());
-        return queryRepository.findTable(tableDto);
+    private List<Object[]> findTable(TableVo tableVo) {
+        return queryRepository.findTable(tableVo);
     }
 
     private List<Object[]> findByQuery(QueryDto queryDto) {
-        setRepository(queryDto.getSystemId());
         return queryRepository.findByQuery(queryDto);
     }
 

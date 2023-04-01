@@ -2,7 +2,6 @@ package me.kalpha.jdbctemplate.query.service;
 
 import me.kalpha.jdbctemplate.query.GenerateTestData;
 import me.kalpha.jdbctemplate.query.dto.*;
-import me.kalpha.jdbctemplate.query.service.QueryService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;

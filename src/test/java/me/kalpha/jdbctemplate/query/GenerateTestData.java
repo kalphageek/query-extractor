@@ -1,9 +1,7 @@
 package me.kalpha.jdbctemplate.query;
 
 import me.kalpha.jdbctemplate.common.Constants;
-import me.kalpha.jdbctemplate.query.dto.QueryDto;
-import me.kalpha.jdbctemplate.query.dto.SamplesDto;
-import me.kalpha.jdbctemplate.query.dto.TableDto;
+import me.kalpha.jdbctemplate.query.dto.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -81,7 +79,7 @@ public class GenerateTestData {
 //        Object[] params = {"2020-10-01", "2020-10-04", 20, "%" + "FAIL" + "%", inClouse.get(0), inClouse.get(1)};
         Object[] params = {20, "member%", inClouse.get(0), inClouse.get(1)};
 
-        TableDto.Table table = TableDto.Table.builder()
+        Table table = Table.builder()
                 .select(select)
                 .from(from)
                 .where(where)
@@ -93,7 +91,6 @@ public class GenerateTestData {
                 .params(params)
                 .table(table)
                 .build();
-        tableDto.updateSqlFromTable();
 
         return tableDto;
     }

@@ -4,7 +4,6 @@ import me.kalpha.jdbctemplate.common.Constants;
 import me.kalpha.jdbctemplate.query.dto.*;
 import org.hibernate.query.internal.NativeQueryImpl;
 import org.hibernate.transform.AliasToEntityMapResultTransformer;
-import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
@@ -38,6 +37,7 @@ public class QueryRepositoryOracleImpl implements QueryRepository {
                         "       exists (select * from (%s))";
         valdateSql = String.format(valdateSql, queryDto.getSql());
         Query query = em.createNativeQuery(valdateSql);
+
         if (queryDto.getParams() != null && queryDto.getParams().length != 0) {
             for (int i = 0; i < queryDto.getParams().length; i++) {
                 query.setParameter(i + 1, queryDto.getParams()[i]);
@@ -61,41 +61,41 @@ public class QueryRepositoryOracleImpl implements QueryRepository {
 
 
     @Override
-    public List<Object[]> findTable(TableDto tableDto) {
-        Query query = em.createNativeQuery(tableDto.getSql());
+    public List<Object[]> findTable(TableVo tableVo) {
+        Query query = em.createNativeQuery(tableVo.getSql());
 
-        if (tableDto.getParams() != null && tableDto.getParams().length != 0) {
-            for (int i = 0; i < tableDto.getParams().length; i++) {
-                query.setParameter(i + 1, tableDto.getParams()[i]);
+        if (tableVo.getParams() != null && tableVo.getParams().length != 0) {
+            for (int i = 0; i < tableVo.getParams().length; i++) {
+                query.setParameter(i + 1, tableVo.getParams()[i]);
             }
         }
         return query.getResultList();
     }
 
     @Override
-    public List<QueryResult> findTable(TableDto tableDto, Long limit) {
+    public List<QueryResult> findTable(TableVo tableVo, Long limit) {
         String sql = String.format("%s offset 0 rows fetch next %d rows only"
-                , tableDto.getSql(), tableDto.getLimit());
+                , tableVo.getSql(), tableVo.getLimit());
         Query query = em.createNativeQuery(sql);
-        if (tableDto.getParams() != null && tableDto.getParams().length != 0) {
-            for (int i = 0; i < tableDto.getParams().length; i++) {
-                query.setParameter(i + 1, tableDto.getParams()[i]);
+        if (tableVo.getParams() != null && tableVo.getParams().length != 0) {
+            for (int i = 0; i < tableVo.getParams().length; i++) {
+                query.setParameter(i + 1, tableVo.getParams()[i]);
             }
         }
         return getRecords(query);
     }
 
     @Override
-    public Page<QueryResult> findTable(Pageable pageable, TableDto tableDto) {
+    public Page<QueryResult> findTable(Pageable pageable, TableVo tableVo) {
         String pagingQuery = String.format("%s offset %d rows fetch next %d rows only"
-                , tableDto.getSql(), pageable.getPageNumber(), pageable.getPageSize());
+                , tableVo.getSql(), pageable.getPageNumber(), pageable.getPageSize());
         Query query = em.createNativeQuery(pagingQuery);
-        if (tableDto.getParams() != null && tableDto.getParams().length != 0) {
-            for (int i = 0; i < tableDto.getParams().length; i++) {
-                query.setParameter(i + 1, tableDto.getParams()[i]);
+        if (tableVo.getParams() != null && tableVo.getParams().length != 0) {
+            for (int i = 0; i < tableVo.getParams().length; i++) {
+                query.setParameter(i + 1, tableVo.getParams()[i]);
             }
         }
-        return getRecords(query, pageable, count(tableDto));
+        return getRecords(query, pageable, count(tableVo));
     }
 
     @Override
@@ -151,14 +151,14 @@ public class QueryRepositoryOracleImpl implements QueryRepository {
         return new PageImpl<QueryResult>(getRecords(query), pageable, count);
     }
 
-    private long count(TableDto tableDto) {
+    private long count(TableVo tableVo) {
         String sql = String.format("select count(*) from %s where %s"
-                ,tableDto.getTable().getFrom() ,tableDto.getTable().getWhere());
+                , tableVo.getTable().getFrom() , tableVo.getTable().getWhere());
 
         Query query = em.createNativeQuery(sql);
-        if (tableDto.getParams() != null && tableDto.getParams().length != 0) {
-            for (int i = 0; i < tableDto.getParams().length; i++) {
-                query.setParameter(i + 1, tableDto.getParams()[i]);
+        if (tableVo.getParams() != null && tableVo.getParams().length != 0) {
+            for (int i = 0; i < tableVo.getParams().length; i++) {
+                query.setParameter(i + 1, tableVo.getParams()[i]);
             }
         }
         return query.getFirstResult();

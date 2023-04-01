@@ -12,9 +12,9 @@ public interface QueryRepository {
     public final Integer DEFAULT_LIMITS = 100;
 
     public List<Map<String,Object>> findSamples(SamplesDto samplesDto);
-    public List<Object[]> findTable(TableDto tableDto);
-    public List<QueryResult> findTable(TableDto tableDto, Long limit);
-    public Page<QueryResult> findTable(Pageable pageable, TableDto tableDto);
+    public List<Object[]> findTable(TableVo tableVo);
+    public List<QueryResult> findTable(TableVo tableVo, Long limit);
+    public Page<QueryResult> findTable(Pageable pageable, TableVo tableVo);
 
     public Boolean validateSql(QueryDto queryDto);
 
