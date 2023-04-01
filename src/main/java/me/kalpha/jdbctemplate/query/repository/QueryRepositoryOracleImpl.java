@@ -1,20 +1,17 @@
 package me.kalpha.jdbctemplate.query.repository;
 
 import me.kalpha.jdbctemplate.common.Constants;
-import me.kalpha.jdbctemplate.query.dto.QueryDto;
-import me.kalpha.jdbctemplate.query.dto.QueryResult;
-import me.kalpha.jdbctemplate.query.dto.SamplesDto;
-import me.kalpha.jdbctemplate.query.dto.TableDto;
+import me.kalpha.jdbctemplate.query.dto.*;
+import org.hibernate.query.internal.NativeQueryImpl;
+import org.hibernate.transform.AliasToEntityMapResultTransformer;
+import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -51,10 +48,15 @@ public class QueryRepositoryOracleImpl implements QueryRepository {
     }
 
     @Override
-    public List<QueryResult> findSamples(SamplesDto samplesDto) {
+    public List<Map<String,Object>> findSamples(SamplesDto samplesDto) {
         String samplesSql = String.format("select * from %s offset 0 rows fetch next %d rows only", samplesDto.getTable(), Constants.SAMPLES_COUNT);
         Query query = em.createNativeQuery(samplesSql);
-        return getRecords(query);
+
+        NativeQueryImpl nativeQuery = (NativeQueryImpl) query;
+        nativeQuery.setResultTransformer(AliasToEntityMapResultTransformer.INSTANCE);
+        List<Map<String,Object>> result = nativeQuery.getResultList();
+
+        return result;
     }
 
 

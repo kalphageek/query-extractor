@@ -1,16 +1,14 @@
 package me.kalpha.jdbctemplate.query.service;
 
-import me.kalpha.jdbctemplate.query.dto.QueryDto;
-import me.kalpha.jdbctemplate.query.dto.QueryResult;
-import me.kalpha.jdbctemplate.query.dto.SamplesDto;
-import me.kalpha.jdbctemplate.query.dto.TableDto;
+import me.kalpha.jdbctemplate.query.dto.*;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 import java.util.List;
+import java.util.Map;
 
 public interface QueryService {
-    public List<QueryResult> findSample(SamplesDto samplesDto);
+    public SampleResponse findSample(SamplesDto samplesDto);
 
     public List<QueryResult> findTable(TableDto tableDto, Long limit);
     public Page<QueryResult> findTable(Pageable pageable, TableDto tableDto);

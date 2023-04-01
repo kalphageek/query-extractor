@@ -2,12 +2,12 @@ package me.kalpha.jdbctemplate.query.service;
 
 import me.kalpha.jdbctemplate.common.Constants;
 import me.kalpha.jdbctemplate.config.EntityManagerConfig;
-import me.kalpha.jdbctemplate.query.dto.QueryDto;
-import me.kalpha.jdbctemplate.query.dto.QueryResult;
-import me.kalpha.jdbctemplate.query.dto.SamplesDto;
-import me.kalpha.jdbctemplate.query.dto.TableDto;
+import me.kalpha.jdbctemplate.query.dto.*;
 import me.kalpha.jdbctemplate.query.repository.QueryRepository;
 import me.kalpha.jdbctemplate.query.repository.QueryRepositoryOthersImpl;
+import org.hibernate.query.internal.NativeQueryImpl;
+import org.hibernate.transform.AliasToEntityMapResultTransformer;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.domain.Page;
@@ -17,6 +17,7 @@ import org.springframework.stereotype.Service;
 import javax.persistence.EntityManager;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.Map;
 
 /**
  * {@link EntityManagerConfig}의 Named EntityManager를 Injection해서 Repository 생성자로 전달한다.
@@ -26,19 +27,27 @@ public class QueryServiceImpl implements QueryService {
     private QueryRepository queryRepository;
     private QueryRepositoryOthersImpl batchQueryRepository;
     private QueryRepositoryOthersImpl ehubQueryRepository;
+    private ModelMapper mapper;
 
     @Autowired
     public QueryServiceImpl(@Qualifier(Constants.SYS_BATCH) EntityManager batchEntityManager,
-                            @Qualifier(Constants.SYS_EHUB) EntityManager ehubEntityManager) {
+                            @Qualifier(Constants.SYS_EHUB) EntityManager ehubEntityManager,
+                            ModelMapper mapper) {
         batchQueryRepository = new QueryRepositoryOthersImpl(batchEntityManager);
         ehubQueryRepository = new QueryRepositoryOthersImpl(ehubEntityManager);
+        this.mapper = mapper;
     }
 
 
     @Override
-    public List<QueryResult> findSample(SamplesDto samplesDto) {
+    public SampleResponse findSample(SamplesDto samplesDto) {
         setRepository(samplesDto.getSystemId());
-        return queryRepository.findSamples(samplesDto);
+        List<Map<String,Object>> result = queryRepository.findSamples(samplesDto);
+
+        SampleResponse response = mapper.map(samplesDto, SampleResponse.class);
+        response.setRecords(result);
+
+        return response;
     }
 
     @Override

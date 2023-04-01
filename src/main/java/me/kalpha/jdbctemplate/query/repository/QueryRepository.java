@@ -1,19 +1,17 @@
 package me.kalpha.jdbctemplate.query.repository;
 
-import me.kalpha.jdbctemplate.query.dto.QueryDto;
-import me.kalpha.jdbctemplate.query.dto.QueryResult;
-import me.kalpha.jdbctemplate.query.dto.SamplesDto;
-import me.kalpha.jdbctemplate.query.dto.TableDto;
+import me.kalpha.jdbctemplate.query.dto.*;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 import java.util.List;
+import java.util.Map;
 
 public interface QueryRepository {
 
     public final Integer DEFAULT_LIMITS = 100;
 
-    public List<QueryResult> findSamples(SamplesDto samplesDto);
+    public List<Map<String,Object>> findSamples(SamplesDto samplesDto);
     public List<Object[]> findTable(TableDto tableDto);
     public List<QueryResult> findTable(TableDto tableDto, Long limit);
     public Page<QueryResult> findTable(Pageable pageable, TableDto tableDto);

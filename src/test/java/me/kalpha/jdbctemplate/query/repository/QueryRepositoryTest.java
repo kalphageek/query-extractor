@@ -3,6 +3,7 @@ package me.kalpha.jdbctemplate.query.repository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import me.kalpha.jdbctemplate.common.Constants;
 import me.kalpha.jdbctemplate.query.GenerateTestData;
+import me.kalpha.jdbctemplate.query.dto.QueryCSVResonse;
 import me.kalpha.jdbctemplate.query.dto.QueryDto;
 import me.kalpha.jdbctemplate.query.dto.QueryResponse;
 import org.hibernate.query.internal.NativeQueryImpl;
@@ -70,28 +71,35 @@ class QueryRepositoryTest {
         QueryDto queryDto = GenerateTestData.generateQueryDto();
 
 
-        String pagingQuery = String.format("select * from (%s) t limit %d"
+        String query = String.format("select * from (%s) t limit %d"
                 , queryDto.getSql(), queryDto.getLimit());
-        Query query = batchEntityManager.createNativeQuery(pagingQuery);
+        Query resultQuery = batchEntityManager.createNativeQuery(query);
+
+        String singleQuery = String.format("select * from (%s) t limit 1"
+                , queryDto.getSql(), queryDto.getLimit());
+        Query columnNameQuery = batchEntityManager.createNativeQuery(singleQuery);
 
         if (queryDto.getParams() != null && queryDto.getParams().length != 0) {
             for (int i = 0; i < queryDto.getParams().length; i++) {
-                query.setParameter(i + 1, queryDto.getParams()[i]);
+                resultQuery.setParameter(i + 1, queryDto.getParams()[i]);
+                columnNameQuery.setParameter(i + 1, queryDto.getParams()[i]);
             }
         }
 
-//        List resultList = query.getResultList();
-//        Object o = resultList.get(0);
-
-
-        NativeQueryImpl nativeQuery = (NativeQueryImpl) query;
+        NativeQueryImpl nativeQuery = (NativeQueryImpl) columnNameQuery;
         nativeQuery.setResultTransformer(AliasToEntityMapResultTransformer.INSTANCE);
-        List<Map<String,Object>> result = nativeQuery.getResultList();
+        Map<String, String> columnNames = (HashMap)columnNameQuery.getSingleResult();
 
-        QueryResponse queryResponse = modelMapper.map(queryDto, QueryResponse.class);
-        queryResponse.setRecords(result);
+        List<Object[]> result = resultQuery.getResultList();
 
-        assertTrue(queryResponse.getRecords().size() > 0);
+        QueryCSVResonse resonse = modelMapper.map(queryDto, QueryCSVResonse.class);
+        resonse.setColumnNames(columnNames);
+        resonse.setRecords(result);
+
+        assertTrue(resonse.getColumnNames().size() == 6);
+        assertTrue(resonse.getRecords().size() > 0);
+
+//        assertTrue(queryResponse.getRecords().size() > 0);
 //        List<T> resultList = result.stream()
 //                .map(o -> {
 //                    try {

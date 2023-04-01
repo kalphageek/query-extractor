@@ -10,6 +10,7 @@ import org.springframework.http.MediaType;
 import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders;
 import org.springframework.restdocs.payload.JsonFieldType;
 import org.springframework.restdocs.payload.RequestFieldsSnippet;
+import org.springframework.transaction.annotation.Transactional;
 
 import static org.springframework.restdocs.hypermedia.HypermediaDocumentation.*;
 import static org.springframework.restdocs.hypermedia.HypermediaDocumentation.linkWithRel;
@@ -24,6 +25,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+@Transactional
 public class TableControllerTest extends BaseControllerTest {
 
     @DisplayName("정상 : Table samples 조회. dbType과 from만 설정")
@@ -46,7 +48,7 @@ public class TableControllerTest extends BaseControllerTest {
                                 linkWithRel("table-extract").description("link to table extract api")
                         ),
                         relaxedResponseFields(
-                                fieldWithPath("_embedded.queryResults[0].record").description("Query 결과 (select)")
+                                fieldWithPath("records").description("Query 결과 (select)")
                         ),
                         getSampleFieldsSnippet()
                 ))

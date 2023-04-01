@@ -1,9 +1,6 @@
 package me.kalpha.jdbctemplate.query.controller;
 
-import me.kalpha.jdbctemplate.query.dto.ExtractResult;
-import me.kalpha.jdbctemplate.query.dto.QueryResult;
-import me.kalpha.jdbctemplate.query.dto.SamplesDto;
-import me.kalpha.jdbctemplate.query.dto.TableDto;
+import me.kalpha.jdbctemplate.query.dto.*;
 import me.kalpha.jdbctemplate.query.service.QueryService;
 import me.kalpha.jdbctemplate.query.service.QueryValidator;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,10 +40,10 @@ public class TableController {
     @GetMapping("/sample")
     public ResponseEntity findSample(@RequestBody SamplesDto samplesDto) {
 
-        List<QueryResult> list =  queryService.findSample(samplesDto);
+        SampleResponse response =  queryService.findSample(samplesDto);
 
         // Hateoas (Link 및 Profile)
-        CollectionModel<QueryResult> outputModel = CollectionModel.of(list);
+        EntityModel<SampleResponse> outputModel = EntityModel.of(response);
         outputModel.add(Link.of("/docs/index.html#resources-table-sample").withRel("profile"))
                 .add(linkTo(this.getClass()).slash("table-sample").withSelfRel())
                 .add(linkTo(this.getClass()).withRel("table-limit"))

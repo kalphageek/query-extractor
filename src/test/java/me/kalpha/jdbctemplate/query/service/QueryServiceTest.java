@@ -1,10 +1,7 @@
 package me.kalpha.jdbctemplate.query.service;
 
 import me.kalpha.jdbctemplate.query.GenerateTestData;
-import me.kalpha.jdbctemplate.query.dto.QueryDto;
-import me.kalpha.jdbctemplate.query.dto.QueryResult;
-import me.kalpha.jdbctemplate.query.dto.SamplesDto;
-import me.kalpha.jdbctemplate.query.dto.TableDto;
+import me.kalpha.jdbctemplate.query.dto.*;
 import me.kalpha.jdbctemplate.query.service.QueryService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,6 +9,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -20,6 +18,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @SpringBootTest
 @ActiveProfiles("test")
+@Transactional
 public class QueryServiceTest {
     @Autowired
     QueryService queryService;
@@ -28,10 +27,8 @@ public class QueryServiceTest {
     public void find_samples() {
         SamplesDto samplesDto = GenerateTestData.generateSamplesDto();
 
-        List<QueryResult> list = queryService.findSample(samplesDto);
-        list.stream().forEach(System.out::println);
-
-        assertNotNull(list);
+        SampleResponse response = queryService.findSample(samplesDto);
+        response.getRecords().stream().forEach(System.out::println);
     }
 
     @Test
