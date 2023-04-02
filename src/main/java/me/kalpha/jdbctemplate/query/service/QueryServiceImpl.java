@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
+import java.sql.SQLException;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Map;
@@ -69,10 +70,23 @@ public class QueryServiceImpl implements QueryService {
         tableVo.updateSqlFromTable();
         setRepository(tableVo.getSystemId());
 
-        List list = findTable(tableVo);
+        List columnNames = null;
+        List records = null;
+        try {
+            Object[] o = findTable(tableVo);
+            columnNames = (List<String>) o[0];
+            records = (List<Object[]>) o[1];
+
+            columnNames.stream().forEach(System.out::print);
+            System.out.println();
+            records.stream().forEach(System.out::println);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
         String fileName = String.format("%s-%s", tableVo.getTable().getFrom(), tableVo.getRequiredTime().format(DateTimeFormatter.ofPattern("yyyyMMddHHmmss")));
 
-        return saveResult(list, fileName);
+        return saveResult(records, fileName);
     }
 
     @Override
@@ -111,7 +125,7 @@ public class QueryServiceImpl implements QueryService {
 
     //-------------------------------------------------
 
-    private List<Object[]> findTable(TableVo tableVo) {
+    private Object[] findTable(TableVo tableVo) throws SQLException {
         return queryRepository.findTable(tableVo);
     }
 

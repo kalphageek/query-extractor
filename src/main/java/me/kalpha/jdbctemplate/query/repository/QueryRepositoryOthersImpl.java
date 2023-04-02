@@ -9,6 +9,9 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 
 import javax.persistence.*;
+import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -61,15 +64,39 @@ public class QueryRepositoryOthersImpl implements QueryRepository {
         return result;
     }
 
+//    @Override
+//    public List<Object[]> findTable(TableVo tableVo) {
+//        Query query = em.createNativeQuery(tableVo.getSql());
+//        if (tableVo.getParams() != null && tableVo.getParams().length != 0) {
+//            for (int i = 0; i < tableVo.getParams().length; i++) {
+//                query.setParameter(i + 1, tableVo.getParams()[i]);
+//            }
+//        }
+//        return query.getResultList();
+//    }
+
     @Override
-    public List<Object[]> findTable(TableVo tableVo) {
+    public Object[] findTable(TableVo tableVo) throws SQLException {
         Query query = em.createNativeQuery(tableVo.getSql());
         if (tableVo.getParams() != null && tableVo.getParams().length != 0) {
             for (int i = 0; i < tableVo.getParams().length; i++) {
                 query.setParameter(i + 1, tableVo.getParams()[i]);
             }
         }
-        return query.getResultList();
+        List records = query.getResultList();
+
+        List<String> columnNames = new ArrayList<>();
+        ResultSet resultSet = (ResultSet) query.unwrap(ResultSet.class);
+        ResultSetMetaData metaData = resultSet.getMetaData();
+        for (int i = 1; i <= metaData.getColumnCount(); i++) {
+            columnNames.add(metaData.getColumnName(i));
+        }
+
+        List result = new ArrayList<>();
+        result.add(columnNames);
+        result.add(records);
+
+        return result.toArray();
     }
 
     @Override
