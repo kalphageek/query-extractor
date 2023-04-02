@@ -21,6 +21,8 @@ import java.util.Map;
 /**
  * {@link EntityManagerConfig}의 Named EntityManager를 Injection해서 Repository 생성자로 전달한다.
  */
+
+@Transactional
 @Service
 public class QueryServiceImpl implements QueryService {
     private QueryRepository queryRepository;
@@ -36,7 +38,6 @@ public class QueryServiceImpl implements QueryService {
         ehubQueryRepository = new QueryRepositoryOthersImpl(ehubEntityManager);
         this.mapper = mapper;
     }
-
 
     @Override
     public SampleResponse findSample(SamplesDto samplesDto) {
