@@ -48,8 +48,8 @@ public class QueryRepositoryOracleImpl implements QueryRepository {
     }
 
     @Override
-    public List<Map<String,Object>> findSamples(SamplesDto samplesDto) {
-        String samplesSql = String.format("select * from %s offset 0 rows fetch next %d rows only", samplesDto.getTable(), Constants.SAMPLES_COUNT);
+    public List<Map<String,Object>> findSamples(SamplesDto samplesDto, Integer samplesCount) {
+        String samplesSql = String.format("select * from %s offset 0 rows fetch next %d rows only", samplesDto.getTable(), samplesCount);
         Query query = em.createNativeQuery(samplesSql);
 
         NativeQueryImpl nativeQuery = (NativeQueryImpl) query;

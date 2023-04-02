@@ -18,3 +18,5 @@ app:
 #    driver-class-name: org.h2.Driver
 #    hikari:
 #      jdbc-url: jdbc:h2:mem:
+query:
+  samples-count: 3

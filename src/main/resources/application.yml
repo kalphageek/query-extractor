@@ -33,4 +33,4 @@ logging:
         SQL: DEBUG
         type.descriptor.sql.BasicBinder: TRACE
 query:
-  samples-count: 15
+  samples-count: 100

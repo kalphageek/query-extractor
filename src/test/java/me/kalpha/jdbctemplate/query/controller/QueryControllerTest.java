@@ -164,8 +164,18 @@ public class QueryControllerTest extends BaseControllerTest {
                 fieldWithPath("sql").description("Bind Variable을 갖는 SQL"),
                 fieldWithPath("params").description("Bind Variable을 위한 파라미터 배열"),
                 fieldWithPath("userId").description("사용자 사번"),
-                fieldWithPath("systemId").description("Catalog의 시스템ID : Batch(100), e-Hub(200)")//,
-//                fieldWithPath("requiredTime").description("실행시간")
+                fieldWithPath("limit").description("최대 Retrieve Recpord 수"),
+                fieldWithPath("systemId").description("Catalog의 시스템ID")
         );
     }
+
+    private ResponseFieldsSnippet getResponseFieldsSnippet() {
+        return relaxedResponseFields(
+                fieldWithPath("systemId").type("String").description("조회하려고 하는 DB ID"),
+                fieldWithPath("table").type("String").description("테이블 명"),
+                fieldWithPath("records").type("List<HashMap<String, Object>>").description("Query결과 레코드"),
+                fieldWithPath("_links").type("String").description("연관 링크")
+        );
+    }
+
 }

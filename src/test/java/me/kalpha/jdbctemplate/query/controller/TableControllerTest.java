@@ -11,6 +11,7 @@ import org.springframework.http.MediaType;
 import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders;
 import org.springframework.restdocs.payload.JsonFieldType;
 import org.springframework.restdocs.payload.RequestFieldsSnippet;
+import org.springframework.restdocs.payload.ResponseFieldsSnippet;
 import org.springframework.transaction.annotation.Transactional;
 
 import static org.springframework.restdocs.hypermedia.HypermediaDocumentation.*;
@@ -48,9 +49,7 @@ public class TableControllerTest extends BaseControllerTest {
                                 linkWithRel("table-paging").description("link to table paging api"),
                                 linkWithRel("table-extract").description("link to table extract api")
                         ),
-                        relaxedResponseFields(
-                                fieldWithPath("records").description("Query 결과 (select)")
-                        ),
+                        getResponseFieldsSnippet(),
                         getSampleFieldsSnippet()
                 ))
         ;
@@ -157,13 +156,21 @@ public class TableControllerTest extends BaseControllerTest {
 
     private RequestFieldsSnippet getTableFieldsSnippet() {
         return relaxedRequestFields(
+                fieldWithPath("systemId").description("Catalog의 시스템ID : Batch(100), e-Hub(200)"),
                 fieldWithPath("params").description("Bind Variable을 위한 파라미터 배열"),
                 fieldWithPath("userId").description("사용자 사번"),
-                fieldWithPath("systemId").description("Catalog의 시스템ID : Batch(100), e-Hub(200)"),
                 fieldWithPath("table.select").description("[select]제외한 select절"),
                 fieldWithPath("table.from").description("[from]제외한 from절"),
                 fieldWithPath("table.where").description("[where]제외한 where절"),
                 fieldWithPath("table.orderBy").description("[order by]제외한 order by절")
+        );
+    }
+    private ResponseFieldsSnippet getResponseFieldsSnippet() {
+        return relaxedResponseFields(
+                fieldWithPath("systemId").type("String").description("조회하려고 하는 DB ID"),
+                fieldWithPath("table").type("String").description("테이블 명"),
+                fieldWithPath("records").type("List<HashMap<String, Object>>").description("Query결과 레코드"),
+                fieldWithPath("_links").type("String").description("연관 링크")
         );
     }
 }

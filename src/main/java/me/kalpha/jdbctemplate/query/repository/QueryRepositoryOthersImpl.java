@@ -21,6 +21,7 @@ import java.util.stream.Collectors;
 public class QueryRepositoryOthersImpl implements QueryRepository {
 
     private EntityManager em;
+
     public QueryRepositoryOthersImpl(EntityManager em) {
         this.em = em;
     }
@@ -49,8 +50,8 @@ public class QueryRepositoryOthersImpl implements QueryRepository {
     }
 
     @Override
-    public List<Map<String,Object>> findSamples(SamplesDto samplesDto) {
-        String samplesSql = String.format("select * from %s limit %d", samplesDto.getTable(), Constants.SAMPLES_COUNT);
+    public List<Map<String,Object>> findSamples(SamplesDto samplesDto, Integer samplesCount) {
+        String samplesSql = String.format("select * from %s limit %d", samplesDto.getTable(), samplesCount);
         Query query = em.createNativeQuery(samplesSql);
 
         NativeQueryImpl nativeQuery = (NativeQueryImpl) query;

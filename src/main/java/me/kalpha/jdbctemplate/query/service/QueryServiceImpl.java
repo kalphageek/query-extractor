@@ -1,6 +1,7 @@
 package me.kalpha.jdbctemplate.query.service;
 
 import me.kalpha.jdbctemplate.common.Constants;
+import me.kalpha.jdbctemplate.common.QueryProperties;
 import me.kalpha.jdbctemplate.config.EntityManagerConfig;
 import me.kalpha.jdbctemplate.query.dto.*;
 import me.kalpha.jdbctemplate.query.repository.QueryRepository;
@@ -29,20 +30,23 @@ public class QueryServiceImpl implements QueryService {
     private QueryRepositoryOthersImpl batchQueryRepository;
     private QueryRepositoryOthersImpl ehubQueryRepository;
     private ModelMapper mapper;
+    private QueryProperties properties;
 
     @Autowired
     public QueryServiceImpl(@Qualifier(Constants.SYS_BATCH) EntityManager batchEntityManager,
                             @Qualifier(Constants.SYS_EHUB) EntityManager ehubEntityManager,
-                            ModelMapper mapper) {
+                            ModelMapper mapper,
+                            QueryProperties properties) {
         batchQueryRepository = new QueryRepositoryOthersImpl(batchEntityManager);
         ehubQueryRepository = new QueryRepositoryOthersImpl(ehubEntityManager);
         this.mapper = mapper;
+        this.properties = properties;
     }
 
     @Override
     public SampleResponse findSample(SamplesDto samplesDto) {
         setRepository(samplesDto.getSystemId());
-        List<Map<String,Object>> result = queryRepository.findSamples(samplesDto);
+        List<Map<String,Object>> result = queryRepository.findSamples(samplesDto, properties.getSamplesCount());
 
         SampleResponse response = mapper.map(samplesDto, SampleResponse.class);
         response.setRecords(result);

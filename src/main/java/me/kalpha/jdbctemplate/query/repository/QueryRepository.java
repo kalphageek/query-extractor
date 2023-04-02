@@ -11,7 +11,7 @@ public interface QueryRepository {
 
     public final Integer DEFAULT_LIMITS = 100;
 
-    public List<Map<String,Object>> findSamples(SamplesDto samplesDto);
+    public List<Map<String,Object>> findSamples(SamplesDto samplesDto, Integer samplesCount);
     public List<Object[]> findTable(TableVo tableVo);
     public List<QueryResult> findTable(TableVo tableVo, Long limit);
     public Page<QueryResult> findTable(Pageable pageable, TableVo tableVo);
