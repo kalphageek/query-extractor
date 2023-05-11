@@ -1,6 +1,8 @@
 package me.kalpha.jdbctemplate.config;
 
 import com.zaxxer.hikari.HikariDataSource;
+import lombok.RequiredArgsConstructor;
+import me.kalpha.jdbctemplate.common.Constants;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceProperties;
@@ -22,20 +24,16 @@ import javax.sql.DataSource;
 
 @Configuration
 @EnableJpaRepositories(
-        entityManagerFactoryRef = "catalogEntityManagerFactory",
+        entityManagerFactoryRef = Constants.CATALOG_UNIT_NAME,
         transactionManagerRef = "catalogTransactionManager",
         basePackages = {"me.kalpha.jdbctemplate.catalog"}//repositories
 )
 @EnableTransactionManagement
+@RequiredArgsConstructor
 public class CatalogDataSourceConfig {
     private final JpaProperties jpaProperties;
     private final HibernateProperties hibernateProperties;
 
-    @Autowired
-    public CatalogDataSourceConfig(JpaProperties jpaProperties, HibernateProperties hibernateProperties) {
-        this.jpaProperties = jpaProperties;
-        this.hibernateProperties = hibernateProperties;
-    }
     @Bean
     @Primary
     @ConfigurationProperties("app.datasource.catalog")
@@ -43,7 +41,7 @@ public class CatalogDataSourceConfig {
         return new DataSourceProperties();
     }
 
-    @Bean
+    @Bean(name = Constants.SYS_CATALOG)
     @Primary
     @ConfigurationProperties("app.datasource.catalog.hikari")
     public DataSource catalogDataSource() {
@@ -57,7 +55,7 @@ public class CatalogDataSourceConfig {
      * @return
      */
     @Primary
-    @Bean(name = "catalogEntityManagerFactory")
+    @Bean(name = Constants.CATALOG_UNIT_NAME)
     public LocalContainerEntityManagerFactoryBean catalogEntityManagerFactory(EntityManagerFactoryBuilder builder) {
 //        hibernateProperties.setDdlAuto("create");
         jpaProperties.setDatabasePlatform("org.hibernate.dialect.H2Dialect");
@@ -75,7 +73,7 @@ public class CatalogDataSourceConfig {
     @Primary
     @Bean
     public PlatformTransactionManager catalogTransactionManager(
-            final @Qualifier("catalogEntityManagerFactory") LocalContainerEntityManagerFactoryBean catalogEntityManagerFactory) {
+            final @Qualifier(Constants.CATALOG_UNIT_NAME) LocalContainerEntityManagerFactoryBean catalogEntityManagerFactory) {
         return new JpaTransactionManager(catalogEntityManagerFactory.getObject());
     }
 }

@@ -2,7 +2,6 @@ package me.kalpha.jdbctemplate.query.service;
 
 import me.kalpha.jdbctemplate.common.Constants;
 import me.kalpha.jdbctemplate.common.QueryProperties;
-import me.kalpha.jdbctemplate.config.EntityManagerConfig;
 import me.kalpha.jdbctemplate.query.dto.*;
 import me.kalpha.jdbctemplate.query.repository.QueryRepository;
 import me.kalpha.jdbctemplate.query.repository.QueryRepositoryOthersImpl;
@@ -34,8 +33,8 @@ public class QueryServiceImpl implements QueryService {
     private QueryProperties properties;
 
     @Autowired
-    public QueryServiceImpl(@Qualifier(Constants.SYS_BATCH) EntityManager batchEntityManager,
-                            @Qualifier(Constants.SYS_EHUB) EntityManager ehubEntityManager,
+    public QueryServiceImpl(@Qualifier(Constants.BATCH_UNIT_NAME) EntityManager batchEntityManager,
+                            @Qualifier(Constants.EHUB_UNIT_NAME) EntityManager ehubEntityManager,
                             ModelMapper mapper,
                             QueryProperties properties) {
         batchQueryRepository = new QueryRepositoryOthersImpl(batchEntityManager);
@@ -135,10 +134,10 @@ public class QueryServiceImpl implements QueryService {
 
     private void setRepository(String systemId) {
         switch (systemId) {
-            case Constants.SYS_BATCH:
+            case Constants.BATCH_UNIT_NAME:
                 queryRepository = batchQueryRepository;
                 break;
-            case Constants.SYS_EHUB:
+            case Constants.EHUB_UNIT_NAME:
                 queryRepository = ehubQueryRepository;
         }
     }

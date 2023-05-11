@@ -1,6 +1,7 @@
 package me.kalpha.jdbctemplate.config;
 
 import com.zaxxer.hikari.HikariDataSource;
+import lombok.RequiredArgsConstructor;
 import me.kalpha.jdbctemplate.common.Constants;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -23,27 +24,23 @@ import javax.sql.DataSource;
 
 @Configuration
 @EnableJpaRepositories(
-        entityManagerFactoryRef = "ehubEntityManagerFactory",
+        entityManagerFactoryRef = Constants.EHUB_UNIT_NAME,
         transactionManagerRef = "ehubTransactionManager"
 )
 @EnableTransactionManagement
+@RequiredArgsConstructor
 public class EhubDataSourceConfig {
 
     private final JpaProperties jpaProperties;
     private final HibernateProperties hibernateProperties;
 
-    @Autowired
-    public EhubDataSourceConfig(JpaProperties jpaProperties, HibernateProperties hibernateProperties) {
-        this.jpaProperties = jpaProperties;
-        this.hibernateProperties = hibernateProperties;
-    }
     @Bean
     @ConfigurationProperties("app.datasource.ehub")
     public DataSourceProperties ehubDataSourceProperties() {
         return new DataSourceProperties();
     }
 
-    @Bean
+    @Bean(name = Constants.SYS_EHUB)
     @ConfigurationProperties("app.datasource.ehub.hikari")
     public DataSource ehubDataSource() {
         return ehubDataSourceProperties().initializeDataSourceBuilder()
@@ -55,7 +52,7 @@ public class EhubDataSourceConfig {
      * @param builder
      * @return
      */
-    @Bean(name = "ehubEntityManagerFactory")
+    @Bean(name = Constants.EHUB_UNIT_NAME)
     public LocalContainerEntityManagerFactoryBean ehubEntityManagerFactory(EntityManagerFactoryBuilder builder) {
 //        hibernateProperties.setDdlAuto("none");
         jpaProperties.setDatabasePlatform("org.hibernate.dialect.H2Dialect");
@@ -64,13 +61,13 @@ public class EhubDataSourceConfig {
         return builder
                 .dataSource(ehubDataSource())
                 .properties(properties)
-                .persistenceUnit(Constants.EHUB_UNIT_NAME)
+//                .persistenceUnit(Constants.EHUB_UNIT_NAME)
                 .packages("me.kalpha.jdbctemplate.ehub")//entities
                 .build();
     }
     @Bean
     public PlatformTransactionManager ehubTransactionManager(
-            final @Qualifier("ehubEntityManagerFactory") LocalContainerEntityManagerFactoryBean ehubEntityManagerFactory) {
+            final @Qualifier(Constants.EHUB_UNIT_NAME) LocalContainerEntityManagerFactoryBean ehubEntityManagerFactory) {
         return new JpaTransactionManager(ehubEntityManagerFactory.getObject());
     }
 }

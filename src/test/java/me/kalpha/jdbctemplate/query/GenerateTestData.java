@@ -40,7 +40,7 @@ public class GenerateTestData {
         Object[] params = {20, "member%", inClouse.get(0), inClouse.get(1)};
 
         QueryDto queryDto = QueryDto.builder()
-                .systemId(Constants.SYS_BATCH)
+                .systemId(Constants.BATCH_UNIT_NAME)
                 .userId("2043738")
                 .params(params)
                 .sql(sql)
@@ -86,7 +86,7 @@ public class GenerateTestData {
                 .orderBy(orderBy)
                 .build();
         TableDto tableDto = TableDto.builder()
-                .systemId(Constants.SYS_BATCH)
+                .systemId(Constants.BATCH_UNIT_NAME)
                 .userId("2043738")
                 .params(params)
                 .table(table)
@@ -98,7 +98,7 @@ public class GenerateTestData {
     public static SamplesDto generateSamplesDto() {
         SamplesDto samplesDto = SamplesDto.builder()
                 .table("member")
-                .systemId(Constants.SYS_BATCH)
+                .systemId(Constants.BATCH_UNIT_NAME)
                 .build();
         return samplesDto;
     }

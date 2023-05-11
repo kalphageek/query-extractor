@@ -6,6 +6,9 @@ import me.kalpha.jdbctemplate.query.GenerateTestData;
 import me.kalpha.jdbctemplate.query.dto.QueryCSVResonse;
 import me.kalpha.jdbctemplate.query.dto.QueryDto;
 import me.kalpha.jdbctemplate.query.dto.QueryResponse;
+import org.hibernate.SQLQuery;
+import org.hibernate.ejb.HibernateEntityManager;
+import org.hibernate.query.internal.AbstractProducedQuery;
 import org.hibernate.query.internal.NativeQueryImpl;
 import org.hibernate.transform.AliasToEntityMapResultTransformer;
 import org.junit.jupiter.api.DisplayName;
@@ -18,6 +21,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
+import java.sql.ResultSet;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -28,7 +32,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 @SpringBootTest
 class QueryRepositoryTest {
     @Autowired
-    @Qualifier(Constants.SYS_BATCH)
+    @Qualifier(Constants.BATCH_UNIT_NAME)
     EntityManager batchEntityManager;
     @Autowired
     ModelMapper modelMapper;
@@ -94,6 +98,42 @@ class QueryRepositoryTest {
         assertTrue(resonse.getColumnNames().size() == 6);
         assertTrue(resonse.getRecords().size() > 0);
 
+//        assertTrue(queryResponse.getRecords().size() > 0);
+//        List<T> resultList = result.stream()
+//                .map(o -> {
+//                    try {
+//                        return mapper.readValue(mapper.writeValueAsString(o),valueType);
+//                    } catch (Exception e) {
+//                        ApplicationLogger.logger.error(e.getMessage(),e);
+//                    }
+//                    return null;
+//                }).collect(Collectors.toList());
+    }
+    @DisplayName("QueryCSVResponse retrieve 테스트2")
+    @Test
+    public void queryQueryCSVRsponseTest2() {
+        ObjectMapper mapper = new ObjectMapper();
+        QueryDto queryDto = GenerateTestData.generateQueryDto();
+
+
+        String query = String.format("select * from (%s) t limit %d"
+                , queryDto.getSql(), queryDto.getLimit());
+        Query resultQuery = batchEntityManager.createNativeQuery(query);
+
+        if (queryDto.getParams() != null && queryDto.getParams().length != 0) {
+            for (int i = 0; i < queryDto.getParams().length; i++) {
+                resultQuery.setParameter(i + 1, queryDto.getParams()[i]);
+            }
+        }
+
+        List<Object[]> resultList = resultQuery.getResultList();
+        if (!resultList.isEmpty()) {
+            Object[] firstRow = resultList.get(0);
+            for (int i = 0; i < firstRow.length; i++) {
+                String columnName = firstRow.getClass().getDeclaredFields()[i].getName();
+                System.out.println("Column " + (i+1) + " Name: " + columnName);
+            }
+        }
 //        assertTrue(queryResponse.getRecords().size() > 0);
 //        List<T> resultList = result.stream()
 //                .map(o -> {

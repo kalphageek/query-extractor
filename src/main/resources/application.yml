@@ -16,16 +16,30 @@ app:
       username: sa
       password:
       driver-class-name: org.h2.Driver
+      hikari:
+        maximumPoolSize: 10
+        maxLifetime: 1800000
+        poolName: hikari-catalog-pool
     batch:
       url: jdbc:h2:tcp://localhost/~/workspace/h2/data/local
       username: sa
       password:
       driver-class-name: org.h2.Driver
+      hikari:
+        maximumPoolSize: 10
+        maxLifetime: 1800000
+        poolName: hikari-batch-pool
+        readOnly: false
     ehub:
       url: jdbc:h2:tcp://localhost/~/workspace/h2/data/local
       username: sa
       password:
       driver-class-name: org.h2.Driver
+      hikari:
+        maximumPoolSize: 10
+        maxLifetime: 1800000
+        poolName: hikari-ehub-pool
+        readOnly: false
 logging:
   level:
     org:

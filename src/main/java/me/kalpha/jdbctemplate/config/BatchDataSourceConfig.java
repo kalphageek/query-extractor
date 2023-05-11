@@ -1,6 +1,7 @@
 package me.kalpha.jdbctemplate.config;
 
 import com.zaxxer.hikari.HikariDataSource;
+import lombok.RequiredArgsConstructor;
 import me.kalpha.jdbctemplate.common.Constants;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -23,26 +24,22 @@ import javax.sql.DataSource;
 
 @Configuration
 @EnableJpaRepositories(
-        entityManagerFactoryRef = "batchEntityManagerFactory",
+        entityManagerFactoryRef = Constants.BATCH_UNIT_NAME,
         transactionManagerRef = "batchTransactionManager"
 )
 @EnableTransactionManagement
+@RequiredArgsConstructor
 public class BatchDataSourceConfig {
     private final JpaProperties jpaProperties;
     private final HibernateProperties hibernateProperties;
 
-    @Autowired
-    public BatchDataSourceConfig(JpaProperties jpaProperties, HibernateProperties hibernateProperties) {
-        this.jpaProperties = jpaProperties;
-        this.hibernateProperties = hibernateProperties;
-    }
     @Bean
     @ConfigurationProperties("app.datasource.batch")
     public DataSourceProperties batchDataSourceProperties() {
         return new DataSourceProperties();
     }
 
-    @Bean
+    @Bean(name = Constants.SYS_BATCH)
     @ConfigurationProperties("app.datasource.batch.hikari")
     public DataSource batchDataSource() {
         return batchDataSourceProperties().initializeDataSourceBuilder()
@@ -54,7 +51,7 @@ public class BatchDataSourceConfig {
      * @param builder
      * @return
      */
-    @Bean(name = "batchEntityManagerFactory")
+    @Bean(name = Constants.BATCH_UNIT_NAME)
     public LocalContainerEntityManagerFactoryBean batchEntityManagerFactory(EntityManagerFactoryBuilder builder) {
 //        hibernateProperties.setDdlAuto("none");
         jpaProperties.setDatabasePlatform("org.hibernate.dialect.H2Dialect");
@@ -63,14 +60,14 @@ public class BatchDataSourceConfig {
         return builder
                 .dataSource(batchDataSource())
                 .properties(properties)
-                .persistenceUnit(Constants.BATCH_UNIT_NAME)
+//                .persistenceUnit(Constants.BATCH_UNIT_NAME)
                 .packages("me.kalpha.jdbctemplate.batch")//entities
                 .build();
     }
 
     @Bean
     public PlatformTransactionManager batchTransactionManager(
-            final @Qualifier("batchEntityManagerFactory") LocalContainerEntityManagerFactoryBean batchEntityManagerFactory) {
+            final @Qualifier(Constants.BATCH_UNIT_NAME) LocalContainerEntityManagerFactoryBean batchEntityManagerFactory) {
         return new JpaTransactionManager(batchEntityManagerFactory.getObject());
     }
 }
