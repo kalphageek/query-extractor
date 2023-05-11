@@ -86,11 +86,11 @@ public class QueryRepositoryOracleImpl implements QueryRepository {
         List records = query.getResultList();
 
         List<String> columnNames = new ArrayList<>();
-        ResultSet resultSet = (ResultSet) query.unwrap(ResultSet.class);
-        ResultSetMetaData metaData = resultSet.getMetaData();
-        for (int i = 1; i <= metaData.getColumnCount(); i++) {
-            columnNames.add(metaData.getColumnName(i));
-        }
+//        ResultSet resultSet = (ResultSet) query.unwrap(ResultSet.class);
+//        ResultSetMetaData metaData = resultSet.getMetaData();
+//        for (int i = 1; i <= metaData.getColumnCount(); i++) {
+//            columnNames.add(metaData.getColumnName(i));
+//        }
 
         List result = new ArrayList<>();
         result.add(columnNames);
